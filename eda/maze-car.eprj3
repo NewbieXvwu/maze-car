@@ -21,18 +21,18 @@
     "boards": {
       "c7664ab3451eea7e": {
         "uuid": "c7664ab3451eea7e",
-        "title": "Board1",
+        "title": "主板 PCB",
         "zIndex": 1
       }
     },
     "schematics": {
       "630ead6cc102540f": {
         "uuid": "630ead6cc102540f",
-        "name": "Schematic1",
+        "name": "主板原理图",
         "board": "c7664ab3451eea7e",
         "source": "",
-        "version": "1794320227196",
-        "updateTime": 1794320227196
+        "version": "1794320996818",
+        "updateTime": 1794320996818
       }
     },
     "sheets": {
