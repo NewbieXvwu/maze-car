@@ -1,0 +1,100 @@
+{
+ "pads": [
+  {
+   "number": "1",
+   "x": 0,
+   "y": 0,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "2",
+   "x": 0,
+   "y": -100,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "3",
+   "x": 0,
+   "y": -200,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "4",
+   "x": 0,
+   "y": -300,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "5",
+   "x": 0,
+   "y": -400,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "6",
+   "x": 0,
+   "y": -500,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "7",
+   "x": 0,
+   "y": -600,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "8",
+   "x": 0,
+   "y": -700,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  }
+ ]
+}

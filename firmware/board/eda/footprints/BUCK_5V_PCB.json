@@ -1,0 +1,52 @@
+{
+ "pads": [
+  {
+   "number": "1",
+   "x": 0,
+   "y": 0,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "2",
+   "x": 0,
+   "y": -100,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "3",
+   "x": 1100,
+   "y": 0,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  },
+  {
+   "number": "4",
+   "x": 1100,
+   "y": -100,
+   "holeRadius": 0.5,
+   "shape": [
+    "ELLIPSE",
+    1.7,
+    1.7
+   ],
+   "layer": 1
+  }
+ ]
+}

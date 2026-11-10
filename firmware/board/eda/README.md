@@ -31,3 +31,58 @@ easyeda sch read --doc P1 --project maze-car   # 逐脚核对
 - 12 个模块目前**只有符号、没有封装**，`sch drc` 会对每个器件报一条 `MISSFOOTPRINT`——
   这是预期的中间态；做 PCB 前要按实测排针顺序建 footprint。
 - 引脚编号用信号名（`IO4`、`1'`、`IN+`），不是 1..N：实物排针顺序未实测时不假装知道位置。
+
+---
+
+# PCB 生成脚本
+
+板子同样按 `迷宫小车主板布线.html`（手焊布线图，35×34 格，1 格 = 2.54mm）生成，
+1 格 = 100 mil，板框 3600×3500 mil ≈ 91.4×88.9mm，2 层，R120 圆角。
+
+## 文件
+
+| 文件 | 作用 |
+|---|---|
+| `gen_footprints.py` | 解析 HTML 的 `const D`，按模块物理针脚 1..N 建封装 + 器件（`pcb_plan.json`） |
+| `route_via.py` | **当前方案**：清空 → 每个针脚打一个 via（1.0mm 孔 / 1.66mm 环）→ 按 44 根线走 134 段铜 |
+| `silk_pcb.py` | 每个模块上方写中文名 + 位号，板边写标题 |
+| `outline_devices.py` | 建 12 个"纯丝印封装"（只有框线、无焊盘）+ 器件 |
+| `place_outline.py` | 把 12 个丝印器件放到模块框位置 |
+| `pcb_plan.json` | 每个针脚的全局坐标、网络、所属模块 |
+| `outline_devices.json` | 12 个丝印器件的 uuid 与锚点 |
+
+## 重跑顺序
+
+```bash
+python3 gen_footprints.py   # 改过布线图才需要
+easyeda pcb clear --doc PCB1 --project maze-car
+python3 route_via.py        # 112 个孔 + 134 段线
+python3 silk_pcb.py         # 丝印文字
+python3 outline_devices.py  # 只在工程库还没有丝印器件时跑
+python3 place_outline.py    # 12 个模块框
+easyeda pcb save --doc PCB1 --project maze-car
+```
+
+## 关键坑（都是实测）
+
+- **工程库封装的焊盘写不进钻孔**。`lib footprint build` 的 `pads[].hole` 只接受
+  `null` 或 tuple，试过 `["ROUND",1.0]` / `["CIRCLE",1.0]` / `["SLOT",1,1]` 全部让
+  build 挂死（`connector did not respond`）并回滚；`layer:1` 落成
+  `"layerId":1,"hole":null`，也就是 SMD 焊盘 —— 底层走线永远连不上。
+  所以针脚孔全部用 **via** 打（原生镀通孔，双面铜环 + 钻孔）。
+- **Gerber 导出要求板上有"可读器件"**：`pcb.export.gerber` 在 0 器件时直接
+  `INVALID_STATE: PCB has no readable components`。12 个纯丝印封装就是为此加的。
+- 丝印封装里的线要用 `startX/startY/endX/endY`（不是 `x1/y1`），`layer:3` = 顶层丝印。
+- 2.54mm 栅格下走线宽度：信号 12 mil、电源 20 mil。25 mil 会让线到相邻孔只剩
+  4.9 mil 净空（DRC 要求 ≥6 mil）。
+- 焊盘号不能重复（`Duplicate pad number`），所以 PCB 侧按物理针脚 1..N 编号；
+  `lib device create` 允许符号引脚名与焊盘号不一致（会报 `[object Object]` 但建成了）。
+
+## 当前状态（2026-11-10）
+
+- DRC：clearance / spacing / outline **0 条**；剩 9 条 `No Connection`（本来就没接的针脚，
+  如 ESP 的 RST 与未用 IO）与 1 条 `Netlist Error`（PCB 按针脚号、原理图按信号名，且丝印器件无焊盘）。
+- 网表自检：84 个带网络的针脚，全部落在同网络铜皮的端点或线段上（`netverify` 式逐点校验）。
+- 钻孔：112 个 1.0mm 孔。EasyEDA 4.1.97 会把 via 同时写进
+  `Drill_PTH_Through.DRL` 和 `Drill_PTH_Through_Via.DRL`，两个文件内容相同（各 112 孔）。
+- 导出：`out/gerber/maze-car-gerber.zip`（GTL/GBL/GTO/GBO/GTS/GBS/GKO + 钻孔 + 飞针）。

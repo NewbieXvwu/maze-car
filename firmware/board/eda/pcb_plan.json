@@ -1,0 +1,1265 @@
+[
+ {
+  "designator": "BT1",
+  "symbol": "BATTERY",
+  "module": "XH",
+  "footprintName": "BATTERY_PCB",
+  "footprintUuid": "88f268fbeb259b5a",
+  "deviceName": "BATTERY_PCB_PCB2",
+  "deviceUuid": "5f5ea02951254a62",
+  "x": 100,
+  "y": 2800,
+  "nets": {
+   "1": "VBAT",
+   "2": "GND"
+  },
+  "labels": {
+   "1": "+",
+   "2": "−"
+  },
+  "uniqueId": "gge1",
+  "pins": [
+   {
+    "ref": "XH.+",
+    "label": "+",
+    "x": 1,
+    "y": 28,
+    "net": "VBAT"
+   },
+   {
+    "ref": "XH.−",
+    "label": "−",
+    "x": 1,
+    "y": 29,
+    "net": "GND"
+   }
+  ],
+  "box": [
+   0.25,
+   27.0,
+   2.1,
+   30.0
+  ]
+ },
+ {
+  "designator": "U7",
+  "symbol": "BUCK_5V",
+  "module": "M5P",
+  "footprintName": "BUCK_5V_PCB",
+  "footprintUuid": "0d924b4a919ed99a",
+  "deviceName": "BUCK_5V_PCB_PCB2",
+  "deviceUuid": "a436f1021def1446",
+  "x": 300,
+  "y": 2800,
+  "nets": {
+   "1": "VBAT",
+   "2": "GND",
+   "3": "5V",
+   "4": "GND"
+  },
+  "labels": {
+   "1": "IN+",
+   "2": "IN−",
+   "3": "OUT+",
+   "4": "OUT−"
+  },
+  "uniqueId": "gge2",
+  "pins": [
+   {
+    "ref": "M5P.IN+",
+    "label": "IN+",
+    "x": 3,
+    "y": 28,
+    "net": "VBAT"
+   },
+   {
+    "ref": "M5P.IN−",
+    "label": "IN−",
+    "x": 3,
+    "y": 29,
+    "net": "GND"
+   },
+   {
+    "ref": "M5P.OUT+",
+    "label": "OUT+",
+    "x": 14,
+    "y": 28,
+    "net": "5V"
+   },
+   {
+    "ref": "M5P.OUT−",
+    "label": "OUT−",
+    "x": 14,
+    "y": 29,
+    "net": "GND"
+   }
+  ],
+  "box": null
+ },
+ {
+  "designator": "U1",
+  "symbol": "ESP32_S3_MOD",
+  "module": "ESP",
+  "footprintName": "ESP32_S3_MOD_PCB",
+  "footprintUuid": "514428cc31520f93",
+  "deviceName": "ESP32_S3_MOD_PCB_PCB2",
+  "deviceUuid": "a05c2f55ab1cd887",
+  "x": 1300,
+  "y": 400,
+  "nets": {
+   "1": "3V3",
+   "2": "3V3",
+   "4": "PWMA",
+   "5": "AIN2",
+   "6": "AIN1",
+   "7": "STBY",
+   "8": "BIN1",
+   "9": "BIN2",
+   "10": "PWMB",
+   "15": "ENC_L_C2",
+   "16": "ENC_L_C1",
+   "19": "ENC_R_C2",
+   "20": "ENC_R_C1",
+   "21": "5V",
+   "22": "GND",
+   "23": "GND",
+   "27": "BTN",
+   "28": "SCL",
+   "29": "SDA",
+   "30": "XSHUT_L",
+   "31": "XSHUT_F",
+   "32": "XSHUT_R",
+   "39": "DIP1",
+   "40": "DIP2",
+   "43": "GND",
+   "44": "GND"
+  },
+  "labels": {
+   "1": "3V3",
+   "2": "3V3",
+   "3": "RST",
+   "4": "IO4",
+   "5": "IO5",
+   "6": "IO6",
+   "7": "IO7",
+   "8": "IO15",
+   "9": "IO16",
+   "10": "IO17",
+   "11": "IO18",
+   "12": "IO8",
+   "13": "IO3",
+   "14": "IO46",
+   "15": "IO9",
+   "16": "IO10",
+   "17": "IO11",
+   "18": "IO12",
+   "19": "IO13",
+   "20": "IO14",
+   "21": "5Vin",
+   "22": "GND",
+   "23": "GND",
+   "24": "TX",
+   "25": "RX",
+   "26": "IO1",
+   "27": "IO2",
+   "28": "IO42",
+   "29": "IO41",
+   "30": "IO40",
+   "31": "IO39",
+   "32": "IO38",
+   "33": "IO37",
+   "34": "IO36",
+   "35": "IO35",
+   "36": "IO0",
+   "37": "IO45",
+   "38": "IO48",
+   "39": "IO47",
+   "40": "IO21",
+   "41": "IO20",
+   "42": "IO19",
+   "43": "GND",
+   "44": "GND"
+  },
+  "uniqueId": "gge3",
+  "pins": [
+   {
+    "ref": "ESP.3V3",
+    "label": "3V3",
+    "x": 13,
+    "y": 4,
+    "net": "3V3"
+   },
+   {
+    "ref": "ESP.3V3·2",
+    "label": "3V3",
+    "x": 13,
+    "y": 5,
+    "net": "3V3"
+   },
+   {
+    "ref": "ESP.RST",
+    "label": "RST",
+    "x": 13,
+    "y": 6,
+    "net": null
+   },
+   {
+    "ref": "ESP.4",
+    "label": "IO4",
+    "x": 13,
+    "y": 7,
+    "net": "PWMA"
+   },
+   {
+    "ref": "ESP.5",
+    "label": "IO5",
+    "x": 13,
+    "y": 8,
+    "net": "AIN2"
+   },
+   {
+    "ref": "ESP.6",
+    "label": "IO6",
+    "x": 13,
+    "y": 9,
+    "net": "AIN1"
+   },
+   {
+    "ref": "ESP.7",
+    "label": "IO7",
+    "x": 13,
+    "y": 10,
+    "net": "STBY"
+   },
+   {
+    "ref": "ESP.15",
+    "label": "IO15",
+    "x": 13,
+    "y": 11,
+    "net": "BIN1"
+   },
+   {
+    "ref": "ESP.16",
+    "label": "IO16",
+    "x": 13,
+    "y": 12,
+    "net": "BIN2"
+   },
+   {
+    "ref": "ESP.17",
+    "label": "IO17",
+    "x": 13,
+    "y": 13,
+    "net": "PWMB"
+   },
+   {
+    "ref": "ESP.18",
+    "label": "IO18",
+    "x": 13,
+    "y": 14,
+    "net": null
+   },
+   {
+    "ref": "ESP.8",
+    "label": "IO8",
+    "x": 13,
+    "y": 15,
+    "net": null
+   },
+   {
+    "ref": "ESP.3",
+    "label": "IO3",
+    "x": 13,
+    "y": 16,
+    "net": null
+   },
+   {
+    "ref": "ESP.46",
+    "label": "IO46",
+    "x": 13,
+    "y": 17,
+    "net": null
+   },
+   {
+    "ref": "ESP.9",
+    "label": "IO9",
+    "x": 13,
+    "y": 18,
+    "net": "ENC_L_C2"
+   },
+   {
+    "ref": "ESP.10",
+    "label": "IO10",
+    "x": 13,
+    "y": 19,
+    "net": "ENC_L_C1"
+   },
+   {
+    "ref": "ESP.11",
+    "label": "IO11",
+    "x": 13,
+    "y": 20,
+    "net": null
+   },
+   {
+    "ref": "ESP.12",
+    "label": "IO12",
+    "x": 13,
+    "y": 21,
+    "net": null
+   },
+   {
+    "ref": "ESP.13",
+    "label": "IO13",
+    "x": 13,
+    "y": 22,
+    "net": "ENC_R_C2"
+   },
+   {
+    "ref": "ESP.14",
+    "label": "IO14",
+    "x": 13,
+    "y": 23,
+    "net": "ENC_R_C1"
+   },
+   {
+    "ref": "ESP.5Vin",
+    "label": "5Vin",
+    "x": 13,
+    "y": 24,
+    "net": "5V"
+   },
+   {
+    "ref": "ESP.GND·L",
+    "label": "GND",
+    "x": 13,
+    "y": 25,
+    "net": "GND"
+   },
+   {
+    "ref": "ESP.GND·T",
+    "label": "GND",
+    "x": 23,
+    "y": 4,
+    "net": "GND"
+   },
+   {
+    "ref": "ESP.TX",
+    "label": "TX",
+    "x": 23,
+    "y": 5,
+    "net": null
+   },
+   {
+    "ref": "ESP.RX",
+    "label": "RX",
+    "x": 23,
+    "y": 6,
+    "net": null
+   },
+   {
+    "ref": "ESP.1",
+    "label": "IO1",
+    "x": 23,
+    "y": 7,
+    "net": null
+   },
+   {
+    "ref": "ESP.2",
+    "label": "IO2",
+    "x": 23,
+    "y": 8,
+    "net": "BTN"
+   },
+   {
+    "ref": "ESP.42",
+    "label": "IO42",
+    "x": 23,
+    "y": 9,
+    "net": "SCL"
+   },
+   {
+    "ref": "ESP.41",
+    "label": "IO41",
+    "x": 23,
+    "y": 10,
+    "net": "SDA"
+   },
+   {
+    "ref": "ESP.40",
+    "label": "IO40",
+    "x": 23,
+    "y": 11,
+    "net": "XSHUT_L"
+   },
+   {
+    "ref": "ESP.39",
+    "label": "IO39",
+    "x": 23,
+    "y": 12,
+    "net": "XSHUT_F"
+   },
+   {
+    "ref": "ESP.38",
+    "label": "IO38",
+    "x": 23,
+    "y": 13,
+    "net": "XSHUT_R"
+   },
+   {
+    "ref": "ESP.37",
+    "label": "IO37",
+    "x": 23,
+    "y": 14,
+    "net": null
+   },
+   {
+    "ref": "ESP.36",
+    "label": "IO36",
+    "x": 23,
+    "y": 15,
+    "net": null
+   },
+   {
+    "ref": "ESP.35",
+    "label": "IO35",
+    "x": 23,
+    "y": 16,
+    "net": null
+   },
+   {
+    "ref": "ESP.0",
+    "label": "IO0",
+    "x": 23,
+    "y": 17,
+    "net": null
+   },
+   {
+    "ref": "ESP.45",
+    "label": "IO45",
+    "x": 23,
+    "y": 18,
+    "net": null
+   },
+   {
+    "ref": "ESP.48",
+    "label": "IO48",
+    "x": 23,
+    "y": 19,
+    "net": null
+   },
+   {
+    "ref": "ESP.47",
+    "label": "IO47",
+    "x": 23,
+    "y": 20,
+    "net": "DIP1"
+   },
+   {
+    "ref": "ESP.21",
+    "label": "IO21",
+    "x": 23,
+    "y": 21,
+    "net": "DIP2"
+   },
+   {
+    "ref": "ESP.20",
+    "label": "IO20",
+    "x": 23,
+    "y": 22,
+    "net": null
+   },
+   {
+    "ref": "ESP.19",
+    "label": "IO19",
+    "x": 23,
+    "y": 23,
+    "net": null
+   },
+   {
+    "ref": "ESP.GND·B1",
+    "label": "GND",
+    "x": 23,
+    "y": 24,
+    "net": "GND"
+   },
+   {
+    "ref": "ESP.GND·B2",
+    "label": "GND",
+    "x": 23,
+    "y": 25,
+    "net": "GND"
+   }
+  ],
+  "box": [
+   12.45,
+   0.9,
+   23.55,
+   26.05
+  ]
+ },
+ {
+  "designator": "U2",
+  "symbol": "TB6612_MOD",
+  "module": "TB",
+  "footprintName": "TB6612_MOD_PCB",
+  "footprintUuid": "b3d458c38c7cd041",
+  "deviceName": "TB6612_MOD_PCB_PCB2",
+  "deviceUuid": "ba312ae82eae35ba",
+  "x": 1000,
+  "y": 700,
+  "nets": {
+   "1": "PWMA",
+   "2": "AIN2",
+   "3": "AIN1",
+   "4": "STBY",
+   "5": "BIN1",
+   "6": "BIN2",
+   "7": "PWMB",
+   "8": "GND",
+   "9": "VBAT",
+   "10": "3V3",
+   "11": "GND",
+   "12": "AO1",
+   "13": "AO2",
+   "14": "BO2",
+   "15": "BO1"
+  },
+  "labels": {
+   "1": "PWMA",
+   "2": "AIN2",
+   "3": "AIN1",
+   "4": "STBY",
+   "5": "BIN1",
+   "6": "BIN2",
+   "7": "PWMB",
+   "8": "GND",
+   "9": "VM",
+   "10": "VCC",
+   "11": "GND",
+   "12": "AO1",
+   "13": "AO2",
+   "14": "BO2",
+   "15": "BO1",
+   "16": "GND"
+  },
+  "uniqueId": "gge4",
+  "pins": [
+   {
+    "ref": "TB.PWMA",
+    "label": "PWMA",
+    "x": 10,
+    "y": 7,
+    "net": "PWMA"
+   },
+   {
+    "ref": "TB.AIN2",
+    "label": "AIN2",
+    "x": 10,
+    "y": 8,
+    "net": "AIN2"
+   },
+   {
+    "ref": "TB.AIN1",
+    "label": "AIN1",
+    "x": 10,
+    "y": 9,
+    "net": "AIN1"
+   },
+   {
+    "ref": "TB.STBY",
+    "label": "STBY",
+    "x": 10,
+    "y": 10,
+    "net": "STBY"
+   },
+   {
+    "ref": "TB.BIN1",
+    "label": "BIN1",
+    "x": 10,
+    "y": 11,
+    "net": "BIN1"
+   },
+   {
+    "ref": "TB.BIN2",
+    "label": "BIN2",
+    "x": 10,
+    "y": 12,
+    "net": "BIN2"
+   },
+   {
+    "ref": "TB.PWMB",
+    "label": "PWMB",
+    "x": 10,
+    "y": 13,
+    "net": "PWMB"
+   },
+   {
+    "ref": "TB.GND·C",
+    "label": "GND",
+    "x": 10,
+    "y": 14,
+    "net": "GND"
+   },
+   {
+    "ref": "TB.VM",
+    "label": "VM",
+    "x": 4,
+    "y": 7,
+    "net": "VBAT"
+   },
+   {
+    "ref": "TB.VCC",
+    "label": "VCC",
+    "x": 4,
+    "y": 8,
+    "net": "3V3"
+   },
+   {
+    "ref": "TB.GND·P",
+    "label": "GND",
+    "x": 4,
+    "y": 9,
+    "net": "GND"
+   },
+   {
+    "ref": "TB.AO1",
+    "label": "AO1",
+    "x": 4,
+    "y": 10,
+    "net": "AO1"
+   },
+   {
+    "ref": "TB.AO2",
+    "label": "AO2",
+    "x": 4,
+    "y": 11,
+    "net": "AO2"
+   },
+   {
+    "ref": "TB.BO2",
+    "label": "BO2",
+    "x": 4,
+    "y": 12,
+    "net": "BO2"
+   },
+   {
+    "ref": "TB.BO1",
+    "label": "BO1",
+    "x": 4,
+    "y": 13,
+    "net": "BO1"
+   },
+   {
+    "ref": "TB.GND·P2",
+    "label": "GND",
+    "x": 4,
+    "y": 14,
+    "net": null
+   }
+  ],
+  "box": [
+   3.4,
+   6.45,
+   10.6,
+   14.55
+  ]
+ },
+ {
+  "designator": "U3",
+  "symbol": "MPU6050_MOD",
+  "module": "MPU",
+  "footprintName": "MPU6050_MOD_PCB",
+  "footprintUuid": "4b268f1a0d535d13",
+  "deviceName": "MPU6050_MOD_PCB_PCB2",
+  "deviceUuid": "1f81530b739b4659",
+  "x": 2600,
+  "y": 700,
+  "nets": {
+   "1": "3V3",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA"
+  },
+  "labels": {
+   "1": "VCC",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "5": "XDA",
+   "6": "XCL",
+   "7": "AD0",
+   "8": "INT"
+  },
+  "uniqueId": "gge7",
+  "pins": [
+   {
+    "ref": "MPU.VCC",
+    "label": "VCC",
+    "x": 26,
+    "y": 7,
+    "net": "3V3"
+   },
+   {
+    "ref": "MPU.GND",
+    "label": "GND",
+    "x": 26,
+    "y": 8,
+    "net": "GND"
+   },
+   {
+    "ref": "MPU.SCL",
+    "label": "SCL",
+    "x": 26,
+    "y": 9,
+    "net": "SCL"
+   },
+   {
+    "ref": "MPU.SDA",
+    "label": "SDA",
+    "x": 26,
+    "y": 10,
+    "net": "SDA"
+   },
+   {
+    "ref": "MPU.XDA",
+    "label": "XDA",
+    "x": 26,
+    "y": 11,
+    "net": null
+   },
+   {
+    "ref": "MPU.XCL",
+    "label": "XCL",
+    "x": 26,
+    "y": 12,
+    "net": null
+   },
+   {
+    "ref": "MPU.AD0",
+    "label": "AD0",
+    "x": 26,
+    "y": 13,
+    "net": null
+   },
+   {
+    "ref": "MPU.INT",
+    "label": "INT",
+    "x": 26,
+    "y": 14,
+    "net": null
+   }
+  ],
+  "box": [
+   25.45,
+   6.4,
+   32.1,
+   14.75
+  ]
+ },
+ {
+  "designator": "U4",
+  "symbol": "VL53L0X_L_MOD",
+  "module": "HL",
+  "footprintName": "VL53L0X_L_MOD_PCB",
+  "footprintUuid": "908ab3e8018e03e0",
+  "deviceName": "VL53L0X_L_MOD_PCB_PCB2",
+  "deviceUuid": "d2cf4bf9942690a6",
+  "x": 2700,
+  "y": 1700,
+  "nets": {
+   "1": "3V3",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "6": "XSHUT_L"
+  },
+  "labels": {
+   "1": "VIN",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "5": "GPIO1",
+   "6": "XSHUT"
+  },
+  "uniqueId": "gge8",
+  "pins": [
+   {
+    "ref": "HL.VIN",
+    "label": "VIN",
+    "x": 27,
+    "y": 17,
+    "net": "3V3"
+   },
+   {
+    "ref": "HL.GND",
+    "label": "GND",
+    "x": 27,
+    "y": 18,
+    "net": "GND"
+   },
+   {
+    "ref": "HL.SCL",
+    "label": "SCL",
+    "x": 27,
+    "y": 19,
+    "net": "SCL"
+   },
+   {
+    "ref": "HL.SDA",
+    "label": "SDA",
+    "x": 27,
+    "y": 20,
+    "net": "SDA"
+   },
+   {
+    "ref": "HL.GPIO1",
+    "label": "GPIO1",
+    "x": 27,
+    "y": 21,
+    "net": null
+   },
+   {
+    "ref": "HL.XSHUT",
+    "label": "XSHUT",
+    "x": 27,
+    "y": 22,
+    "net": "XSHUT_L"
+   }
+  ],
+  "box": [
+   26.5,
+   16.5,
+   27.5,
+   22.5
+  ]
+ },
+ {
+  "designator": "U5",
+  "symbol": "VL53L0X_F_MOD",
+  "module": "HF",
+  "footprintName": "VL53L0X_F_MOD_PCB",
+  "footprintUuid": "da33effb7592a848",
+  "deviceName": "VL53L0X_F_MOD_PCB_PCB2",
+  "deviceUuid": "611967c3c0d27c66",
+  "x": 3000,
+  "y": 1700,
+  "nets": {
+   "1": "3V3",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "6": "XSHUT_F"
+  },
+  "labels": {
+   "1": "VIN",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "5": "GPIO1",
+   "6": "XSHUT"
+  },
+  "uniqueId": "gge9",
+  "pins": [
+   {
+    "ref": "HF.VIN",
+    "label": "VIN",
+    "x": 30,
+    "y": 17,
+    "net": "3V3"
+   },
+   {
+    "ref": "HF.GND",
+    "label": "GND",
+    "x": 30,
+    "y": 18,
+    "net": "GND"
+   },
+   {
+    "ref": "HF.SCL",
+    "label": "SCL",
+    "x": 30,
+    "y": 19,
+    "net": "SCL"
+   },
+   {
+    "ref": "HF.SDA",
+    "label": "SDA",
+    "x": 30,
+    "y": 20,
+    "net": "SDA"
+   },
+   {
+    "ref": "HF.GPIO1",
+    "label": "GPIO1",
+    "x": 30,
+    "y": 21,
+    "net": null
+   },
+   {
+    "ref": "HF.XSHUT",
+    "label": "XSHUT",
+    "x": 30,
+    "y": 22,
+    "net": "XSHUT_F"
+   }
+  ],
+  "box": [
+   29.5,
+   16.5,
+   30.5,
+   22.5
+  ]
+ },
+ {
+  "designator": "U6",
+  "symbol": "VL53L0X_R_MOD",
+  "module": "HR",
+  "footprintName": "VL53L0X_R_MOD_PCB",
+  "footprintUuid": "7550f594fd7e55c9",
+  "deviceName": "VL53L0X_R_MOD_PCB_PCB2",
+  "deviceUuid": "44f168e2d73e2bac",
+  "x": 3300,
+  "y": 1700,
+  "nets": {
+   "1": "3V3",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "6": "XSHUT_R"
+  },
+  "labels": {
+   "1": "VIN",
+   "2": "GND",
+   "3": "SCL",
+   "4": "SDA",
+   "5": "GPIO1",
+   "6": "XSHUT"
+  },
+  "uniqueId": "gge10",
+  "pins": [
+   {
+    "ref": "HR.VIN",
+    "label": "VIN",
+    "x": 33,
+    "y": 17,
+    "net": "3V3"
+   },
+   {
+    "ref": "HR.GND",
+    "label": "GND",
+    "x": 33,
+    "y": 18,
+    "net": "GND"
+   },
+   {
+    "ref": "HR.SCL",
+    "label": "SCL",
+    "x": 33,
+    "y": 19,
+    "net": "SCL"
+   },
+   {
+    "ref": "HR.SDA",
+    "label": "SDA",
+    "x": 33,
+    "y": 20,
+    "net": "SDA"
+   },
+   {
+    "ref": "HR.GPIO1",
+    "label": "GPIO1",
+    "x": 33,
+    "y": 21,
+    "net": null
+   },
+   {
+    "ref": "HR.XSHUT",
+    "label": "XSHUT",
+    "x": 33,
+    "y": 22,
+    "net": "XSHUT_R"
+   }
+  ],
+  "box": [
+   32.5,
+   16.5,
+   33.5,
+   22.5
+  ]
+ },
+ {
+  "designator": "J1",
+  "symbol": "MOTOR_L_CONN",
+  "module": "ML",
+  "footprintName": "MOTOR_L_CONN_PCB",
+  "footprintUuid": "8fd99099455bfd9d",
+  "deviceName": "MOTOR_L_CONN_PCB_PCB2",
+  "deviceUuid": "548ec1e59393b3d5",
+  "x": 200,
+  "y": 1600,
+  "nets": {
+   "1": "AO2",
+   "2": "3V3",
+   "3": "ENC_L_C2",
+   "4": "ENC_L_C1",
+   "5": "GND",
+   "6": "AO1"
+  },
+  "labels": {
+   "1": "M2",
+   "2": "VCC",
+   "3": "C2",
+   "4": "C1",
+   "5": "GND",
+   "6": "M1"
+  },
+  "uniqueId": "gge5",
+  "pins": [
+   {
+    "ref": "ML.M2",
+    "label": "M2",
+    "x": 2,
+    "y": 16,
+    "net": "AO2"
+   },
+   {
+    "ref": "ML.VCC",
+    "label": "VCC",
+    "x": 2,
+    "y": 17,
+    "net": "3V3"
+   },
+   {
+    "ref": "ML.C2",
+    "label": "C2",
+    "x": 2,
+    "y": 18,
+    "net": "ENC_L_C2"
+   },
+   {
+    "ref": "ML.C1",
+    "label": "C1",
+    "x": 2,
+    "y": 19,
+    "net": "ENC_L_C1"
+   },
+   {
+    "ref": "ML.GND",
+    "label": "GND",
+    "x": 2,
+    "y": 20,
+    "net": "GND"
+   },
+   {
+    "ref": "ML.M1",
+    "label": "M1",
+    "x": 2,
+    "y": 21,
+    "net": "AO1"
+   }
+  ],
+  "box": [
+   1.5,
+   15.5,
+   2.5,
+   21.5
+  ]
+ },
+ {
+  "designator": "J2",
+  "symbol": "MOTOR_R_CONN",
+  "module": "MR",
+  "footprintName": "MOTOR_R_CONN_PCB",
+  "footprintUuid": "b5af44d3480e6274",
+  "deviceName": "MOTOR_R_CONN_PCB_PCB2",
+  "deviceUuid": "17799c52c112e3b2",
+  "x": 400,
+  "y": 2000,
+  "nets": {
+   "1": "BO2",
+   "2": "3V3",
+   "3": "ENC_R_C2",
+   "4": "ENC_R_C1",
+   "5": "GND",
+   "6": "BO1"
+  },
+  "labels": {
+   "1": "M2",
+   "2": "VCC",
+   "3": "C2",
+   "4": "C1",
+   "5": "GND",
+   "6": "M1"
+  },
+  "uniqueId": "gge6",
+  "pins": [
+   {
+    "ref": "MR.M2",
+    "label": "M2",
+    "x": 4,
+    "y": 20,
+    "net": "BO2"
+   },
+   {
+    "ref": "MR.VCC",
+    "label": "VCC",
+    "x": 4,
+    "y": 21,
+    "net": "3V3"
+   },
+   {
+    "ref": "MR.C2",
+    "label": "C2",
+    "x": 4,
+    "y": 22,
+    "net": "ENC_R_C2"
+   },
+   {
+    "ref": "MR.C1",
+    "label": "C1",
+    "x": 4,
+    "y": 23,
+    "net": "ENC_R_C1"
+   },
+   {
+    "ref": "MR.GND",
+    "label": "GND",
+    "x": 4,
+    "y": 24,
+    "net": "GND"
+   },
+   {
+    "ref": "MR.M1",
+    "label": "M1",
+    "x": 4,
+    "y": 25,
+    "net": "BO1"
+   }
+  ],
+  "box": [
+   3.5,
+   19.5,
+   4.5,
+   25.5
+  ]
+ },
+ {
+  "designator": "SW1",
+  "symbol": "DIP_SW_2",
+  "module": "DIP",
+  "footprintName": "DIP_SW_2_PCB",
+  "footprintUuid": "5c71fb647c6d2194",
+  "deviceName": "DIP_SW_2_PCB_PCB2",
+  "deviceUuid": "4699fa8a08e14150",
+  "x": 2700,
+  "y": 2600,
+  "nets": {
+   "1": "DIP1",
+   "2": "DIP2",
+   "3": "GND",
+   "4": "GND"
+  },
+  "labels": {
+   "1": "1",
+   "2": "2",
+   "3": "1'",
+   "4": "2'"
+  },
+  "uniqueId": "gge11",
+  "pins": [
+   {
+    "ref": "DIP.1",
+    "label": "1",
+    "x": 27,
+    "y": 26,
+    "net": "DIP1"
+   },
+   {
+    "ref": "DIP.2",
+    "label": "2",
+    "x": 28,
+    "y": 26,
+    "net": "DIP2"
+   },
+   {
+    "ref": "DIP.1'",
+    "label": "1'",
+    "x": 27,
+    "y": 29,
+    "net": "GND"
+   },
+   {
+    "ref": "DIP.2'",
+    "label": "2'",
+    "x": 28,
+    "y": 29,
+    "net": "GND"
+   }
+  ],
+  "box": [
+   26.4,
+   25.4,
+   28.6,
+   29.6
+  ]
+ },
+ {
+  "designator": "SW2",
+  "symbol": "START_BTN",
+  "module": "BTN",
+  "footprintName": "START_BTN_PCB",
+  "footprintUuid": "29601fe4005fe944",
+  "deviceName": "START_BTN_PCB_PCB2",
+  "deviceUuid": "81ded3df9bc11e19",
+  "x": 2700,
+  "y": 100,
+  "nets": {
+   "1": "BTN",
+   "4": "GND"
+  },
+  "labels": {
+   "1": "A",
+   "2": "B",
+   "3": "C",
+   "4": "D"
+  },
+  "uniqueId": "gge12",
+  "pins": [
+   {
+    "ref": "BTN.A",
+    "label": "A",
+    "x": 27,
+    "y": 1,
+    "net": "BTN"
+   },
+   {
+    "ref": "BTN.B",
+    "label": "B",
+    "x": 30,
+    "y": 1,
+    "net": null
+   },
+   {
+    "ref": "BTN.C",
+    "label": "C",
+    "x": 27,
+    "y": 3,
+    "net": null
+   },
+   {
+    "ref": "BTN.D",
+    "label": "D",
+    "x": 30,
+    "y": 3,
+    "net": "GND"
+   }
+  ],
+  "box": [
+   26.5,
+   0.5,
+   30.5,
+   3.5
+  ]
+ }
+]
