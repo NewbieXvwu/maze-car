@@ -25,6 +25,7 @@
 | `outline_devices.py` / `place_outline.py` | 12 个"纯丝印封装"器件（Gerber 导出要求板上有可读器件） |
 | `verify_board.py` | **出厂自检**：连通性、间距、几何，只看真实铜 |
 | `audit_gerber.py` | **对最终压缩包做独立审计**：不看编辑器，只读 Gerber/钻孔文件 |
+| `verify_silk.py` | 丝印自检：40 条文字在板内、无压字、13 个标记都指向各自 1 脚（BT1 的 `-` 指 2 脚） |
 | `verify_gerber_nets.py` | **从 Gerber 重建铜层连通性**核对网表（断路/短路都能抓到，做过反向验证）|
 | `wiring_plan.json` | 布线图冻结数据（13 个元件、44 根线、35×34 格栅） |
 | `pcb_plan.json` | 每针脚的全局坐标、网络、所属模块 |
@@ -56,6 +57,7 @@ easyeda pcb drc --doc PCB1 --project maze-car              # 官方 DRC
 easyeda pcb export-gerber --window <id> --project maze-car \
         --doc fda2ba1555e9ca0d --out <新zip> --unit mm
 python3 audit_gerber.py ../../../out/gerber/<新zip>.zip     # 文件级审计
+python3 verify_silk.py                                     # 丝印位置 + 标记指向
 python3 verify_gerber_nets.py ../../../out/gerber/<新zip>.zip  # 从制造文件反推网表
 ```
 
@@ -99,7 +101,9 @@ python3 verify_gerber_nets.py ../../../out/gerber/<新zip>.zip  # 从制造文�
   1. `verify_board.py`（读编辑器数据）→ 27 个网络各一整片（无孤岛）、0 短路、最紧间距 7.3 mil、0 孔出界。
   2. `audit_gerber.py`（只读文件）→ GKO 闭合 91.44×88.90、GTL/GBL 各 116 个孔环、GTS/GBS 各 112 个开窗、
      钻孔 112×1.0008mm + 4×3.2004mm、丝印全部落在板内。
-  3. `verify_gerber_nets.py`（从 Gerber + 钻带重建连通图）→ 跨层连接必须钻带里真有孔（116 个全对上，
+  3. `verify_silk.py`（读编辑器丝印）→ 40 条文字全在板内、0 压字、13 个标记（12 个 `1` + BT1 的 `+`/`-`）到各自 1 脚
+     98~130 mil、名称都跟位号同一行。
+  4. `verify_gerber_nets.py`（从 Gerber + 钻带重建连通图）→ 跨层连接必须钻带里真有孔（116 个全对上，
      缺钻孔的焊盘 0）；27 个网络各自一整片、0 短路、0 个空脚被铜皮碰到。
      反向验证过：人为在某一层断开 2mm，脚本立刻报 `AO1` 被切成两片并给出 FAIL。
 
