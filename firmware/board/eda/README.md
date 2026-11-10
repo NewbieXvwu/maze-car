@@ -110,6 +110,10 @@ python3 verify_gerber_nets.py ../../../out/gerber/<新zip>.zip  # 从制造文�
 - 交付包 `out/gerber/maze-car-gerber.zip`：11 个文件（已删重复的 `_Via` 钻带），
   36891 B，sha256 `6efaaadd413cdec4171a2985bf6f99694411b675847741c26e26d9a0278212c0`。
   注意：每层会随机多一个没被引用的光圈，所以**每次导出的 sha256 都不同**，判断"是不是同一块板"要比几何，不能比 sha。
+- 外部独立审查共 6 轮（Claude Code，每轮自己写解析器复算，不引用本目录脚本的输出）：第 4–6 轮结论都是
+  "可以下单"，无 P0/P1；累计改掉的问题都写在 `docs/PCB下单与装配.md` 与提交记录里。
+  用户指定用本机 Codex CLI（GPT 6.1 Sol）审查，但那台机器的 ChatGPT 账号配额在 2026-11-10 当晚用尽
+  （`You've hit your usage limit ... try again at Nov 11th 11:17 AM`），只能改用 Claude；配额恢复后可以再跑一次。
 
 ## 数据与可重跑性
 
