@@ -19,6 +19,7 @@
 | `bridge_nets.py` | 顶层 A* 补 5 根桥接线，把 GND 的 5 块 / 3V3 的 2 块孤岛连成一整片 |
 | `mask_open.py` | 每孔在阻焊层（5/6）画实心多边形开窗，否则孔环被绿油盖住焊不上 |
 | `silk_pcb.py` | 模块中文名 + 位号 + 板边标题 |
+| `pin1_label.py` | 每个模块外侧标一个丝印 `1`，装配时认方向用（放在框外，框内会被模块挡住） |
 | `outline_devices.py` / `place_outline.py` | 12 个"纯丝印封装"器件（Gerber 导出要求板上有可读器件） |
 | `verify_board.py` | **出厂自检**：连通性、间距、几何，只看真实铜 |
 | `audit_gerber.py` | **对最终压缩包做独立审计**：不看编辑器，只读 Gerber/钻孔文件 |
@@ -40,7 +41,8 @@ easyeda pcb clear --doc PCB1 --project maze-car
 python3 route_via.py        # 112 孔 + 134 段线
 python3 bridge_nets.py      # 5 根顶层桥接线（先 --dry-run 看路径）
 python3 mask_open.py        # 224 个阻焊开窗（正反各 112）
-python3 silk_pcb.py         # 丝印文字
+python3 silk_pcb.py         # 丝印文字（模块名 + 位号 + 板边标题）
+python3 pin1_label.py       # 12 个模块各标一个「1」（1 脚位置）
 python3 place_outline.py    # 12 个模块框
 easyeda pcb save --doc PCB1 --project maze-car
 
