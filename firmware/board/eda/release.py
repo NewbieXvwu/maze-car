@@ -8,7 +8,7 @@
 
 用法:
   python3 release.py                # 导出 + 打包 + 验证（会覆盖 out/gerber/maze-car-gerber.zip）
-  python3 release.py --no-export    # 不重导出，只对现有 zip 重新打包并验证
+  python3 release.py --no-export    # 不重导出、也不重新打包，只对现有 zip 跑验证
 """
 import hashlib
 import json

@@ -10,8 +10,10 @@
   - 任意两条文字 bbox 不相交；
   - 13 个标记（12 个 `1` + BT1 的 `+`/`-`）到它所属模块 1 号孔（BT1 的 `-` 到 2 号孔）
     的距离 < 200 mil，且该孔确实是该模块的 1 号（`-` 是 2 号）；
+  - 所有可见文字字号 ≥ 70 mil（嘉立创丝印字高 1.0mm 的下限经验值）；
+  - 文字不压模块框线（`outline_devices.json` 的 12 个矩形边线）；
   - 12 个模块名要么在位号右侧同一行（左边缘离位号右边缘 0~250 mil），
-    要么在位号正上方（左边缘对齐、竖直间距 ≤ 120 mil）——BT1/U6 用后者。
+    要么在位号正上方（左边缘对齐、竖直间距 ≤ 120 mil）——BT1/U4/U5/U6 用后者。
 
 用法: python3 verify_silk.py
 """
@@ -94,6 +96,28 @@ def main():
                  and 0 < b["minY"] - d["maxY"] <= 120]
         if not side and not above:
             bad.append(f'名称 {t["text"]!r} 既不在位号右侧同一行，也不在位号正上方')
+
+    # 字号：低于 70 mil 的墨迹不足 1.0mm
+    for t in texts:
+        if not t.get("visible"):
+            continue
+        fs = t.get("fontSize") or 0
+        if fs < 70:
+            bad.append(f'文字 {t["text"]!r} 字号 {fs} mil < 70')
+
+    # 压模块框线：矩形四条边各算一条 6mil 的带
+    frames = json.loads((Path(__file__).resolve().parent / "outline_devices.json").read_text())
+    for t in texts:
+        b = t["bbox"]
+        for f in frames:
+            x0, y0 = f["x"], f["y"]; x1, y1 = x0 + f["w"], y0 + f["h"]
+            for (ex0, ey0, ex1, ey1), name in [
+                ((x0, y1 - 3, x1, y1 + 3), "上边"), ((x0, y0 - 3, x1, y0 + 3), "下边"),
+                ((x0 - 3, y0, x0 + 3, y1), "左边"), ((x1 - 3, y0, x1 + 3, y1), "右边")]:
+                if (b["minX"] < ex1 and b["maxX"] > ex0
+                        and b["minY"] < ey1 and b["maxY"] > ey0):
+                    bad.append(f'文字 {t["text"]!r} 压到 {f["designator"]} 的{name}框线')
+                    break
 
     print(f"标记 {len(marks)} 个、名称 {len(names)} 条")
     if bad:

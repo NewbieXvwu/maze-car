@@ -20,8 +20,8 @@
 | `route_via.py` | 清空 → 每针脚一个 via（1.0mm 孔 / 1.66mm 环）→ 按 44 根线走 134 段铜 |
 | `bridge_nets.py` | 顶层 A* 补 5 根桥接线，把 GND 的 5 块 / 3V3 的 2 块孤岛连成一整片 |
 | `mask_open.py` | 每孔在阻焊层（5/6）画实心多边形开窗，否则孔环被绿油盖住焊不上 |
-| `silk_pcb.py` | 模块英文名（跟在位号右边）+ 板边标题；改位置只改 `NAMES`/`TITLES` |
-| `pin1_label.py` | 每个模块外侧标一个丝印 `1`（BT1 标 `+`/`-`），装配时认方向；字高 60 mil（墨迹约 1.08mm）、笔画 8 mil |
+| `silk_pcb.py` | 模块英文名（跟在位号右边，BT1/U4/U5/U6 在位号正上方）+ 板边标题；顺带把位号字号统一到 70 mil |
+| `pin1_label.py` | 每个模块外侧标一个丝印 `1`（BT1 标 `+`/`-`），装配时认方向；字号 70 mil（墨迹约 1.1mm）、笔画 8 mil |
 | `outline_devices.py` / `place_outline.py` | 12 个"纯丝印封装"器件（Gerber 导出要求板上有可读器件） |
 | `verify_board.py` | **出厂自检**：连通性、间距、几何，只看真实铜 |
 | `audit_gerber.py` | **对最终压缩包做独立审计**：不看编辑器，只读 Gerber/钻孔文件 |
@@ -97,23 +97,24 @@ python3 verify_gerber_nets.py ../../../out/gerber/<新zip>.zip  # 从制造文�
   位号（`eda.pcb_PrimitiveString.modify` 改的 fontSize）、名称、标题、标记字号统一 70 mil（实测墨迹高 1.03–1.10mm，嘉立创下限 1.0mm）、笔画 7/8 mil（0.1778/0.2032mm，下限 0.15mm）；全部落在板框内、不压焊盘、不压别家文字。BT1/U4/U5/U6 的名字写在位号正上方（右边不够宽，写右边会串到隔壁）；J1/J2 的名字抬高 12 mil 让开 1 脚标记。
 - DRC：**clearance / spacing / outline / No Connection 全部 0**；只剩 1 条 `Netlist Error`
   （PCB 用裸孔+实铜，原理图按信号名建符号，两套表示必然不等——结构性差异，不影响制板）。
-- 独立验证（三道，互不相信）：
+- 独立验证（四道，互不相信）：
   1. `verify_board.py`（读编辑器数据）→ 27 个网络各一整片（无孤岛）、0 短路、最紧间距 7.3 mil、0 孔出界。
   2. `audit_gerber.py`（只读文件）→ GKO 闭合 91.44×88.90、GTL/GBL 各 116 个孔环、GTS/GBS 各 112 个开窗、
      钻孔 112×1.0008mm + 4×3.2004mm、丝印全部落在板内。
   3. `verify_silk.py`（读编辑器丝印）→ 40 条文字全在板内、0 压字、13 个标记（12 个 `1` + BT1 的 `+`/`-`）到各自 1 脚
-     98~130 mil、名称都跟位号同一行。
+     98~130 mil、名称都在位号右边同一行或正上方、字号都 ≥70 mil、不压模块框线。
   4. `verify_gerber_nets.py`（从 Gerber + 钻带重建连通图）→ 跨层连接必须钻带里真有孔（116 个全对上，
      缺钻孔的焊盘 0）；27 个网络各自一整片、0 短路、0 个空脚被铜皮碰到。
      反向验证过：人为在某一层断开 2mm，脚本立刻报 `AO1` 被切成两片并给出 FAIL。
 
 - 交付包 `out/gerber/maze-car-gerber.zip`：11 个文件（已删重复的 `_Via` 钻带），
-  36876 B，sha256 `925212d7f6a63fb86a888d0986162d7ad329364482d51fea8925a08cce0ea910`。
+  36891 B，sha256 `6efaaadd413cdec4171a2985bf6f99694411b675847741c26e26d9a0278212c0`。
+  注意：每层会随机多一个没被引用的光圈，所以**每次导出的 sha256 都不同**，判断"是不是同一块板"要比几何，不能比 sha。
 
 ## 数据与可重跑性
 
-- 所有几何都由脚本按 `wiring_plan.json` + `netlist.md` 生成，仓库里没有手拖出来的图元。
+- 所有几何都由脚本按 `wiring_plan.json` + `netlist.md` 生成；位号字号也在 `silk_pcb.py` 里改，重跑会自己补齐。
 - 重跑顺序见上；`board_setup.py` 幂等，`route_via.py` 会先 `pcb clear`（保板框、清孔和铜）。
 - 丝印 `1`/`+`/`-` 由 `pin1_label.py` 自己管理：重跑会先删掉旧的同类标记再加，不会叠印。
-- 出厂验证三道互不依赖：编辑器数据（verify_board）、导出文件（audit_gerber）、
+- 出厂验证四道互不依赖：编辑器数据（verify_board）、导出文件（audit_gerber）、丝印（verify_silk）、
   从铜层重建连通图（verify_gerber_nets，带反向验证）。

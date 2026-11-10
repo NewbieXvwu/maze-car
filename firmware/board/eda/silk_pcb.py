@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""给 PCB 加丝印：每个模块的名称写在位号右侧，板边加标题。
+"""给 PCB 加丝印：每个模块的名称写在位号旁边，板边加标题。
 
 为什么用英文：中文字形在 EasyEDA 里是 **G36 填充多边形**，实测笔画只有 0.075mm，
 低于嘉立创 0.15mm 的丝印线宽下限，成品板上会糊；英文/数字走 0.1524mm 光圈的线条字，稳妥。
 中文说明留在 docs/PCB下单与装配.md 里。
 
-位置规则：名称紧跟在位号（封装自带的 designator）右边，同一行；BT1/U6 右边不够宽，
-改写在位号正上方。落地后回读 bbox 对账，压字/出板直接报错。
+位置规则：名称紧跟在位号（封装自带的 designator）右边，同一行；BT1/U4/U5/U6 右边不够宽，
+改写在位号正上方。位号本身也在这里统一改成 70 mil（手工改过不算数，重跑会丢）。落地后回读 bbox 对账，压字/出板直接报错。
 
 用法:
   python3 silk_pcb.py --dry-run   只算位置并自检
@@ -75,6 +75,24 @@ def overlap(a, b):
 def main():
     dry = "--dry-run" in sys.argv
     texts = silk_texts()
+
+    # 位号是封装自带的属性文字，默认 45mil/6mil——先统一改成 70/7（跟名称同号）。
+    # 这一步必须写在脚本里：手工在编辑器里改过一次，重跑会丢。
+    des_texts = [t for t in texts if t.get("key") == "Designator"]
+    stale = [t for t in des_texts
+             if t.get("fontSize") != FONT or t.get("lineWidth") != STROKE]
+    if stale and not dry:
+        code = "".join('await eda.pcb_PrimitiveString.modify("%s",{fontSize:%d,lineWidth:%d});'
+                       % (t["primitiveId"], FONT, STROKE) for t in stale)
+        sh(["debug", "exec", "--code", code])
+        print(f"位号字号 {len(stale)} 个改成 {FONT}/{STROKE}")
+        texts = silk_texts()
+    elif stale:
+        print(f"（dry-run）{len(stale)} 个位号会改成 {FONT}/{STROKE}")
+        for t in stale:                       # 估算新 bbox，好让下面的自检按新尺寸算
+            b = t["bbox"]
+            b["maxX"] = b["minX"] + len(t["text"]) * FONT * CHAR_W
+            b["maxY"] = b["minY"] + FONT
     designators = {t["text"]: t for t in texts
                    if t.get("componentId") and t["bbox"]["maxX"] > t["bbox"]["minX"]}
     missing = [d for d in NAMES if d not in designators]
