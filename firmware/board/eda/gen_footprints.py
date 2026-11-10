@@ -43,7 +43,13 @@ def cli(*args, timeout=180):
     return json.loads(p.stdout[i:])
 
 
+PLAN_JSON = EDA / "wiring_plan.json"
+
+
 def load_html():
+    """布线图数据。优先用仓库里的冻结副本 wiring_plan.json，找不到再解析原始 HTML。"""
+    if PLAN_JSON.exists():
+        return json.loads(PLAN_JSON.read_text(encoding="utf-8"))
     s = (ROOT / "迷宫小车主板布线.html").read_text(encoding="utf-8")
     i = s.find("const D = ") + len("const D = ")
     depth = 0

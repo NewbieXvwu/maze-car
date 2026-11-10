@@ -1,0 +1,3908 @@
+{
+ "cols": 35,
+ "rows": 34,
+ "components": [
+  {
+   "id": "ESP",
+   "label": "ESP32-S3（YD 板）",
+   "kind": "socket",
+   "box": [
+    12.45,
+    0.9,
+    23.55,
+    26.05
+   ],
+   "side": "in",
+   "note": "两排 22 针排母，间距 10 孔。天线在上方，下面不走线",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "ESP.3V3",
+     "label": "3V3",
+     "x": 13,
+     "y": 4,
+     "net": "3V3"
+    },
+    {
+     "ref": "ESP.3V3·2",
+     "label": "3V3",
+     "x": 13,
+     "y": 5,
+     "net": "3V3"
+    },
+    {
+     "ref": "ESP.RST",
+     "label": "RST",
+     "x": 13,
+     "y": 6,
+     "net": null
+    },
+    {
+     "ref": "ESP.4",
+     "label": "IO4",
+     "x": 13,
+     "y": 7,
+     "net": "PWMA"
+    },
+    {
+     "ref": "ESP.5",
+     "label": "IO5",
+     "x": 13,
+     "y": 8,
+     "net": "AIN2"
+    },
+    {
+     "ref": "ESP.6",
+     "label": "IO6",
+     "x": 13,
+     "y": 9,
+     "net": "AIN1"
+    },
+    {
+     "ref": "ESP.7",
+     "label": "IO7",
+     "x": 13,
+     "y": 10,
+     "net": "STBY"
+    },
+    {
+     "ref": "ESP.15",
+     "label": "IO15",
+     "x": 13,
+     "y": 11,
+     "net": "BIN1"
+    },
+    {
+     "ref": "ESP.16",
+     "label": "IO16",
+     "x": 13,
+     "y": 12,
+     "net": "BIN2"
+    },
+    {
+     "ref": "ESP.17",
+     "label": "IO17",
+     "x": 13,
+     "y": 13,
+     "net": "PWMB"
+    },
+    {
+     "ref": "ESP.18",
+     "label": "IO18",
+     "x": 13,
+     "y": 14,
+     "net": null
+    },
+    {
+     "ref": "ESP.8",
+     "label": "IO8",
+     "x": 13,
+     "y": 15,
+     "net": null
+    },
+    {
+     "ref": "ESP.3",
+     "label": "IO3",
+     "x": 13,
+     "y": 16,
+     "net": null
+    },
+    {
+     "ref": "ESP.46",
+     "label": "IO46",
+     "x": 13,
+     "y": 17,
+     "net": null
+    },
+    {
+     "ref": "ESP.9",
+     "label": "IO9",
+     "x": 13,
+     "y": 18,
+     "net": "ENC_L_C2"
+    },
+    {
+     "ref": "ESP.10",
+     "label": "IO10",
+     "x": 13,
+     "y": 19,
+     "net": "ENC_L_C1"
+    },
+    {
+     "ref": "ESP.11",
+     "label": "IO11",
+     "x": 13,
+     "y": 20,
+     "net": null
+    },
+    {
+     "ref": "ESP.12",
+     "label": "IO12",
+     "x": 13,
+     "y": 21,
+     "net": null
+    },
+    {
+     "ref": "ESP.13",
+     "label": "IO13",
+     "x": 13,
+     "y": 22,
+     "net": "ENC_R_C2"
+    },
+    {
+     "ref": "ESP.14",
+     "label": "IO14",
+     "x": 13,
+     "y": 23,
+     "net": "ENC_R_C1"
+    },
+    {
+     "ref": "ESP.5Vin",
+     "label": "5Vin",
+     "x": 13,
+     "y": 24,
+     "net": "5V"
+    },
+    {
+     "ref": "ESP.GND·L",
+     "label": "GND",
+     "x": 13,
+     "y": 25,
+     "net": "GND"
+    },
+    {
+     "ref": "ESP.GND·T",
+     "label": "GND",
+     "x": 23,
+     "y": 4,
+     "net": "GND"
+    },
+    {
+     "ref": "ESP.TX",
+     "label": "TX",
+     "x": 23,
+     "y": 5,
+     "net": null
+    },
+    {
+     "ref": "ESP.RX",
+     "label": "RX",
+     "x": 23,
+     "y": 6,
+     "net": null
+    },
+    {
+     "ref": "ESP.1",
+     "label": "IO1",
+     "x": 23,
+     "y": 7,
+     "net": null
+    },
+    {
+     "ref": "ESP.2",
+     "label": "IO2",
+     "x": 23,
+     "y": 8,
+     "net": "BTN"
+    },
+    {
+     "ref": "ESP.42",
+     "label": "IO42",
+     "x": 23,
+     "y": 9,
+     "net": "SCL"
+    },
+    {
+     "ref": "ESP.41",
+     "label": "IO41",
+     "x": 23,
+     "y": 10,
+     "net": "SDA"
+    },
+    {
+     "ref": "ESP.40",
+     "label": "IO40",
+     "x": 23,
+     "y": 11,
+     "net": "XSHUT_L"
+    },
+    {
+     "ref": "ESP.39",
+     "label": "IO39",
+     "x": 23,
+     "y": 12,
+     "net": "XSHUT_F"
+    },
+    {
+     "ref": "ESP.38",
+     "label": "IO38",
+     "x": 23,
+     "y": 13,
+     "net": "XSHUT_R"
+    },
+    {
+     "ref": "ESP.37",
+     "label": "IO37",
+     "x": 23,
+     "y": 14,
+     "net": null
+    },
+    {
+     "ref": "ESP.36",
+     "label": "IO36",
+     "x": 23,
+     "y": 15,
+     "net": null
+    },
+    {
+     "ref": "ESP.35",
+     "label": "IO35",
+     "x": 23,
+     "y": 16,
+     "net": null
+    },
+    {
+     "ref": "ESP.0",
+     "label": "IO0",
+     "x": 23,
+     "y": 17,
+     "net": null
+    },
+    {
+     "ref": "ESP.45",
+     "label": "IO45",
+     "x": 23,
+     "y": 18,
+     "net": null
+    },
+    {
+     "ref": "ESP.48",
+     "label": "IO48",
+     "x": 23,
+     "y": 19,
+     "net": null
+    },
+    {
+     "ref": "ESP.47",
+     "label": "IO47",
+     "x": 23,
+     "y": 20,
+     "net": "DIP1"
+    },
+    {
+     "ref": "ESP.21",
+     "label": "IO21",
+     "x": 23,
+     "y": 21,
+     "net": "DIP2"
+    },
+    {
+     "ref": "ESP.20",
+     "label": "IO20",
+     "x": 23,
+     "y": 22,
+     "net": null
+    },
+    {
+     "ref": "ESP.19",
+     "label": "IO19",
+     "x": 23,
+     "y": 23,
+     "net": null
+    },
+    {
+     "ref": "ESP.GND·B1",
+     "label": "GND",
+     "x": 23,
+     "y": 24,
+     "net": "GND"
+    },
+    {
+     "ref": "ESP.GND·B2",
+     "label": "GND",
+     "x": 23,
+     "y": 25,
+     "net": "GND"
+    }
+   ]
+  },
+  {
+   "id": "TB",
+   "label": "TB6612",
+   "kind": "socket",
+   "box": [
+    3.4,
+    6.45,
+    10.6,
+    14.55
+   ],
+   "side": "in",
+   "note": "两排 8 针排母，间距 6 孔。芯片朝上，PWMA 那一排靠 ESP32、PWMA 在上",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "TB.PWMA",
+     "label": "PWMA",
+     "x": 10,
+     "y": 7,
+     "net": "PWMA"
+    },
+    {
+     "ref": "TB.AIN2",
+     "label": "AIN2",
+     "x": 10,
+     "y": 8,
+     "net": "AIN2"
+    },
+    {
+     "ref": "TB.AIN1",
+     "label": "AIN1",
+     "x": 10,
+     "y": 9,
+     "net": "AIN1"
+    },
+    {
+     "ref": "TB.STBY",
+     "label": "STBY",
+     "x": 10,
+     "y": 10,
+     "net": "STBY"
+    },
+    {
+     "ref": "TB.BIN1",
+     "label": "BIN1",
+     "x": 10,
+     "y": 11,
+     "net": "BIN1"
+    },
+    {
+     "ref": "TB.BIN2",
+     "label": "BIN2",
+     "x": 10,
+     "y": 12,
+     "net": "BIN2"
+    },
+    {
+     "ref": "TB.PWMB",
+     "label": "PWMB",
+     "x": 10,
+     "y": 13,
+     "net": "PWMB"
+    },
+    {
+     "ref": "TB.GND·C",
+     "label": "GND",
+     "x": 10,
+     "y": 14,
+     "net": "GND"
+    },
+    {
+     "ref": "TB.VM",
+     "label": "VM",
+     "x": 4,
+     "y": 7,
+     "net": "VBAT"
+    },
+    {
+     "ref": "TB.VCC",
+     "label": "VCC",
+     "x": 4,
+     "y": 8,
+     "net": "3V3"
+    },
+    {
+     "ref": "TB.GND·P",
+     "label": "GND",
+     "x": 4,
+     "y": 9,
+     "net": "GND"
+    },
+    {
+     "ref": "TB.AO1",
+     "label": "AO1",
+     "x": 4,
+     "y": 10,
+     "net": "AO1"
+    },
+    {
+     "ref": "TB.AO2",
+     "label": "AO2",
+     "x": 4,
+     "y": 11,
+     "net": "AO2"
+    },
+    {
+     "ref": "TB.BO2",
+     "label": "BO2",
+     "x": 4,
+     "y": 12,
+     "net": "BO2"
+    },
+    {
+     "ref": "TB.BO1",
+     "label": "BO1",
+     "x": 4,
+     "y": 13,
+     "net": "BO1"
+    },
+    {
+     "ref": "TB.GND·P2",
+     "label": "GND",
+     "x": 4,
+     "y": 14,
+     "net": null
+    }
+   ]
+  },
+  {
+   "id": "MPU",
+   "label": "MPU6050",
+   "kind": "socket",
+   "box": [
+    25.45,
+    6.4,
+    32.1,
+    14.75
+   ],
+   "side": "r",
+   "note": "一排 8 针排母，模块板身朝右",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "MPU.VCC",
+     "label": "VCC",
+     "x": 26,
+     "y": 7,
+     "net": "3V3"
+    },
+    {
+     "ref": "MPU.GND",
+     "label": "GND",
+     "x": 26,
+     "y": 8,
+     "net": "GND"
+    },
+    {
+     "ref": "MPU.SCL",
+     "label": "SCL",
+     "x": 26,
+     "y": 9,
+     "net": "SCL"
+    },
+    {
+     "ref": "MPU.SDA",
+     "label": "SDA",
+     "x": 26,
+     "y": 10,
+     "net": "SDA"
+    },
+    {
+     "ref": "MPU.XDA",
+     "label": "XDA",
+     "x": 26,
+     "y": 11,
+     "net": null
+    },
+    {
+     "ref": "MPU.XCL",
+     "label": "XCL",
+     "x": 26,
+     "y": 12,
+     "net": null
+    },
+    {
+     "ref": "MPU.AD0",
+     "label": "AD0",
+     "x": 26,
+     "y": 13,
+     "net": null
+    },
+    {
+     "ref": "MPU.INT",
+     "label": "INT",
+     "x": 26,
+     "y": 14,
+     "net": null
+    }
+   ]
+  },
+  {
+   "id": "HL",
+   "label": "左测距",
+   "kind": "pins",
+   "box": [
+    26.5,
+    16.5,
+    27.5,
+    22.5
+   ],
+   "side": "l",
+   "note": "1×6 直排针，接左侧 VL53L0X",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "HL.VIN",
+     "label": "VIN",
+     "x": 27,
+     "y": 17,
+     "net": "3V3"
+    },
+    {
+     "ref": "HL.GND",
+     "label": "GND",
+     "x": 27,
+     "y": 18,
+     "net": "GND"
+    },
+    {
+     "ref": "HL.SCL",
+     "label": "SCL",
+     "x": 27,
+     "y": 19,
+     "net": "SCL"
+    },
+    {
+     "ref": "HL.SDA",
+     "label": "SDA",
+     "x": 27,
+     "y": 20,
+     "net": "SDA"
+    },
+    {
+     "ref": "HL.GPIO1",
+     "label": "GPIO1",
+     "x": 27,
+     "y": 21,
+     "net": null
+    },
+    {
+     "ref": "HL.XSHUT",
+     "label": "XSHUT",
+     "x": 27,
+     "y": 22,
+     "net": "XSHUT_L"
+    }
+   ]
+  },
+  {
+   "id": "HF",
+   "label": "前测距",
+   "kind": "pins",
+   "box": [
+    29.5,
+    16.5,
+    30.5,
+    22.5
+   ],
+   "side": "l",
+   "note": "1×6 直排针，接前方 VL53L0X",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "HF.VIN",
+     "label": "VIN",
+     "x": 30,
+     "y": 17,
+     "net": "3V3"
+    },
+    {
+     "ref": "HF.GND",
+     "label": "GND",
+     "x": 30,
+     "y": 18,
+     "net": "GND"
+    },
+    {
+     "ref": "HF.SCL",
+     "label": "SCL",
+     "x": 30,
+     "y": 19,
+     "net": "SCL"
+    },
+    {
+     "ref": "HF.SDA",
+     "label": "SDA",
+     "x": 30,
+     "y": 20,
+     "net": "SDA"
+    },
+    {
+     "ref": "HF.GPIO1",
+     "label": "GPIO1",
+     "x": 30,
+     "y": 21,
+     "net": null
+    },
+    {
+     "ref": "HF.XSHUT",
+     "label": "XSHUT",
+     "x": 30,
+     "y": 22,
+     "net": "XSHUT_F"
+    }
+   ]
+  },
+  {
+   "id": "HR",
+   "label": "右测距",
+   "kind": "pins",
+   "box": [
+    32.5,
+    16.5,
+    33.5,
+    22.5
+   ],
+   "side": "l",
+   "note": "1×6 直排针，接右侧 VL53L0X",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "HR.VIN",
+     "label": "VIN",
+     "x": 33,
+     "y": 17,
+     "net": "3V3"
+    },
+    {
+     "ref": "HR.GND",
+     "label": "GND",
+     "x": 33,
+     "y": 18,
+     "net": "GND"
+    },
+    {
+     "ref": "HR.SCL",
+     "label": "SCL",
+     "x": 33,
+     "y": 19,
+     "net": "SCL"
+    },
+    {
+     "ref": "HR.SDA",
+     "label": "SDA",
+     "x": 33,
+     "y": 20,
+     "net": "SDA"
+    },
+    {
+     "ref": "HR.GPIO1",
+     "label": "GPIO1",
+     "x": 33,
+     "y": 21,
+     "net": null
+    },
+    {
+     "ref": "HR.XSHUT",
+     "label": "XSHUT",
+     "x": 33,
+     "y": 22,
+     "net": "XSHUT_R"
+    }
+   ]
+  },
+  {
+   "id": "ML",
+   "label": "左电机线",
+   "kind": "pads",
+   "box": [
+    1.5,
+    15.5,
+    2.5,
+    21.5
+   ],
+   "side": "l",
+   "note": "左电机 6 根线直接焊进来，顺序同编码器板丝印",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "ML.M2",
+     "label": "M2",
+     "x": 2,
+     "y": 16,
+     "net": "AO2"
+    },
+    {
+     "ref": "ML.VCC",
+     "label": "VCC",
+     "x": 2,
+     "y": 17,
+     "net": "3V3"
+    },
+    {
+     "ref": "ML.C2",
+     "label": "C2",
+     "x": 2,
+     "y": 18,
+     "net": "ENC_L_C2"
+    },
+    {
+     "ref": "ML.C1",
+     "label": "C1",
+     "x": 2,
+     "y": 19,
+     "net": "ENC_L_C1"
+    },
+    {
+     "ref": "ML.GND",
+     "label": "GND",
+     "x": 2,
+     "y": 20,
+     "net": "GND"
+    },
+    {
+     "ref": "ML.M1",
+     "label": "M1",
+     "x": 2,
+     "y": 21,
+     "net": "AO1"
+    }
+   ]
+  },
+  {
+   "id": "MR",
+   "label": "右电机线",
+   "kind": "pads",
+   "box": [
+    3.5,
+    19.5,
+    4.5,
+    25.5
+   ],
+   "side": "r",
+   "note": "右电机 6 根线直接焊进来",
+   "lbl": "below",
+   "pins": [
+    {
+     "ref": "MR.M2",
+     "label": "M2",
+     "x": 4,
+     "y": 20,
+     "net": "BO2"
+    },
+    {
+     "ref": "MR.VCC",
+     "label": "VCC",
+     "x": 4,
+     "y": 21,
+     "net": "3V3"
+    },
+    {
+     "ref": "MR.C2",
+     "label": "C2",
+     "x": 4,
+     "y": 22,
+     "net": "ENC_R_C2"
+    },
+    {
+     "ref": "MR.C1",
+     "label": "C1",
+     "x": 4,
+     "y": 23,
+     "net": "ENC_R_C1"
+    },
+    {
+     "ref": "MR.GND",
+     "label": "GND",
+     "x": 4,
+     "y": 24,
+     "net": "GND"
+    },
+    {
+     "ref": "MR.M1",
+     "label": "M1",
+     "x": 4,
+     "y": 25,
+     "net": "BO1"
+    }
+   ]
+  },
+  {
+   "id": "DIP",
+   "label": "拨码开关",
+   "kind": "pins",
+   "box": [
+    26.4,
+    25.4,
+    28.6,
+    29.6
+   ],
+   "side": "r",
+   "note": "2 位拨码：拨到 ON 时上下两脚接通",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "DIP.1",
+     "label": "1",
+     "x": 27,
+     "y": 26,
+     "net": "DIP1"
+    },
+    {
+     "ref": "DIP.2",
+     "label": "2",
+     "x": 28,
+     "y": 26,
+     "net": "DIP2"
+    },
+    {
+     "ref": "DIP.1'",
+     "label": "1'",
+     "x": 27,
+     "y": 29,
+     "net": "GND"
+    },
+    {
+     "ref": "DIP.2'",
+     "label": "2'",
+     "x": 28,
+     "y": 29,
+     "net": "GND"
+    }
+   ]
+  },
+  {
+   "id": "BTN",
+   "label": "启动键",
+   "kind": "pins",
+   "box": [
+    26.5,
+    0.5,
+    30.5,
+    3.5
+   ],
+   "side": "r",
+   "note": "6×6 轻触开关，四只脚稍微掰开对孔。只用对角两只脚（A、D），可选：板载 BOOT 键也能发车",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "BTN.A",
+     "label": "A",
+     "x": 27,
+     "y": 1,
+     "net": "BTN"
+    },
+    {
+     "ref": "BTN.B",
+     "label": "B",
+     "x": 30,
+     "y": 1,
+     "net": null
+    },
+    {
+     "ref": "BTN.C",
+     "label": "C",
+     "x": 27,
+     "y": 3,
+     "net": null
+    },
+    {
+     "ref": "BTN.D",
+     "label": "D",
+     "x": 30,
+     "y": 3,
+     "net": "GND"
+    }
+   ]
+  },
+  {
+   "id": "XH",
+   "label": "电池",
+   "kind": "pins",
+   "box": [
+    0.25,
+    27.0,
+    2.1,
+    30.0
+   ],
+   "side": "r",
+   "note": "XH2.54 两针插座，上 + 下 −，插头别插反",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "XH.+",
+     "label": "+",
+     "x": 1,
+     "y": 28,
+     "net": "VBAT"
+    },
+    {
+     "ref": "XH.−",
+     "label": "−",
+     "x": 1,
+     "y": 29,
+     "net": "GND"
+    }
+   ]
+  },
+  {
+   "id": "M5P",
+   "label": "降压",
+   "kind": "pads",
+   "box": null,
+   "side": "r",
+   "note": "Mini560 四根短线焊到这四个点",
+   "lbl": "above",
+   "pins": [
+    {
+     "ref": "M5P.IN+",
+     "label": "IN+",
+     "x": 3,
+     "y": 28,
+     "net": "VBAT"
+    },
+    {
+     "ref": "M5P.IN−",
+     "label": "IN−",
+     "x": 3,
+     "y": 29,
+     "net": "GND"
+    },
+    {
+     "ref": "M5P.OUT+",
+     "label": "OUT+",
+     "x": 14,
+     "y": 28,
+     "net": "5V"
+    },
+    {
+     "ref": "M5P.OUT−",
+     "label": "OUT−",
+     "x": 14,
+     "y": 29,
+     "net": "GND"
+    }
+   ]
+  },
+  {
+   "id": "M5",
+   "label": "Mini560 贴这里",
+   "kind": "area",
+   "box": [
+    4.6,
+    26.6,
+    12.9,
+    33.2
+   ],
+   "side": "in",
+   "note": "用双面胶或热熔胶把降压模块平贴在这块",
+   "lbl": "above",
+   "pins": []
+  }
+ ],
+ "wires": [
+  {
+   "id": 0,
+   "step": 2,
+   "net": "3V3",
+   "group": "v33",
+   "a": "ESP.3V3·2",
+   "b": "MPU.VCC",
+   "al": "ESP32 3V3",
+   "bl": "MPU6050 VCC",
+   "pa": [
+    13,
+    5
+   ],
+   "pb": [
+    26,
+    7
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    0
+   ],
+   "path": [
+    [
+     13.0,
+     5.0
+    ],
+    [
+     13.0,
+     5.5
+    ],
+    [
+     26.0,
+     5.5
+    ],
+    [
+     26.0,
+     7.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     5
+    ],
+    [
+     26,
+     7
+    ]
+   ],
+   "refs": [
+    "ESP.3V3·2",
+    "MPU.VCC"
+   ],
+   "labels": [
+    "ESP32 3V3",
+    "MPU6050 VCC"
+   ],
+   "length": 38.1,
+   "crossings": []
+  },
+  {
+   "id": 1,
+   "step": 2,
+   "net": "GND",
+   "group": "gnd",
+   "a": "ESP.GND·T",
+   "b": "MPU.GND",
+   "al": "ESP32 GND",
+   "bl": "MPU6050 GND",
+   "pa": [
+    23,
+    4
+   ],
+   "pb": [
+    26,
+    8
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    1
+   ],
+   "path": [
+    [
+     23.0,
+     4.0
+    ],
+    [
+     25.5,
+     4.0
+    ],
+    [
+     25.5,
+     0.5
+    ],
+    [
+     30.5,
+     0.5
+    ],
+    [
+     30.5,
+     8.5
+    ],
+    [
+     26.0,
+     8.5
+    ],
+    [
+     26.0,
+     8.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     4
+    ],
+    [
+     26,
+     8
+    ]
+   ],
+   "refs": [
+    "ESP.GND·T",
+    "MPU.GND"
+   ],
+   "labels": [
+    "ESP32 GND",
+    "MPU6050 GND"
+   ],
+   "length": 61.0,
+   "crossings": []
+  },
+  {
+   "id": 2,
+   "step": 2,
+   "net": "SCL",
+   "group": "scl",
+   "a": "ESP.42",
+   "b": "MPU.SCL",
+   "al": "ESP32 IO42",
+   "bl": "MPU6050 SCL",
+   "pa": [
+    23,
+    9
+   ],
+   "pb": [
+    26,
+    9
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    2
+   ],
+   "path": [
+    [
+     23.0,
+     9.0
+    ],
+    [
+     26.0,
+     9.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     9
+    ],
+    [
+     26,
+     9
+    ]
+   ],
+   "refs": [
+    "ESP.42",
+    "MPU.SCL"
+   ],
+   "labels": [
+    "ESP32 IO42",
+    "MPU6050 SCL"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 3,
+   "step": 2,
+   "net": "SDA",
+   "group": "sda",
+   "a": "ESP.41",
+   "b": "MPU.SDA",
+   "al": "ESP32 IO41",
+   "bl": "MPU6050 SDA",
+   "pa": [
+    23,
+    10
+   ],
+   "pb": [
+    26,
+    10
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    3
+   ],
+   "path": [
+    [
+     23.0,
+     10.0
+    ],
+    [
+     26.0,
+     10.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     10
+    ],
+    [
+     26,
+     10
+    ]
+   ],
+   "refs": [
+    "ESP.41",
+    "MPU.SDA"
+   ],
+   "labels": [
+    "ESP32 IO41",
+    "MPU6050 SDA"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 4,
+   "step": 3,
+   "net": "3V3",
+   "group": "v33",
+   "a": "MPU.VCC",
+   "b": "HR.VIN",
+   "al": "MPU6050 VCC",
+   "bl": "右测距 VIN",
+   "pa": [
+    26,
+    7
+   ],
+   "pb": [
+    33,
+    17
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    4,
+    5,
+    6
+   ],
+   "path": [
+    [
+     26.0,
+     7.0
+    ],
+    [
+     25.0,
+     7.0
+    ],
+    [
+     25.0,
+     6.5
+    ],
+    [
+     22.5,
+     6.5
+    ],
+    [
+     22.5,
+     9.5
+    ],
+    [
+     27.0,
+     9.5
+    ],
+    [
+     27.0,
+     17.0
+    ],
+    [
+     33.0,
+     17.0
+    ]
+   ],
+   "stops": [
+    [
+     26,
+     7
+    ],
+    [
+     27,
+     17
+    ],
+    [
+     30,
+     17
+    ],
+    [
+     33,
+     17
+    ]
+   ],
+   "refs": [
+    "MPU.VCC",
+    "HL.VIN",
+    "HF.VIN",
+    "HR.VIN"
+   ],
+   "labels": [
+    "MPU6050 VCC",
+    "左测距 VIN",
+    "前测距 VIN",
+    "右测距 VIN"
+   ],
+   "length": 63.5,
+   "crossings": []
+  },
+  {
+   "id": 5,
+   "step": 3,
+   "net": "GND",
+   "group": "gnd",
+   "a": "ESP.GND·B1",
+   "b": "HR.GND",
+   "al": "ESP32 GND",
+   "bl": "右测距 GND",
+   "pa": [
+    23,
+    24
+   ],
+   "pb": [
+    33,
+    18
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    7,
+    8,
+    9
+   ],
+   "path": [
+    [
+     23.0,
+     24.0
+    ],
+    [
+     33.5,
+     24.0
+    ],
+    [
+     33.5,
+     18.5
+    ],
+    [
+     27.0,
+     18.5
+    ],
+    [
+     27.0,
+     18.0
+    ],
+    [
+     33.0,
+     18.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     24
+    ],
+    [
+     27,
+     18
+    ],
+    [
+     30,
+     18
+    ],
+    [
+     33,
+     18
+    ]
+   ],
+   "refs": [
+    "ESP.GND·B1",
+    "HL.GND",
+    "HF.GND",
+    "HR.GND"
+   ],
+   "labels": [
+    "ESP32 GND",
+    "左测距 GND",
+    "前测距 GND",
+    "右测距 GND"
+   ],
+   "length": 73.7,
+   "crossings": [
+    2
+   ]
+  },
+  {
+   "id": 6,
+   "step": 3,
+   "net": "SCL",
+   "group": "scl",
+   "a": "MPU.SCL",
+   "b": "HR.SCL",
+   "al": "MPU6050 SCL",
+   "bl": "右测距 SCL",
+   "pa": [
+    26,
+    9
+   ],
+   "pb": [
+    33,
+    19
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    10,
+    11,
+    12
+   ],
+   "path": [
+    [
+     26.0,
+     9.0
+    ],
+    [
+     34.0,
+     9.0
+    ],
+    [
+     34.0,
+     19.5
+    ],
+    [
+     27.0,
+     19.5
+    ],
+    [
+     27.0,
+     19.0
+    ],
+    [
+     33.0,
+     19.0
+    ]
+   ],
+   "stops": [
+    [
+     26,
+     9
+    ],
+    [
+     27,
+     19
+    ],
+    [
+     30,
+     19
+    ],
+    [
+     33,
+     19
+    ]
+   ],
+   "refs": [
+    "MPU.SCL",
+    "HL.SCL",
+    "HF.SCL",
+    "HR.SCL"
+   ],
+   "labels": [
+    "MPU6050 SCL",
+    "左测距 SCL",
+    "前测距 SCL",
+    "右测距 SCL"
+   ],
+   "length": 81.3,
+   "crossings": [
+    2
+   ]
+  },
+  {
+   "id": 7,
+   "step": 3,
+   "net": "SDA",
+   "group": "sda",
+   "a": "MPU.SDA",
+   "b": "HR.SDA",
+   "al": "MPU6050 SDA",
+   "bl": "右测距 SDA",
+   "pa": [
+    26,
+    10
+   ],
+   "pb": [
+    33,
+    20
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    13,
+    14,
+    15
+   ],
+   "path": [
+    [
+     26.0,
+     10.0
+    ],
+    [
+     26.5,
+     10.0
+    ],
+    [
+     26.5,
+     20.0
+    ],
+    [
+     33.0,
+     20.0
+    ]
+   ],
+   "stops": [
+    [
+     26,
+     10
+    ],
+    [
+     27,
+     20
+    ],
+    [
+     30,
+     20
+    ],
+    [
+     33,
+     20
+    ]
+   ],
+   "refs": [
+    "MPU.SDA",
+    "HL.SDA",
+    "HF.SDA",
+    "HR.SDA"
+   ],
+   "labels": [
+    "MPU6050 SDA",
+    "左测距 SDA",
+    "前测距 SDA",
+    "右测距 SDA"
+   ],
+   "length": 43.2,
+   "crossings": []
+  },
+  {
+   "id": 8,
+   "step": 3,
+   "net": "XSHUT_L",
+   "group": "xshut",
+   "a": "ESP.40",
+   "b": "HL.XSHUT",
+   "al": "ESP32 IO40",
+   "bl": "左测距 XSHUT",
+   "pa": [
+    23,
+    11
+   ],
+   "pb": [
+    27,
+    22
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    16
+   ],
+   "path": [
+    [
+     23.0,
+     11.0
+    ],
+    [
+     22.5,
+     11.0
+    ],
+    [
+     22.5,
+     12.5
+    ],
+    [
+     25.0,
+     12.5
+    ],
+    [
+     25.0,
+     22.0
+    ],
+    [
+     27.0,
+     22.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     11
+    ],
+    [
+     27,
+     22
+    ]
+   ],
+   "refs": [
+    "ESP.40",
+    "HL.XSHUT"
+   ],
+   "labels": [
+    "ESP32 IO40",
+    "左测距 XSHUT"
+   ],
+   "length": 40.6,
+   "crossings": []
+  },
+  {
+   "id": 9,
+   "step": 3,
+   "net": "XSHUT_F",
+   "group": "xshut",
+   "a": "ESP.39",
+   "b": "HF.XSHUT",
+   "al": "ESP32 IO39",
+   "bl": "前测距 XSHUT",
+   "pa": [
+    23,
+    12
+   ],
+   "pb": [
+    30,
+    22
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    17
+   ],
+   "path": [
+    [
+     23.0,
+     12.0
+    ],
+    [
+     25.5,
+     12.0
+    ],
+    [
+     25.5,
+     21.5
+    ],
+    [
+     30.0,
+     21.5
+    ],
+    [
+     30.0,
+     22.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     12
+    ],
+    [
+     30,
+     22
+    ]
+   ],
+   "refs": [
+    "ESP.39",
+    "HF.XSHUT"
+   ],
+   "labels": [
+    "ESP32 IO39",
+    "前测距 XSHUT"
+   ],
+   "length": 43.2,
+   "crossings": []
+  },
+  {
+   "id": 10,
+   "step": 3,
+   "net": "XSHUT_R",
+   "group": "xshut",
+   "a": "ESP.38",
+   "b": "HR.XSHUT",
+   "al": "ESP32 IO38",
+   "bl": "右测距 XSHUT",
+   "pa": [
+    23,
+    13
+   ],
+   "pb": [
+    33,
+    22
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    18
+   ],
+   "path": [
+    [
+     23.0,
+     13.0
+    ],
+    [
+     24.0,
+     13.0
+    ],
+    [
+     24.0,
+     22.5
+    ],
+    [
+     33.0,
+     22.5
+    ],
+    [
+     33.0,
+     22.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     13
+    ],
+    [
+     33,
+     22
+    ]
+   ],
+   "refs": [
+    "ESP.38",
+    "HR.XSHUT"
+   ],
+   "labels": [
+    "ESP32 IO38",
+    "右测距 XSHUT"
+   ],
+   "length": 50.8,
+   "crossings": []
+  },
+  {
+   "id": 11,
+   "step": 4,
+   "net": "DIP1",
+   "group": "sw",
+   "a": "ESP.47",
+   "b": "DIP.1",
+   "al": "ESP32 IO47",
+   "bl": "拨码开关 1",
+   "pa": [
+    23,
+    20
+   ],
+   "pb": [
+    27,
+    26
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    19
+   ],
+   "path": [
+    [
+     23.0,
+     20.0
+    ],
+    [
+     22.0,
+     20.0
+    ],
+    [
+     22.0,
+     29.5
+    ],
+    [
+     28.5,
+     29.5
+    ],
+    [
+     28.5,
+     27.0
+    ],
+    [
+     27.0,
+     27.0
+    ],
+    [
+     27.0,
+     26.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     20
+    ],
+    [
+     27,
+     26
+    ]
+   ],
+   "refs": [
+    "ESP.47",
+    "DIP.1"
+   ],
+   "labels": [
+    "ESP32 IO47",
+    "拨码开关 1"
+   ],
+   "length": 55.9,
+   "crossings": []
+  },
+  {
+   "id": 12,
+   "step": 4,
+   "net": "DIP2",
+   "group": "sw",
+   "a": "ESP.21",
+   "b": "DIP.2",
+   "al": "ESP32 IO21",
+   "bl": "拨码开关 2",
+   "pa": [
+    23,
+    21
+   ],
+   "pb": [
+    28,
+    26
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    20
+   ],
+   "path": [
+    [
+     23.0,
+     21.0
+    ],
+    [
+     22.5,
+     21.0
+    ],
+    [
+     22.5,
+     24.5
+    ],
+    [
+     28.0,
+     24.5
+    ],
+    [
+     28.0,
+     26.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     21
+    ],
+    [
+     28,
+     26
+    ]
+   ],
+   "refs": [
+    "ESP.21",
+    "DIP.2"
+   ],
+   "labels": [
+    "ESP32 IO21",
+    "拨码开关 2"
+   ],
+   "length": 27.9,
+   "crossings": []
+  },
+  {
+   "id": 13,
+   "step": 4,
+   "net": "GND",
+   "group": "gnd",
+   "a": "ESP.GND·B2",
+   "b": "DIP.1'",
+   "al": "ESP32 GND",
+   "bl": "拨码开关 1'",
+   "pa": [
+    23,
+    25
+   ],
+   "pb": [
+    27,
+    29
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    21
+   ],
+   "path": [
+    [
+     23.0,
+     25.0
+    ],
+    [
+     23.0,
+     29.0
+    ],
+    [
+     27.0,
+     29.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     25
+    ],
+    [
+     27,
+     29
+    ]
+   ],
+   "refs": [
+    "ESP.GND·B2",
+    "DIP.1'"
+   ],
+   "labels": [
+    "ESP32 GND",
+    "拨码开关 1'"
+   ],
+   "length": 20.3,
+   "crossings": []
+  },
+  {
+   "id": 14,
+   "step": 4,
+   "net": "GND",
+   "group": "gnd",
+   "a": "DIP.1'",
+   "b": "DIP.2'",
+   "al": "拨码开关 1'",
+   "bl": "拨码开关 2'",
+   "pa": [
+    27,
+    29
+   ],
+   "pb": [
+    28,
+    29
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    22
+   ],
+   "path": [
+    [
+     27.0,
+     29.0
+    ],
+    [
+     28.0,
+     29.0
+    ]
+   ],
+   "stops": [
+    [
+     27,
+     29
+    ],
+    [
+     28,
+     29
+    ]
+   ],
+   "refs": [
+    "DIP.1'",
+    "DIP.2'"
+   ],
+   "labels": [
+    "拨码开关 1'",
+    "拨码开关 2'"
+   ],
+   "length": 2.5,
+   "crossings": []
+  },
+  {
+   "id": 15,
+   "step": 4,
+   "net": "BTN",
+   "group": "sw",
+   "a": "ESP.2",
+   "b": "BTN.A",
+   "al": "ESP32 IO2",
+   "bl": "启动键 A",
+   "pa": [
+    23,
+    8
+   ],
+   "pb": [
+    27,
+    1
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    23
+   ],
+   "path": [
+    [
+     23.0,
+     8.0
+    ],
+    [
+     23.0,
+     7.5
+    ],
+    [
+     26.5,
+     7.5
+    ],
+    [
+     26.5,
+     1.0
+    ],
+    [
+     27.0,
+     1.0
+    ]
+   ],
+   "stops": [
+    [
+     23,
+     8
+    ],
+    [
+     27,
+     1
+    ]
+   ],
+   "refs": [
+    "ESP.2",
+    "BTN.A"
+   ],
+   "labels": [
+    "ESP32 IO2",
+    "启动键 A"
+   ],
+   "length": 27.9,
+   "crossings": []
+  },
+  {
+   "id": 16,
+   "step": 4,
+   "net": "GND",
+   "group": "gnd",
+   "a": "MPU.GND",
+   "b": "BTN.D",
+   "al": "MPU6050 GND",
+   "bl": "启动键 D",
+   "pa": [
+    26,
+    8
+   ],
+   "pb": [
+    30,
+    3
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    24
+   ],
+   "path": [
+    [
+     26.0,
+     8.0
+    ],
+    [
+     27.5,
+     8.0
+    ],
+    [
+     27.5,
+     3.0
+    ],
+    [
+     30.0,
+     3.0
+    ]
+   ],
+   "stops": [
+    [
+     26,
+     8
+    ],
+    [
+     30,
+     3
+    ]
+   ],
+   "refs": [
+    "MPU.GND",
+    "BTN.D"
+   ],
+   "labels": [
+    "MPU6050 GND",
+    "启动键 D"
+   ],
+   "length": 22.9,
+   "crossings": []
+  },
+  {
+   "id": 17,
+   "step": 5,
+   "net": "PWMA",
+   "group": "drv",
+   "a": "ESP.4",
+   "b": "TB.PWMA",
+   "al": "ESP32 IO4",
+   "bl": "TB6612 PWMA",
+   "pa": [
+    13,
+    7
+   ],
+   "pb": [
+    10,
+    7
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    25
+   ],
+   "path": [
+    [
+     13.0,
+     7.0
+    ],
+    [
+     10.0,
+     7.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     7
+    ],
+    [
+     10,
+     7
+    ]
+   ],
+   "refs": [
+    "ESP.4",
+    "TB.PWMA"
+   ],
+   "labels": [
+    "ESP32 IO4",
+    "TB6612 PWMA"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 18,
+   "step": 5,
+   "net": "AIN2",
+   "group": "drv",
+   "a": "ESP.5",
+   "b": "TB.AIN2",
+   "al": "ESP32 IO5",
+   "bl": "TB6612 AIN2",
+   "pa": [
+    13,
+    8
+   ],
+   "pb": [
+    10,
+    8
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    26
+   ],
+   "path": [
+    [
+     13.0,
+     8.0
+    ],
+    [
+     10.0,
+     8.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     8
+    ],
+    [
+     10,
+     8
+    ]
+   ],
+   "refs": [
+    "ESP.5",
+    "TB.AIN2"
+   ],
+   "labels": [
+    "ESP32 IO5",
+    "TB6612 AIN2"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 19,
+   "step": 5,
+   "net": "AIN1",
+   "group": "drv",
+   "a": "ESP.6",
+   "b": "TB.AIN1",
+   "al": "ESP32 IO6",
+   "bl": "TB6612 AIN1",
+   "pa": [
+    13,
+    9
+   ],
+   "pb": [
+    10,
+    9
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    27
+   ],
+   "path": [
+    [
+     13.0,
+     9.0
+    ],
+    [
+     10.0,
+     9.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     9
+    ],
+    [
+     10,
+     9
+    ]
+   ],
+   "refs": [
+    "ESP.6",
+    "TB.AIN1"
+   ],
+   "labels": [
+    "ESP32 IO6",
+    "TB6612 AIN1"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 20,
+   "step": 5,
+   "net": "STBY",
+   "group": "drv",
+   "a": "ESP.7",
+   "b": "TB.STBY",
+   "al": "ESP32 IO7",
+   "bl": "TB6612 STBY",
+   "pa": [
+    13,
+    10
+   ],
+   "pb": [
+    10,
+    10
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    28
+   ],
+   "path": [
+    [
+     13.0,
+     10.0
+    ],
+    [
+     10.0,
+     10.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     10
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "refs": [
+    "ESP.7",
+    "TB.STBY"
+   ],
+   "labels": [
+    "ESP32 IO7",
+    "TB6612 STBY"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 21,
+   "step": 5,
+   "net": "BIN1",
+   "group": "drv",
+   "a": "ESP.15",
+   "b": "TB.BIN1",
+   "al": "ESP32 IO15",
+   "bl": "TB6612 BIN1",
+   "pa": [
+    13,
+    11
+   ],
+   "pb": [
+    10,
+    11
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    29
+   ],
+   "path": [
+    [
+     13.0,
+     11.0
+    ],
+    [
+     10.0,
+     11.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     11
+    ],
+    [
+     10,
+     11
+    ]
+   ],
+   "refs": [
+    "ESP.15",
+    "TB.BIN1"
+   ],
+   "labels": [
+    "ESP32 IO15",
+    "TB6612 BIN1"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 22,
+   "step": 5,
+   "net": "BIN2",
+   "group": "drv",
+   "a": "ESP.16",
+   "b": "TB.BIN2",
+   "al": "ESP32 IO16",
+   "bl": "TB6612 BIN2",
+   "pa": [
+    13,
+    12
+   ],
+   "pb": [
+    10,
+    12
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    30
+   ],
+   "path": [
+    [
+     13.0,
+     12.0
+    ],
+    [
+     10.0,
+     12.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     12
+    ],
+    [
+     10,
+     12
+    ]
+   ],
+   "refs": [
+    "ESP.16",
+    "TB.BIN2"
+   ],
+   "labels": [
+    "ESP32 IO16",
+    "TB6612 BIN2"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 23,
+   "step": 5,
+   "net": "PWMB",
+   "group": "drv",
+   "a": "ESP.17",
+   "b": "TB.PWMB",
+   "al": "ESP32 IO17",
+   "bl": "TB6612 PWMB",
+   "pa": [
+    13,
+    13
+   ],
+   "pb": [
+    10,
+    13
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    31
+   ],
+   "path": [
+    [
+     13.0,
+     13.0
+    ],
+    [
+     10.0,
+     13.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     13
+    ],
+    [
+     10,
+     13
+    ]
+   ],
+   "refs": [
+    "ESP.17",
+    "TB.PWMB"
+   ],
+   "labels": [
+    "ESP32 IO17",
+    "TB6612 PWMB"
+   ],
+   "length": 7.6,
+   "crossings": []
+  },
+  {
+   "id": 24,
+   "step": 5,
+   "net": "3V3",
+   "group": "v33",
+   "a": "ESP.3V3",
+   "b": "TB.VCC",
+   "al": "ESP32 3V3",
+   "bl": "TB6612 VCC",
+   "pa": [
+    13,
+    4
+   ],
+   "pb": [
+    4,
+    8
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    32
+   ],
+   "path": [
+    [
+     13.0,
+     4.0
+    ],
+    [
+     4.5,
+     4.0
+    ],
+    [
+     4.5,
+     7.5
+    ],
+    [
+     4.0,
+     7.5
+    ],
+    [
+     4.0,
+     8.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     4
+    ],
+    [
+     4,
+     8
+    ]
+   ],
+   "refs": [
+    "ESP.3V3",
+    "TB.VCC"
+   ],
+   "labels": [
+    "ESP32 3V3",
+    "TB6612 VCC"
+   ],
+   "length": 33.0,
+   "crossings": []
+  },
+  {
+   "id": 25,
+   "step": 5,
+   "net": "GND",
+   "group": "gnd",
+   "a": "ESP.GND·L",
+   "b": "TB.GND·C",
+   "al": "ESP32 GND",
+   "bl": "TB6612 GND",
+   "pa": [
+    13,
+    25
+   ],
+   "pb": [
+    10,
+    14
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    33
+   ],
+   "path": [
+    [
+     13.0,
+     25.0
+    ],
+    [
+     13.0,
+     24.5
+    ],
+    [
+     12.5,
+     24.5
+    ],
+    [
+     12.5,
+     23.5
+    ],
+    [
+     14.0,
+     23.5
+    ],
+    [
+     14.0,
+     15.5
+    ],
+    [
+     10.0,
+     15.5
+    ],
+    [
+     10.0,
+     14.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     25
+    ],
+    [
+     10,
+     14
+    ]
+   ],
+   "refs": [
+    "ESP.GND·L",
+    "TB.GND·C"
+   ],
+   "labels": [
+    "ESP32 GND",
+    "TB6612 GND"
+   ],
+   "length": 43.2,
+   "crossings": []
+  },
+  {
+   "id": 26,
+   "step": 6,
+   "net": "AO1",
+   "group": "mot",
+   "a": "TB.AO1",
+   "b": "ML.M1",
+   "al": "TB6612 AO1",
+   "bl": "左电机线 M1",
+   "pa": [
+    4,
+    10
+   ],
+   "pb": [
+    2,
+    21
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    34
+   ],
+   "path": [
+    [
+     4.0,
+     10.0
+    ],
+    [
+     1.5,
+     10.0
+    ],
+    [
+     1.5,
+     21.0
+    ],
+    [
+     2.0,
+     21.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     10
+    ],
+    [
+     2,
+     21
+    ]
+   ],
+   "refs": [
+    "TB.AO1",
+    "ML.M1"
+   ],
+   "labels": [
+    "TB6612 AO1",
+    "左电机线 M1"
+   ],
+   "length": 35.6,
+   "crossings": [
+    1
+   ]
+  },
+  {
+   "id": 27,
+   "step": 6,
+   "net": "AO2",
+   "group": "mot",
+   "a": "TB.AO2",
+   "b": "ML.M2",
+   "al": "TB6612 AO2",
+   "bl": "左电机线 M2",
+   "pa": [
+    4,
+    11
+   ],
+   "pb": [
+    2,
+    16
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    35
+   ],
+   "path": [
+    [
+     4.0,
+     11.0
+    ],
+    [
+     2.0,
+     11.0
+    ],
+    [
+     2.0,
+     16.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     11
+    ],
+    [
+     2,
+     16
+    ]
+   ],
+   "refs": [
+    "TB.AO2",
+    "ML.M2"
+   ],
+   "labels": [
+    "TB6612 AO2",
+    "左电机线 M2"
+   ],
+   "length": 17.8,
+   "crossings": []
+  },
+  {
+   "id": 28,
+   "step": 6,
+   "net": "BO2",
+   "group": "mot",
+   "a": "TB.BO2",
+   "b": "MR.M2",
+   "al": "TB6612 BO2",
+   "bl": "右电机线 M2",
+   "pa": [
+    4,
+    12
+   ],
+   "pb": [
+    4,
+    20
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    36
+   ],
+   "path": [
+    [
+     4.0,
+     12.0
+    ],
+    [
+     4.5,
+     12.0
+    ],
+    [
+     4.5,
+     9.5
+    ],
+    [
+     1.0,
+     9.5
+    ],
+    [
+     1.0,
+     19.5
+    ],
+    [
+     4.0,
+     19.5
+    ],
+    [
+     4.0,
+     20.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     12
+    ],
+    [
+     4,
+     20
+    ]
+   ],
+   "refs": [
+    "TB.BO2",
+    "MR.M2"
+   ],
+   "labels": [
+    "TB6612 BO2",
+    "右电机线 M2"
+   ],
+   "length": 50.8,
+   "crossings": [
+    1
+   ]
+  },
+  {
+   "id": 29,
+   "step": 6,
+   "net": "BO1",
+   "group": "mot",
+   "a": "TB.BO1",
+   "b": "MR.M1",
+   "al": "TB6612 BO1",
+   "bl": "右电机线 M1",
+   "pa": [
+    4,
+    13
+   ],
+   "pb": [
+    4,
+    25
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    37
+   ],
+   "path": [
+    [
+     4.0,
+     13.0
+    ],
+    [
+     4.0,
+     13.5
+    ],
+    [
+     14.5,
+     13.5
+    ],
+    [
+     14.5,
+     29.5
+    ],
+    [
+     4.0,
+     29.5
+    ],
+    [
+     4.0,
+     25.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     13
+    ],
+    [
+     4,
+     25
+    ]
+   ],
+   "refs": [
+    "TB.BO1",
+    "MR.M1"
+   ],
+   "labels": [
+    "TB6612 BO1",
+    "右电机线 M1"
+   ],
+   "length": 106.7,
+   "crossings": []
+  },
+  {
+   "id": 30,
+   "step": 6,
+   "net": "ENC_L_C2",
+   "group": "enc",
+   "a": "ML.C2",
+   "b": "ESP.9",
+   "al": "左电机线 C2",
+   "bl": "ESP32 IO9",
+   "pa": [
+    2,
+    18
+   ],
+   "pb": [
+    13,
+    18
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    38
+   ],
+   "path": [
+    [
+     2.0,
+     18.0
+    ],
+    [
+     13.0,
+     18.0
+    ]
+   ],
+   "stops": [
+    [
+     2,
+     18
+    ],
+    [
+     13,
+     18
+    ]
+   ],
+   "refs": [
+    "ML.C2",
+    "ESP.9"
+   ],
+   "labels": [
+    "左电机线 C2",
+    "ESP32 IO9"
+   ],
+   "length": 27.9,
+   "crossings": []
+  },
+  {
+   "id": 31,
+   "step": 6,
+   "net": "ENC_L_C1",
+   "group": "enc",
+   "a": "ML.C1",
+   "b": "ESP.10",
+   "al": "左电机线 C1",
+   "bl": "ESP32 IO10",
+   "pa": [
+    2,
+    19
+   ],
+   "pb": [
+    13,
+    19
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    39
+   ],
+   "path": [
+    [
+     2.0,
+     19.0
+    ],
+    [
+     13.0,
+     19.0
+    ]
+   ],
+   "stops": [
+    [
+     2,
+     19
+    ],
+    [
+     13,
+     19
+    ]
+   ],
+   "refs": [
+    "ML.C1",
+    "ESP.10"
+   ],
+   "labels": [
+    "左电机线 C1",
+    "ESP32 IO10"
+   ],
+   "length": 27.9,
+   "crossings": []
+  },
+  {
+   "id": 32,
+   "step": 6,
+   "net": "ENC_R_C2",
+   "group": "enc",
+   "a": "MR.C2",
+   "b": "ESP.13",
+   "al": "右电机线 C2",
+   "bl": "ESP32 IO13",
+   "pa": [
+    4,
+    22
+   ],
+   "pb": [
+    13,
+    22
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    40
+   ],
+   "path": [
+    [
+     4.0,
+     22.0
+    ],
+    [
+     13.0,
+     22.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     22
+    ],
+    [
+     13,
+     22
+    ]
+   ],
+   "refs": [
+    "MR.C2",
+    "ESP.13"
+   ],
+   "labels": [
+    "右电机线 C2",
+    "ESP32 IO13"
+   ],
+   "length": 22.9,
+   "crossings": []
+  },
+  {
+   "id": 33,
+   "step": 6,
+   "net": "ENC_R_C1",
+   "group": "enc",
+   "a": "MR.C1",
+   "b": "ESP.14",
+   "al": "右电机线 C1",
+   "bl": "ESP32 IO14",
+   "pa": [
+    4,
+    23
+   ],
+   "pb": [
+    13,
+    23
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    41
+   ],
+   "path": [
+    [
+     4.0,
+     23.0
+    ],
+    [
+     13.0,
+     23.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     23
+    ],
+    [
+     13,
+     23
+    ]
+   ],
+   "refs": [
+    "MR.C1",
+    "ESP.14"
+   ],
+   "labels": [
+    "右电机线 C1",
+    "ESP32 IO14"
+   ],
+   "length": 22.9,
+   "crossings": []
+  },
+  {
+   "id": 34,
+   "step": 6,
+   "net": "3V3",
+   "group": "v33",
+   "a": "TB.VCC",
+   "b": "ML.VCC",
+   "al": "TB6612 VCC",
+   "bl": "左电机线 VCC",
+   "pa": [
+    4,
+    8
+   ],
+   "pb": [
+    2,
+    17
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    42
+   ],
+   "path": [
+    [
+     4.0,
+     8.0
+    ],
+    [
+     5.0,
+     8.0
+    ],
+    [
+     5.0,
+     12.5
+    ],
+    [
+     3.0,
+     12.5
+    ],
+    [
+     3.0,
+     16.5
+    ],
+    [
+     2.0,
+     16.5
+    ],
+    [
+     2.0,
+     17.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     8
+    ],
+    [
+     2,
+     17
+    ]
+   ],
+   "refs": [
+    "TB.VCC",
+    "ML.VCC"
+   ],
+   "labels": [
+    "TB6612 VCC",
+    "左电机线 VCC"
+   ],
+   "length": 33.0,
+   "crossings": []
+  },
+  {
+   "id": 35,
+   "step": 6,
+   "net": "3V3",
+   "group": "v33",
+   "a": "ML.VCC",
+   "b": "MR.VCC",
+   "al": "左电机线 VCC",
+   "bl": "右电机线 VCC",
+   "pa": [
+    2,
+    17
+   ],
+   "pb": [
+    4,
+    21
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    43
+   ],
+   "path": [
+    [
+     2.0,
+     17.0
+    ],
+    [
+     12.5,
+     17.0
+    ],
+    [
+     12.5,
+     17.5
+    ],
+    [
+     13.5,
+     17.5
+    ],
+    [
+     13.5,
+     20.5
+    ],
+    [
+     4.0,
+     20.5
+    ],
+    [
+     4.0,
+     21.0
+    ]
+   ],
+   "stops": [
+    [
+     2,
+     17
+    ],
+    [
+     4,
+     21
+    ]
+   ],
+   "refs": [
+    "ML.VCC",
+    "MR.VCC"
+   ],
+   "labels": [
+    "左电机线 VCC",
+    "右电机线 VCC"
+   ],
+   "length": 63.5,
+   "crossings": []
+  },
+  {
+   "id": 36,
+   "step": 6,
+   "net": "GND",
+   "group": "gnd",
+   "a": "ESP.GND·L",
+   "b": "MR.GND",
+   "al": "ESP32 GND",
+   "bl": "右电机线 GND",
+   "pa": [
+    13,
+    25
+   ],
+   "pb": [
+    4,
+    24
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    44
+   ],
+   "path": [
+    [
+     13.0,
+     25.0
+    ],
+    [
+     6.0,
+     25.0
+    ],
+    [
+     6.0,
+     24.0
+    ],
+    [
+     4.0,
+     24.0
+    ]
+   ],
+   "stops": [
+    [
+     13,
+     25
+    ],
+    [
+     4,
+     24
+    ]
+   ],
+   "refs": [
+    "ESP.GND·L",
+    "MR.GND"
+   ],
+   "labels": [
+    "ESP32 GND",
+    "右电机线 GND"
+   ],
+   "length": 25.4,
+   "crossings": []
+  },
+  {
+   "id": 37,
+   "step": 6,
+   "net": "GND",
+   "group": "gnd",
+   "a": "MR.GND",
+   "b": "ML.GND",
+   "al": "右电机线 GND",
+   "bl": "左电机线 GND",
+   "pa": [
+    4,
+    24
+   ],
+   "pb": [
+    2,
+    20
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    45
+   ],
+   "path": [
+    [
+     4.0,
+     24.0
+    ],
+    [
+     2.5,
+     24.0
+    ],
+    [
+     2.5,
+     20.0
+    ],
+    [
+     2.0,
+     20.0
+    ]
+   ],
+   "stops": [
+    [
+     4,
+     24
+    ],
+    [
+     2,
+     20
+    ]
+   ],
+   "refs": [
+    "MR.GND",
+    "ML.GND"
+   ],
+   "labels": [
+    "右电机线 GND",
+    "左电机线 GND"
+   ],
+   "length": 15.2,
+   "crossings": []
+  },
+  {
+   "id": 38,
+   "step": 7,
+   "net": "VBAT",
+   "group": "vbat",
+   "a": "XH.+",
+   "b": "M5P.IN+",
+   "al": "电池 +",
+   "bl": "降压 IN+",
+   "pa": [
+    1,
+    28
+   ],
+   "pb": [
+    3,
+    28
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    46
+   ],
+   "path": [
+    [
+     1.0,
+     28.0
+    ],
+    [
+     3.0,
+     28.0
+    ]
+   ],
+   "stops": [
+    [
+     1,
+     28
+    ],
+    [
+     3,
+     28
+    ]
+   ],
+   "refs": [
+    "XH.+",
+    "M5P.IN+"
+   ],
+   "labels": [
+    "电池 +",
+    "降压 IN+"
+   ],
+   "length": 5.1,
+   "crossings": []
+  },
+  {
+   "id": 39,
+   "step": 7,
+   "net": "VBAT",
+   "group": "vbat",
+   "a": "M5P.IN+",
+   "b": "TB.VM",
+   "al": "降压 IN+",
+   "bl": "TB6612 VM",
+   "pa": [
+    3,
+    28
+   ],
+   "pb": [
+    4,
+    7
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    47
+   ],
+   "path": [
+    [
+     3.0,
+     28.0
+    ],
+    [
+     3.5,
+     28.0
+    ],
+    [
+     3.5,
+     29.5
+    ],
+    [
+     0.0,
+     29.5
+    ],
+    [
+     0.0,
+     7.0
+    ],
+    [
+     4.0,
+     7.0
+    ]
+   ],
+   "stops": [
+    [
+     3,
+     28
+    ],
+    [
+     4,
+     7
+    ]
+   ],
+   "refs": [
+    "M5P.IN+",
+    "TB.VM"
+   ],
+   "labels": [
+    "降压 IN+",
+    "TB6612 VM"
+   ],
+   "length": 81.3,
+   "crossings": []
+  },
+  {
+   "id": 40,
+   "step": 7,
+   "net": "5V",
+   "group": "v5",
+   "a": "M5P.OUT+",
+   "b": "ESP.5Vin",
+   "al": "降压 OUT+",
+   "bl": "ESP32 5Vin",
+   "pa": [
+    14,
+    28
+   ],
+   "pb": [
+    13,
+    24
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    48
+   ],
+   "path": [
+    [
+     14.0,
+     28.0
+    ],
+    [
+     14.0,
+     24.0
+    ],
+    [
+     13.0,
+     24.0
+    ]
+   ],
+   "stops": [
+    [
+     14,
+     28
+    ],
+    [
+     13,
+     24
+    ]
+   ],
+   "refs": [
+    "M5P.OUT+",
+    "ESP.5Vin"
+   ],
+   "labels": [
+    "降压 OUT+",
+    "ESP32 5Vin"
+   ],
+   "length": 12.7,
+   "crossings": []
+  },
+  {
+   "id": 41,
+   "step": 7,
+   "net": "GND",
+   "group": "gnd",
+   "a": "XH.−",
+   "b": "M5P.IN−",
+   "al": "电池 −",
+   "bl": "降压 IN−",
+   "pa": [
+    1,
+    29
+   ],
+   "pb": [
+    3,
+    29
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    49
+   ],
+   "path": [
+    [
+     1.0,
+     29.0
+    ],
+    [
+     3.0,
+     29.0
+    ]
+   ],
+   "stops": [
+    [
+     1,
+     29
+    ],
+    [
+     3,
+     29
+    ]
+   ],
+   "refs": [
+    "XH.−",
+    "M5P.IN−"
+   ],
+   "labels": [
+    "电池 −",
+    "降压 IN−"
+   ],
+   "length": 5.1,
+   "crossings": []
+  },
+  {
+   "id": 42,
+   "step": 7,
+   "net": "GND",
+   "group": "gnd",
+   "a": "XH.−",
+   "b": "TB.GND·P",
+   "al": "电池 −",
+   "bl": "TB6612 GND",
+   "pa": [
+    1,
+    29
+   ],
+   "pb": [
+    4,
+    9
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    50
+   ],
+   "path": [
+    [
+     1.0,
+     29.0
+    ],
+    [
+     0.5,
+     29.0
+    ],
+    [
+     0.5,
+     9.0
+    ],
+    [
+     4.0,
+     9.0
+    ]
+   ],
+   "stops": [
+    [
+     1,
+     29
+    ],
+    [
+     4,
+     9
+    ]
+   ],
+   "refs": [
+    "XH.−",
+    "TB.GND·P"
+   ],
+   "labels": [
+    "电池 −",
+    "TB6612 GND"
+   ],
+   "length": 61.0,
+   "crossings": []
+  },
+  {
+   "id": 43,
+   "step": 7,
+   "net": "GND",
+   "group": "gnd",
+   "a": "M5P.OUT−",
+   "b": "ESP.GND·L",
+   "al": "降压 OUT−",
+   "bl": "ESP32 GND",
+   "pa": [
+    14,
+    29
+   ],
+   "pb": [
+    13,
+    25
+   ],
+   "ctrl": null,
+   "sourceIds": [
+    51
+   ],
+   "path": [
+    [
+     14.0,
+     29.0
+    ],
+    [
+     13.0,
+     29.0
+    ],
+    [
+     13.0,
+     25.0
+    ]
+   ],
+   "stops": [
+    [
+     14,
+     29
+    ],
+    [
+     13,
+     25
+    ]
+   ],
+   "refs": [
+    "M5P.OUT−",
+    "ESP.GND·L"
+   ],
+   "labels": [
+    "降压 OUT−",
+    "ESP32 GND"
+   ],
+   "length": 12.7,
+   "crossings": []
+  }
+ ],
+ "steps": [
+  {
+   "title": "插座和排针",
+   "test": "插上 ESP32，USB 线插 COM 口，串口敲 ?，能看到命令列表",
+   "desc": "只焊插座，不接线。排母先插在模块上，再连模块一起放到板子上对孔焊，孔距自然对得上。焊完拔下模块。用量：ESP32 两条 22 针排母，TB6612 两条 8 针排母，MPU6050 一条 8 针排母，三个 1×6 直排针，拨码开关，电池插座，启动键（可选）。"
+  },
+  {
+   "title": "陀螺仪",
+   "test": "i 能扫到 0x68；g 手转车 90°，读数约 +90",
+   "desc": "4 根线。SCL、SDA 保留同排直连。3V3 从控制板两排插座之间横穿，经过行间空隙。所有拐点按清单定位。"
+  },
+  {
+   "title": "三个测距插座",
+   "test": "插上三个 VL53L0X，i 扫到 0x30 0x31 0x32；d 读数随手挡变化",
+   "desc": "7 根连续导线：3V3、GND、SCL、SDA 各用一根线从源引脚依次连接三个测距插座，中间焊点局部剥皮不断线，再接三根独立 XSHUT。四组总线保留原脚序，GPIO1 留空。右边缘的 GND 在跨线 2 处从 SCL 上方越过。"
+  },
+  {
+   "title": "拨码和启动键",
+   "test": "s 显示的拨码、按键状态和实际一致",
+   "desc": "6 根线。启动键是可选的，板载 BOOT 键也能发车，可以留到最后。"
+  },
+  {
+   "title": "电机驱动控制线",
+   "test": "万用表通断档逐根量一遍：ESP32 的脚和 TB6612 的脚应该通，相邻两根不通",
+   "desc": "9 根线。7 根控制线保留同排直连。3V3 与 GND 沿独立通道绕行，避开编码器信号。"
+  },
+  {
+   "title": "电机和编码器",
+   "test": "e：手往前滚轮子，读数为正、一圈约 +132 mm",
+   "desc": "12 根线。两组编码器信号仍同排直连。左电机 M1 线在跨线 1 处越过右电机 M2 线，交点不焊接。两路编码器的 3V3 连接线从控制板下方绕行，避免横切编码器信号。"
+  },
+  {
+   "title": "电源",
+   "test": "接电池前先量：VBAT 和 GND 之间不通。插电池开开关，量 ESP32 的 5Vin 约 5.0 V；再拔 USB 跑 m",
+   "desc": "6 根线，再加降压模块到旁边四个接点的引出线。VBAT 和电池回流 GND 沿左板边并行，5V 和输出 GND 在降压模块右侧分别上行。图中导线长度按中心线计算，裁线另留剥皮及弯折余量。"
+  }
+ ],
+ "nets": [
+  {
+   "name": "VBAT",
+   "group": "vbat",
+   "pins": 3
+  },
+  {
+   "name": "5V",
+   "group": "v5",
+   "pins": 2
+  },
+  {
+   "name": "3V3",
+   "group": "v33",
+   "pins": 9
+  },
+  {
+   "name": "GND",
+   "group": "gnd",
+   "pins": 18
+  },
+  {
+   "name": "SCL",
+   "group": "scl",
+   "pins": 5
+  },
+  {
+   "name": "SDA",
+   "group": "sda",
+   "pins": 5
+  },
+  {
+   "name": "XSHUT_L",
+   "group": "xshut",
+   "pins": 2
+  },
+  {
+   "name": "XSHUT_F",
+   "group": "xshut",
+   "pins": 2
+  },
+  {
+   "name": "XSHUT_R",
+   "group": "xshut",
+   "pins": 2
+  },
+  {
+   "name": "PWMA",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "AIN2",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "AIN1",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "STBY",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "BIN1",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "BIN2",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "PWMB",
+   "group": "drv",
+   "pins": 2
+  },
+  {
+   "name": "AO1",
+   "group": "mot",
+   "pins": 2
+  },
+  {
+   "name": "AO2",
+   "group": "mot",
+   "pins": 2
+  },
+  {
+   "name": "BO1",
+   "group": "mot",
+   "pins": 2
+  },
+  {
+   "name": "BO2",
+   "group": "mot",
+   "pins": 2
+  },
+  {
+   "name": "ENC_L_C1",
+   "group": "enc",
+   "pins": 2
+  },
+  {
+   "name": "ENC_L_C2",
+   "group": "enc",
+   "pins": 2
+  },
+  {
+   "name": "ENC_R_C1",
+   "group": "enc",
+   "pins": 2
+  },
+  {
+   "name": "ENC_R_C2",
+   "group": "enc",
+   "pins": 2
+  },
+  {
+   "name": "DIP1",
+   "group": "sw",
+   "pins": 2
+  },
+  {
+   "name": "DIP2",
+   "group": "sw",
+   "pins": 2
+  },
+  {
+   "name": "BTN",
+   "group": "sw",
+   "pins": 2
+  }
+ ],
+ "crossings": [
+  {
+   "id": 1,
+   "p": [
+    1.5,
+    19.5
+   ],
+   "over": 26,
+   "under": 28
+  },
+  {
+   "id": 2,
+   "p": [
+    33.5,
+    19.5
+   ],
+   "over": 5,
+   "under": 6
+  }
+ ],
+ "metrics": {
+  "oldCrossings": 54,
+  "newCrossings": 2,
+  "oldPieces": 52,
+  "newPieces": 44,
+  "oldLength": 918.1,
+  "newLength": 1424.9
+ }
+}

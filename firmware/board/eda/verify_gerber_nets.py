@@ -193,6 +193,9 @@ def main(zip_path, plan_path):
 
 
 if __name__ == '__main__':
-    zp = sys.argv[1] if len(sys.argv) > 1 else 'out/gerber/maze-car-gerber.zip'
-    pp = sys.argv[2] if len(sys.argv) > 2 else 'firmware/board/eda/pcb_plan.json'
+    # 默认路径相对仓库根，从 eda/ 或仓库根跑都一样
+    import pathlib
+    root = pathlib.Path(__file__).resolve().parents[3]
+    zp = sys.argv[1] if len(sys.argv) > 1 else str(root / 'out/gerber/maze-car-gerber.zip')
+    pp = sys.argv[2] if len(sys.argv) > 2 else str(root / 'firmware/board/eda/pcb_plan.json')
     sys.exit(main(zp, pp))
