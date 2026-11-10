@@ -9,14 +9,21 @@ car/brain.h/.cpp   大脑。整个仓库只有这一份：仿真器（../maze-si
 telemetry.py       电脑端遥测：实时看数据、存每次运行、从电脑发命令（只用 Python 标准库）
 ```
 
-## 装环境（第一次）
+## 构建与烧录
 
-1. Arduino IDE 2.x → 设置 → "附加开发板管理器网址"填 `https://espressif.github.io/arduino-esp32/package_esp32_index.json` → 开发板管理器搜 **esp32**（Espressif），装 **3.x** 版本（2.x 编译不过：`ledcAttach` 和 PCNT 驱动都是 3.x 的写法）。
-2. 库管理器搜 **VL53L0X**，装作者是 **Pololu** 的那个。
-3. 打开 `car/car.ino`。工具菜单：开发板选 **ESP32S3 Dev Module**，Flash Size 选 8MB。
-   - 数据线插在标 **COM** 的那个口（旁边是 CH343 芯片）：USB CDC On Boot 选 Disabled。推荐用这个。
-   - 插在标 **USB** 的那个口：USB CDC On Boot 选 Enabled。
-4. 上传。串口监视器 115200，看到"迷宫小车就绪"就成了。什么模块都没接时它会说一串"初始化失败"，正常。
+用 PlatformIO（本机已配好：`~/.platformio/penv`，VS Code 也装了 PlatformIO 插件）。在本仓库根目录：
+
+```bash
+pio run -e car              # 编译
+pio run -e car -t upload    # 烧录：数据线插板子标 COM 的口（旁边是 CH343 芯片）
+pio device monitor          # 串口监视器 115200
+```
+
+串口看到"迷宫小车就绪"就成了。什么模块都没接时它会说一串"初始化失败"，正常。
+
+- `platformio.ini` 锁定的 platform 是 pioarduino 的 espressif32 zip（官方 PlatformIO 平台还不支持 arduino-esp32 3.x），带 arduino-esp32 3.3.12 + xtensa 工具链 14.2.0。代码是 3.x 的写法（`ledcAttach`、PCNT 驱动）。
+- 想用 Arduino IDE 也行：开发板包必须选 **3.x** 版本（2.x 编译不过），库管理器装作者 **Pololu** 的 VL53L0X，开发板选 ESP32S3 Dev Module、Flash Size 8MB；插 COM 口时 USB CDC On Boot 选 Disabled，插 USB 口选 Enabled。
+- 板子是 YD-ESP32-S3 **N8R2**（8MB Flash + 2MB 四线 PSRAM，实测）：PSRAM 配置用 `qio_qspi`，八线的 `qio_opi` 在这块板上开机报 "octal_psram: PSRAM chip is not connected"，初始化失败——详见 `platformio.ini` 注释。
 
 ## 接线
 

@@ -13,3 +13,6 @@ firmware/car/secrets.h
 
 .DS_Store
 build/
+
+# PlatformIO
+.pio/

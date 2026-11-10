@@ -5,6 +5,7 @@ An ESP32-S3 wall-following car for a campus maze race: firmware, a 2D simulator 
 第九届长安大学迷宫智能小车大赛（迷宫组）参赛车：ESP32-S3（YD 板）+ TB6612 + N20 编码器电机 + 3 × VL53L0X + MPU6050。
 
 ```
+platformio.ini      PlatformIO 构建配置：pio run -e car 编译、-t upload 烧录（详见 firmware/README.md）
 firmware/car/       Arduino 固件。大脑 brain.cpp 也在这里，整个仓库只有这一份
 firmware/board/     洞洞板布线：layout.py 自检并生成 board.html（浏览器直接打开）；netlist.md 是画原理图用的对照表
 firmware/telemetry.py  电脑端 WiFi 遥测
