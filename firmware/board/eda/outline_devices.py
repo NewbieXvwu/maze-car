@@ -40,6 +40,10 @@ def cli(*args, timeout=180):
 
 
 def load_html():
+    """布线图数据：优先读仓库里的冻结副本 wiring_plan.json，没有才解析原始 HTML。"""
+    frozen = __import__("pathlib").Path(__file__).resolve().parent / "wiring_plan.json"
+    if frozen.exists():
+        return json.loads(frozen.read_text(encoding="utf-8"))
     s = (ROOT / "迷宫小车主板布线.html").read_text(encoding="utf-8")
     i = s.find("const D = ") + len("const D = ")
     depth = 0

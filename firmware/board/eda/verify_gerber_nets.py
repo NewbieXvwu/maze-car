@@ -112,8 +112,27 @@ def pin_nets(plan_path):
     return out
 
 
+def parse_drill(text):
+    """Excellon：T01C1.00076 定义刀具，X5.08Y15.24 是十进制小数的毫米坐标。"""
+    tools, cur, holes = {}, None, []
+    for ln in text.splitlines():
+        ln = ln.strip()
+        m = re.match(r'^T(\d+)C([\d.]+)$', ln)
+        if m:
+            tools[m.group(1)] = float(m.group(2))
+            continue
+        m = re.match(r'^T(\d+)$', ln)
+        if m:
+            cur = m.group(1)
+            continue
+        m = re.match(r'^X(-?[\d.]+)Y(-?[\d.]+)$', ln)
+        if m and cur:
+            holes.append((float(m.group(1)), float(m.group(2)), tools.get(cur, 0.0)))
+    return holes
+
+
 def main(zip_path, plan_path):
-    pads, tracks = [], []
+    pads, tracks, drills = [], [], []
     with zipfile.ZipFile(zip_path) as z:
         for name in z.namelist():
             up = name.upper()
@@ -121,6 +140,8 @@ def main(zip_path, plan_path):
                 p, t = parse_gerber(z.read(name).decode('utf-8', 'ignore'))
                 pads += p
                 tracks += t
+            elif up.endswith('.DRL'):
+                drills += parse_drill(z.read(name).decode('utf-8', 'ignore'))
 
     n_pad = len(pads)
     uf = UF(n_pad + len(tracks))
@@ -148,13 +169,20 @@ def main(zip_path, plan_path):
             if seg_seg_dist(x1, y1, x2, y2, a1, b1, a2, b2) <= (w1 + w2) / 2 - 1e-6:
                 uf.union(n_pad + i, n_pad + j)
 
-    # 镀通孔：同一坐标的上下层焊盘相连
+    # 镀通孔：同一坐标的上下层焊盘相连 —— 但只有在钻带里真有这个孔时才算
     by_xy = defaultdict(list)
     for pi, (x, y, d, l) in enumerate(pads):
         by_xy[(round(x, 3), round(y, 3))].append(pi)
-    for ids in by_xy.values():
+    no_drill = []
+    for (x, y), ids in by_xy.items():
+        hit = [h for h in drills
+               if abs(h[0] - x) <= 0.05 and abs(h[1] - y) <= 0.05]
+        if not hit:
+            no_drill.append((x, y))
+            continue
         for k in ids[1:]:
             uf.union(ids[0], k)
+    no_drill = sorted({(round(x / MIL, 1), round(y / MIL, 1)) for x, y in no_drill})
 
     nets = pin_nets(plan_path)
     pad_net = {}
@@ -184,9 +212,22 @@ def main(zip_path, plan_path):
     print(f'读入焊盘 {total_pads} 个（正反各一套）、走线 {len(tracks)} 段')
     print(f'有网络的焊盘 {len(set(by_xy) & set()) or len(net_pads)} 组，网络 {len(net_pads)} 个')
     print(f'未在网表里的焊盘（安装孔等）：{len(unmatched)}')
+    print(f'钻带孔 {len(drills)} 个；缺钻孔的焊盘 {len(no_drill)}' + (f' {no_drill[:5]}' if no_drill else ''))
+    # 空脚（无网络）被导线碰到 = 图上多接了东西
+    floating_hit = []
+    for pi, (x, y, d, l) in enumerate(pads):
+        if (round(x, 3), round(y, 3)) in nets:
+            continue
+        for (x1, y1, x2, y2, w, tl) in tracks:
+            if tl != l:
+                continue
+            if seg_pt_dist(x, y, x1, y1, x2, y2) <= d / 2 + w / 2 - 1e-6:
+                floating_hit.append((round(x / MIL, 1), round(y / MIL, 1)))
+                break
+    print(f'被铜皮碰到的空脚：{len(set(floating_hit))}' + (f' {sorted(set(floating_hit))[:5]}' if floating_hit else ''))
     print(f'短路（一片铜含多个网络）：{len(shorts)}' + (f' {shorts}' if shorts else ''))
     print(f'同网络被切成多片铜：{len(split)}' + (f' {split}' if split else ''))
-    ok = not shorts and not split
+    ok = not shorts and not split and not no_drill and not floating_hit
     print('结论：' + ('PASS —— 制造文件里的铜与网表完全一致'
                    if ok else 'FAIL —— 上面的网络有问题，不能下单'))
     return 0 if ok else 1

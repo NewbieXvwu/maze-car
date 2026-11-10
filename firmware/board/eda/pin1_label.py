@@ -19,14 +19,15 @@ import re
 import subprocess
 import sys
 
-PLAN = "pcb_plan.json"
-OUTLINE = "outline_devices.json"
+ROOT = __import__("pathlib").Path(__file__).resolve().parent
+PLAN = ROOT / "pcb_plan.json"
+OUTLINE = ROOT / "outline_devices.json"
 DOC = "PCB1"
 PROJECT = "maze-car"
-FONT = 50
+FONT = 60
 LINE_W = 8
 GAP = 40           # 标记离方框边的距离（mil）
-TEXT_W = 28        # 单字符宽（mil，50 号字经验值）
+TEXT_W = 34        # 单字符宽（mil，60 号字经验值）
 MARKS = {"1", "+", "-"}   # 由本脚本管理、重跑前会先删掉的丝印
 
 # 1 脚不写「1」而写正负号的模块：{位号: {针脚号: 字符}}
@@ -129,7 +130,7 @@ def main():
         return 0
 
     old = [t["primitiveId"] for t in texts
-           if t["text"] in MARKS and t.get("layer") == 3]
+           if t["text"] in MARKS and t.get("layer") == 3 and not t.get("componentId")]
     if old:
         sh(["debug", "exec", "--code",
             "await eda.pcb_PrimitiveString.delete(" + json.dumps(old) + ")"])

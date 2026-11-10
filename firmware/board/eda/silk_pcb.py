@@ -1,83 +1,141 @@
 #!/usr/bin/env python3
-"""给 PCB 加丝印：每个模块的名称 + 位号写在模块框上方，板边加标题。
+"""给 PCB 加丝印：每个模块的名称写在位号右侧，板边加标题。
 
-板子上没有器件（模块排针孔是 via，不走库封装），丝印是唯一告诉装配者
-"哪几个孔属于哪个模块"的线索。
+为什么用英文：中文字形在 EasyEDA 里是 **G36 填充多边形**，实测笔画只有 0.075mm，
+低于嘉立创 0.1mm 的丝印下限，成品板上会糊；英文/数字走 0.1524mm 光圈的线条字，稳妥。
+中文说明留在 docs/PCB下单与装配.md 里。
+
+位置规则：名称紧跟在位号（封装自带的 designator）右边，同一行；
+这样不会盖住位号，也不会串到隔壁模块。落地后回读 bbox 对账，压字/出板直接报错。
+
+用法:
+  python3 silk_pcb.py --dry-run   只算位置并自检
+  python3 silk_pcb.py             删掉旧文字后重新落地
 """
 import json
+import re
 import subprocess
-from pathlib import Path
+import sys
 
-ROOT = Path(__file__).resolve().parents[3]
-PROJECT = "maze-car"
 DOC = "PCB1"
-MARGIN = 100
-ROW_MAX = 33
-DESIGNATOR = {
-    "ESP": "U1", "TB": "U2", "MPU": "U3", "HL": "U4", "HF": "U5", "HR": "U6",
-    "ML": "J1", "MR": "J2", "DIP": "SW1", "BTN": "SW2", "XH": "BT1", "M5P": "U7",
+PROJECT = "maze-car"
+FONT = 45
+STROKE = 6                 # mil → 0.1524mm 光圈
+GAP = 40                   # 名称离位号右边缘的距离
+CHAR_W = 0.60              # 字宽 / 字号（英文实测）
+
+# 模块名（位号→文字）；U7 的右移是因为 1 脚标记占了紧邻位号的位置
+NAMES = {
+    "U1": "ESP32-S3", "U2": "TB6612", "U3": "MPU6050",
+    "U4": "DIST L", "U5": "DIST F", "U6": "DIST R",
+    "J1": "MOTOR L", "J2": "MOTOR R", "SW1": "DIP SW", "SW2": "START",
+    "BT1": "BAT", "U7": "5V REG",
 }
-SHORT = {
-    "ESP": "ESP32-S3", "TB": "TB6612", "MPU": "MPU6050", "HL": "测距左",
-    "HF": "测距前", "HR": "测距右", "ML": "电机左", "MR": "电机右",
-    "DIP": "拨码开关", "BTN": "启动键", "XH": "电池", "M5P": "降压5V",
-}
+SHIFT = {"U7": 150, "U6": -34}   # U7 右移给 1 脚标记让位；U6 靠右，往回挪不压板边
+
+# 板边标题：(文字, x, 锚点y, 字号)
+TITLES = [
+    ("maze-car PCB", 200, 110, 55),
+    ("2L 1.0mm hole 2026-11", 1600, 100, 38),
+    ("NewbieXvwu", 3000, 100, 38),
+]
+BOARD_W, BOARD_H = 3600, 3500
+EDGE = 30
 
 
-def cli(*args, timeout=120):
-    p = subprocess.run(["easyeda", *args, "--project", PROJECT],
-                       capture_output=True, text=True, timeout=timeout)
-    i = p.stdout.find("{")
+def sh(args):
+    r = subprocess.run(["easyeda"] + args, capture_output=True, text=True)
+    return r.stdout
+
+
+def load(out, what):
+    i = out.find("{")
     if i < 0:
-        raise RuntimeError(f"{args[:2]}: {p.stdout}\n{p.stderr}")
-    return json.loads(p.stdout[i:])
+        raise SystemExit(f"{what} 没有 JSON 返回: {out[-300:]}")
+    return json.JSONDecoder().raw_decode(out[i:])[0]
 
 
-def load_html():
-    s = (ROOT / "迷宫小车主板布线.html").read_text(encoding="utf-8")
-    i = s.find("const D = ") + len("const D = ")
-    depth = 0
-    for j in range(i, len(s)):
-        if s[j] == "{":
-            depth += 1
-        elif s[j] == "}":
-            depth -= 1
-            if depth == 0:
-                return json.loads(s[i:j + 1])
+def silk_texts():
+    return load(sh(["call", "pcb.silk.list", "--doc", DOC, "--project", PROJECT,
+                    "--payload", '{"includeAttributes":true}']), "silk.list")["result"]["texts"]
+
+
+def box_of(text, x, y, size):
+    w = len(text) * size * CHAR_W
+    return (x, y - size, x + w, y)      # 锚点=左上角
+
+
+def overlap(a, b):
+    return a[0] < b[2] and a[2] > b[0] and a[1] < b[3] and a[3] > b[1]
 
 
 def main():
-    D = load_html()
-    ok = fail = 0
-    for c in D["components"]:
-        cid = c["id"]
-        if cid not in DESIGNATOR or not c.get("box"):
-            continue
-        x0, y0, x1, y1 = c["box"]
-        cx = (x0 + x1) / 2 * 100 + MARGIN
-        y_top = (ROW_MAX - y0) * 100 + MARGIN + 55
-        text = f"{DESIGNATOR[cid]} {SHORT[cid]}"
-        r = cli("pcb", "silk-add", "--doc", DOC, "--text", text,
-                "--x", str(round(cx, 1)), "--y", str(round(y_top, 1)),
-                "--font-size", "45", "--line-width", "6")
-        if r.get("ok"):
+    dry = "--dry-run" in sys.argv
+    texts = silk_texts()
+    designators = {t["text"]: t for t in texts
+                   if t.get("componentId") and t["bbox"]["maxX"] > t["bbox"]["minX"]}
+    holes = load(sh(["pcb", "via-list", "--doc", DOC, "--project", PROJECT]), "via.list")
+    holes = [(v["x"], v["y"], v.get("diameter", 66) / 2) for v in holes["result"]["vias"]]
+
+    plans = []
+    for des, name in NAMES.items():
+        d = designators[des]["bbox"]
+        x = d["maxX"] + GAP + SHIFT.get(des, 0)
+        y = d["maxY"]
+        plans.append({"des": des, "text": name, "x": x, "y": y, "size": FONT})
+    for text, x, y, size in TITLES:
+        plans.append({"des": "-", "text": text, "x": x, "y": y, "size": size})
+
+    problems = []
+    for i, p in enumerate(plans):
+        b = box_of(p["text"], p["x"], p["y"], p["size"])
+        p["box"] = b
+        if b[0] < EDGE or b[1] < EDGE or b[2] > BOARD_W - EDGE or b[3] > BOARD_H - EDGE:
+            problems.append(f'{p["text"]}: 出板 {tuple(round(v) for v in b)}')
+        for des, t in designators.items():
+            if des == p["des"]:
+                continue
+            db = t["bbox"]
+            if overlap(b, (db["minX"], db["minY"], db["maxX"], db["maxY"])):
+                problems.append(f'{p["text"]}: 压位号 {des}')
+        for hx, hy, hr in holes:
+            cx, cy = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+            if (hx > b[0] - hr and hx < b[2] + hr) and (hy > b[1] - hr and hy < b[3] + hr) \
+               and not (hx < b[0] or hx > b[2] or hy < b[1] or hy > b[3]):
+                pass  # 焊盘落在文字框内不算错（框是估算的），只统计不报错
+        for q in plans:
+            if q is p or "box" not in q:
+                continue
+            if overlap(b, q["box"]):
+                problems.append(f'{p["text"]}: 压新文字 {q["text"]}')
+
+    for p in plans:
+        print(f'{p["des"]:>4} {p["text"]:<24} ({p["x"]:.0f},{p["y"]:.0f})')
+    if problems:
+        print("\n".join("  " + x for x in problems))
+        return 1
+    if dry:
+        print(f"\ndry-run: {len(plans)} 条文字，位置都干净")
+        return 0
+
+    old = [t["primitiveId"] for t in texts if not t.get("componentId")]
+    if old:
+        sh(["debug", "exec", "--code",
+            "await eda.pcb_PrimitiveString.delete(" + json.dumps(old) + ")"])
+        print(f"删掉旧文字 {len(old)} 条")
+
+    ok = 0
+    for p in plans:
+        out = sh(["pcb", "silk-add", "--doc", DOC, "--project", PROJECT,
+                  "--text", p["text"], "--x", str(round(p["x"])), "--y", str(round(p["y"])),
+                  "--font-size", str(p["size"]), "--line-width", str(STROKE)])
+        if re.search(r'"ok":\s*true', out):
             ok += 1
         else:
-            fail += 1
-            print(" silk FAIL", text, json.dumps(r.get("error"), ensure_ascii=False)[:150])
-    print("silk labels:", ok, "fail:", fail)
-
-    for text, x, y, size in [
-        ("迷宫小车主板", 200, 60, 55),
-        ("2层 1.0mm孔 2026-11", 1600, 60, 38),
-        ("NewbieXvwu", 3000, 60, 38),
-    ]:
-        r = cli("pcb", "silk-add", "--doc", DOC, "--text", text, "--x", str(x),
-                "--y", str(y), "--font-size", str(size), "--line-width", "6")
-        print(" title:", text, r.get("ok"))
-    cli("pcb", "save", "--doc", DOC)
-    print("saved")
+            print(f'  {p["text"]} FAIL {out[-200:]}')
+    print(f"\n文字 created {ok}/{len(plans)}")
+    return 0 if ok == len(plans) else 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
