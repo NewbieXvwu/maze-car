@@ -64,6 +64,9 @@ def main():
 
     r = cli("pcb", "clear", "--doc", DOC)
     print("clear:", r.get("ok"))
+    if not r.get("ok"):
+        raise SystemExit("pcb clear 失败，先处理它（本机 doc reload 常常坏，"
+                         "可改用 pcb save + 手动确认板子已清空）：\n" + str(r)[:500])
 
     n_via = 0
     for e in plan:

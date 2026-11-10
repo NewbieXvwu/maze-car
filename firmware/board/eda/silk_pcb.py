@@ -2,11 +2,11 @@
 """给 PCB 加丝印：每个模块的名称写在位号右侧，板边加标题。
 
 为什么用英文：中文字形在 EasyEDA 里是 **G36 填充多边形**，实测笔画只有 0.075mm，
-低于嘉立创 0.1mm 的丝印下限，成品板上会糊；英文/数字走 0.1524mm 光圈的线条字，稳妥。
+低于嘉立创 0.15mm 的丝印线宽下限，成品板上会糊；英文/数字走 0.1524mm 光圈的线条字，稳妥。
 中文说明留在 docs/PCB下单与装配.md 里。
 
-位置规则：名称紧跟在位号（封装自带的 designator）右边，同一行；
-这样不会盖住位号，也不会串到隔壁模块。落地后回读 bbox 对账，压字/出板直接报错。
+位置规则：名称紧跟在位号（封装自带的 designator）右边，同一行；BT1/U6 右边不够宽，
+改写在位号正上方。落地后回读 bbox 对账，压字/出板直接报错。
 
 用法:
   python3 silk_pcb.py --dry-run   只算位置并自检
@@ -19,25 +19,28 @@ import sys
 
 DOC = "PCB1"
 PROJECT = "maze-car"
-FONT = 45
-STROKE = 6                 # mil → 0.1524mm 光圈
+FONT = 70                  # 实测墨迹高 ≈ 0.0145×字号 ≈ 1.01mm（嘉立创 字高下限 1.0mm）
+STROKE = 7                 # mil → 0.1778mm 光圈（嘉立创 下限 0.15mm）
 GAP = 40                   # 名称离位号右边缘的距离
 CHAR_W = 0.60              # 字宽 / 字号（英文实测）
 
 # 模块名（位号→文字）；U7 的右移是因为 1 脚标记占了紧邻位号的位置
 NAMES = {
     "U1": "ESP32-S3", "U2": "TB6612", "U3": "MPU6050",
-    "U4": "DIST L", "U5": "DIST F", "U6": "DIST R",
+    "U4": "TOF L", "U5": "TOF F", "U6": "TOF R",
     "J1": "MOTOR L", "J2": "MOTOR R", "SW1": "DIP SW", "SW2": "START",
     "BT1": "BAT", "U7": "5V REG",
 }
-SHIFT = {"U7": 150, "U6": -34}   # U7 右移给 1 脚标记让位；U6 靠右，往回挪不压板边
+SHIFT = {"U7": 150}        # U7 右移给 1 脚标记让位
+ABOVE = {"BT1", "U4", "U5", "U6"}   # 写在位号正上方：这四个右边不够宽，会串到隔壁
+ABOVE_GAP = 20             # 名称与位号的竖直间距（mil）
+DY = {"J1": 12, "J2": 12}  # 这两个右边就是 1 脚标记，名称抬高一点避免压到
 
 # 板边标题：(文字, x, 锚点y, 字号)
 TITLES = [
-    ("maze-car PCB", 200, 110, 55),
-    ("2L 1.0mm hole 2026-11", 1600, 100, 38),
-    ("NewbieXvwu", 3000, 100, 38),
+    ("maze-car PCB", 200, 110, 70),
+    ("2L 1.0mm hole 2026-11", 1600, 100, 70),
+    ("NewbieXvwu", 3000, 100, 70),
 ]
 BOARD_W, BOARD_H = 3600, 3500
 EDGE = 30
@@ -74,14 +77,21 @@ def main():
     texts = silk_texts()
     designators = {t["text"]: t for t in texts
                    if t.get("componentId") and t["bbox"]["maxX"] > t["bbox"]["minX"]}
+    missing = [d for d in NAMES if d not in designators]
+    if missing:
+        raise SystemExit("板上没有这些位号: " + ", ".join(missing)
+                         + "\n→ 先跑 place_outline.py 把 12 个模块框放上去；"
+                           "pcb clear 会把它们删掉。")
     holes = load(sh(["pcb", "via-list", "--doc", DOC, "--project", PROJECT]), "via.list")
     holes = [(v["x"], v["y"], v.get("diameter", 66) / 2) for v in holes["result"]["vias"]]
 
     plans = []
     for des, name in NAMES.items():
         d = designators[des]["bbox"]
-        x = d["maxX"] + GAP + SHIFT.get(des, 0)
-        y = d["maxY"]
+        if des in ABOVE:
+            x, y = d["minX"], d["maxY"] + ABOVE_GAP + FONT
+        else:
+            x, y = d["maxX"] + GAP + SHIFT.get(des, 0), d["maxY"] + DY.get(des, 0)
         plans.append({"des": des, "text": name, "x": x, "y": y, "size": FONT})
     for text, x, y, size in TITLES:
         plans.append({"des": "-", "text": text, "x": x, "y": y, "size": size})

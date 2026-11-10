@@ -68,8 +68,9 @@ def main():
                        "--project", PROJECT, "--ids", ",".join(old)])
         print(f"deleted {len(old)} old mask fills: {ok}")
 
-    v = vias()
-    print(f"vias: {len(v)}")
+    allv = vias()
+    v = [x for x in allv if x.get("diameter", 0) < 100]      # 排针孔外径 65.4mil
+    print(f"排针孔 {len(v)} 个；跳过 {len(allv) - len(v)} 个非排针孔（M3 安装孔 3.99mm）")
     done = 0
     for item in v:
         for layer in LAYERS:

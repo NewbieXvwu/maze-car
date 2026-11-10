@@ -10,7 +10,8 @@
   - 任意两条文字 bbox 不相交；
   - 13 个标记（12 个 `1` + BT1 的 `+`/`-`）到它所属模块 1 号孔（BT1 的 `-` 到 2 号孔）
     的距离 < 200 mil，且该孔确实是该模块的 1 号（`-` 是 2 号）；
-  - 12 个模块名的左边缘在位号右侧 0~120 mil 内（说明名和位号是同一行的一对）。
+  - 12 个模块名要么在位号右侧同一行（左边缘离位号右边缘 0~250 mil），
+    要么在位号正上方（左边缘对齐、竖直间距 ≤ 120 mil）——BT1/U6 用后者。
 
 用法: python3 verify_silk.py
 """
@@ -52,6 +53,10 @@ def main():
     P = pins()
     print(f"可见文字 {len(texts)} 条")
     bad = []
+    EXPECT = 40          # 12 位号 + 12 模块名 + 3 板边标题 + 13 标记
+    if len(texts) != EXPECT:
+        bad.append(f"文字条数 {len(texts)}，应为 {EXPECT}"
+                   f"（少了多半是 silk_pcb.py/pin1_label.py 没跑，或 place_outline.py 顺序错了）")
 
     for i, t in enumerate(texts):
         b = t["bbox"]
@@ -83,17 +88,19 @@ def main():
              and t["text"] not in ("1", "+", "-", "\u2212") and t["text"] not in titles]
     for t in names:
         b = t["bbox"]
-        row = [d for d in designs.values() if abs(d["maxY"] - b["maxY"]) < 12
-               and 0 <= b["minX"] - d["maxX"] <= 250]
-        if not row:
-            bad.append(f'名称 {t["text"]!r} 没跟任何位号同一行')
+        side = [d for d in designs.values() if abs(d["maxY"] - b["maxY"]) < 20
+                and 0 <= b["minX"] - d["maxX"] <= 250]
+        above = [d for d in designs.values() if abs(d["minX"] - b["minX"]) < 12
+                 and 0 < b["minY"] - d["maxY"] <= 120]
+        if not side and not above:
+            bad.append(f'名称 {t["text"]!r} 既不在位号右侧同一行，也不在位号正上方')
 
     print(f"标记 {len(marks)} 个、名称 {len(names)} 条")
     if bad:
         print("\n".join("  " + x for x in bad))
         print(f"结论：FAIL —— {len(bad)} 处问题")
         return 1
-    print("结论：PASS —— 40 条文字都在板内、无压字，标记都指向各自 1 脚")
+    print(f"结论：PASS —— {EXPECT} 条文字都在板内、无压字，标记都指向各自 1 脚")
     return 0
 
 

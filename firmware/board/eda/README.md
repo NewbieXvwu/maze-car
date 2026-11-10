@@ -45,10 +45,10 @@ easyeda pcb clear --doc PCB1 --project maze-car
 python3 route_via.py        # 112 孔 + 134 段线
 python3 board_setup.py      # 板框 + 四角安装孔（放在 route_via 之后，clear 会清孔）
 python3 bridge_nets.py      # 5 根顶层桥接线（先 --dry-run 看路径）
-python3 mask_open.py        # 224 个阻焊开窗（正反各 112）
-python3 silk_pcb.py         # 丝印文字（模块名 + 位号 + 板边标题）
+python3 mask_open.py        # 224 个阻焊开窗（正反各 112，只给 1.0mm 孔开）
+python3 place_outline.py    # 12 个模块框（必须放在 silk_pcb 之前：位号来自这些器件）
+python3 silk_pcb.py         # 丝印文字（模块名 + 板边标题；先删旧的再加）
 python3 pin1_label.py       # 12 个模块各标一个「1」（1 脚位置）
-python3 place_outline.py    # 12 个模块框
 easyeda pcb save --doc PCB1 --project maze-car
 
 # 出厂验证
@@ -92,9 +92,9 @@ python3 verify_gerber_nets.py ../../../out/gerber/<新zip>.zip  # 从制造文�
 - 116 个孔：112 个 1.0mm（模块排针，100 mil 栅格）+ 4 个 3.2mm M3 安装孔（四角，离边 250 mil）。
 - 150 段铜：底层 130 段、顶层 20 段（原 9 段跨线 + 11 段桥接）；信号 12 mil、电源 20 mil。
 - 阻焊：112 个孔正反各一个开窗（12 边形，半径 36 mil → 开窗 1.83mm，比 1.66mm 焊盘大 0.17mm）。
-- 丝印：12 个模块英文名（`ESP32-S3`/`TB6612`/`MPU6050`/`DIST L,F,R`/`MOTOR L,R`/`DIP SW`/`START`/`BAT`/`5V REG`）+ 位号 + 13 个方向标记（12 个 `1`，BT1 换成 `+`/`-`）+ 板边标题；
-  **不要用中文**：中文字形是 G36 填充多边形，实测笔画 0.074mm，低于嘉立创 0.1mm 下限，成品会糊；英文走 0.1524/0.2032mm 光圈线条字；
-  方向标记字高 60 mil（墨迹约 1.08mm）、名称 45 mil、笔画 8/6 mil（0.2032/0.1524mm，嘉立创下限 0.1mm）；全部落在板框内、不压焊盘、不压别家文字。
+- 丝印：12 个模块英文名（`ESP32-S3`/`TB6612`/`MPU6050`/`TOF L,F,R`/`MOTOR L,R`/`DIP SW`/`START`/`BAT`/`5V REG`）+ 位号 + 13 个方向标记（12 个 `1`，BT1 换成 `+`/`-`）+ 板边标题；
+  **不要用中文**：中文字形是 G36 填充多边形，实测笔画 0.074mm，低于嘉立创 0.15mm 丝印线宽下限，成品会糊；英文/数字走 0.1778/0.2032mm 光圈的线条字；
+  名称/标题/标记字号统一 70 mil（实测墨迹高 1.03–1.10mm，嘉立创下限 1.0mm）、笔画 7/8 mil（0.1778/0.2032mm，下限 0.15mm）；全部落在板框内、不压焊盘、不压别家文字。BT1/U4/U5/U6 的名字写在位号正上方（右边不够宽，写右边会串到隔壁）；J1/J2 的名字抬高 12 mil 让开 1 脚标记。
 - DRC：**clearance / spacing / outline / No Connection 全部 0**；只剩 1 条 `Netlist Error`
   （PCB 用裸孔+实铜，原理图按信号名建符号，两套表示必然不等——结构性差异，不影响制板）。
 - 独立验证（三道，互不相信）：

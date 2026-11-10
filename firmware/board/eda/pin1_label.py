@@ -8,7 +8,7 @@
 为什么不用圆点：12 个点里有 9 个正好落在走线上（视觉上像过孔），
 而且模块方框比焊盘大一圈，画在框内的东西会被模块本体挡住。
 
-字高 50 mil = 1.27 mm、笔画 8 mil = 0.20 mm（嘉立创丝印下限：字高 1 mm、笔画 0.1 mm）。
+字号 70 mil（实测墨迹高 ≈1.01 mm）、笔画 8 mil = 0.20 mm（嘉立创丝印能力：字高 ≥1 mm、线宽 ≥0.15 mm）。
 
 用法:
   python3 pin1_label.py --dry-run   只算位置
@@ -24,7 +24,7 @@ PLAN = ROOT / "pcb_plan.json"
 OUTLINE = ROOT / "outline_devices.json"
 DOC = "PCB1"
 PROJECT = "maze-car"
-FONT = 60
+FONT = 70
 LINE_W = 8
 GAP = 40           # 标记离方框边的距离（mil）
 TEXT_W = 34        # 单字符宽（mil，60 号字经验值）

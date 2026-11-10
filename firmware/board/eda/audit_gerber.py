@@ -136,10 +136,15 @@ def main():
         h = gto["bbox"][3] - gto["bbox"][1]
         w = gto["bbox"][2] - gto["bbox"][0]
         print(f"结论：{'PASS' if ok else 'FAIL'} —— 板框闭合、"
-              f"丝印 {gto['regions']} 个区域/{len(gto['draws'])} 段线、丝印高 {h:.1f} 宽 {w:.1f} mm、"
+              f"丝印 {gto['regions']} 个区域/{len(gto['draws'])} 段线"
+              f"（整层外框 {w:.1f}×{h:.1f}mm，不是字高）、"
               f"钻孔 {sum(len(v[2]) for v in drills.values())} 个")
+    else:
+        print("结论：FAIL —— 缺板框/丝印层或钻带为空")
     out = {n: {k: (v if k != "apertures" else {str(a): b for a, b in v.items()}) for k, v in g.items()}
            for n, g in gerbers.items()}
+    if not ok:
+        return 1
     if "--json" in sys.argv:
         p = sys.argv[sys.argv.index("--json") + 1]
         json.dump({"gerbers": {k: {kk: vv for kk, vv in v.items() if kk != "flashes"}
@@ -147,7 +152,8 @@ def main():
                    "drills": {k: {"counts": {str(a): c for a, c in v[1].items()},
                                   "holes": v[2]} for k, v in drills.items()}},
                   open(p, "w"), ensure_ascii=False)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
