@@ -127,6 +127,17 @@ def main():
                 print(f"飞针 {n}: {json.dumps(j, ensure_ascii=False)[:160]}")
             except Exception:
                 pass
+    # 一句话结论（release.py 只回显最后一行）
+    gko = next((g for n, g in gerbers.items() if n.upper().endswith(".GKO")), None)
+    gto = next((g for n, g in gerbers.items() if n.upper().endswith(".GTO")), None)
+    drill_ok = all(len(v[2]) > 0 for v in drills.values()) and drills
+    ok = bool(gko and gko["bbox"] and gto and gto["bbox"] and drill_ok)
+    if ok and gto["bbox"]:
+        h = gto["bbox"][3] - gto["bbox"][1]
+        w = gto["bbox"][2] - gto["bbox"][0]
+        print(f"结论：{'PASS' if ok else 'FAIL'} —— 板框闭合、"
+              f"丝印 {gto['regions']} 个区域/{len(gto['draws'])} 段线、丝印高 {h:.1f} 宽 {w:.1f} mm、"
+              f"钻孔 {sum(len(v[2]) for v in drills.values())} 个")
     out = {n: {k: (v if k != "apertures" else {str(a): b for a, b in v.items()}) for k, v in g.items()}
            for n, g in gerbers.items()}
     if "--json" in sys.argv:
