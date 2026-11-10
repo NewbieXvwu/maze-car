@@ -1,0 +1,142 @@
+{
+ "outline": [
+  -30.0,
+  -45.0,
+  30.0,
+  -45.0,
+  30.0,
+  45.0,
+  -30.0,
+  45.0,
+  -30.0,
+  -45.0
+ ],
+ "pins": [
+  {
+   "number": "VM",
+   "name": "VM",
+   "x": -50.0,
+   "y": 30.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "VCC",
+   "name": "VCC",
+   "x": -50.0,
+   "y": 20.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "GND",
+   "name": "GND",
+   "x": -50.0,
+   "y": 10.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "AO1",
+   "name": "AO1",
+   "x": -50.0,
+   "y": 0.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "AO2",
+   "name": "AO2",
+   "x": -50.0,
+   "y": -10.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "BO1",
+   "name": "BO1",
+   "x": -50.0,
+   "y": -20.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "BO2",
+   "name": "BO2",
+   "x": -50.0,
+   "y": -30.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "PWMA",
+   "name": "PWMA",
+   "x": 50.0,
+   "y": 30.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "AIN2",
+   "name": "AIN2",
+   "x": 50.0,
+   "y": 20.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "AIN1",
+   "name": "AIN1",
+   "x": 50.0,
+   "y": 10.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "STBY",
+   "name": "STBY",
+   "x": 50.0,
+   "y": 0.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "BIN1",
+   "name": "BIN1",
+   "x": 50.0,
+   "y": -10.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "BIN2",
+   "name": "BIN2",
+   "x": 50.0,
+   "y": -20.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "PWMB",
+   "name": "PWMB",
+   "x": 50.0,
+   "y": -30.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}

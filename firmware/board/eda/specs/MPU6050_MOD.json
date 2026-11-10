@@ -1,0 +1,52 @@
+{
+ "outline": [
+  -30.0,
+  -20.0,
+  30.0,
+  -20.0,
+  30.0,
+  20.0,
+  -30.0,
+  20.0,
+  -30.0,
+  -20.0
+ ],
+ "pins": [
+  {
+   "number": "VCC",
+   "name": "VCC",
+   "x": -50.0,
+   "y": 5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "GND",
+   "name": "GND",
+   "x": -50.0,
+   "y": -5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "SCL",
+   "name": "SCL",
+   "x": 50.0,
+   "y": 5.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "SDA",
+   "name": "SDA",
+   "x": 50.0,
+   "y": -5.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}

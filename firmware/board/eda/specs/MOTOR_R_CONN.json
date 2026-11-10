@@ -1,0 +1,70 @@
+{
+ "outline": [
+  -30.0,
+  -30.0,
+  30.0,
+  -30.0,
+  30.0,
+  30.0,
+  -30.0,
+  30.0,
+  -30.0,
+  -30.0
+ ],
+ "pins": [
+  {
+   "number": "VCC",
+   "name": "VCC",
+   "x": -50.0,
+   "y": 5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "GND",
+   "name": "GND",
+   "x": -50.0,
+   "y": -5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "M1",
+   "name": "M1",
+   "x": 50.0,
+   "y": 15.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "M2",
+   "name": "M2",
+   "x": 50.0,
+   "y": 5.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "C1",
+   "name": "C1",
+   "x": 50.0,
+   "y": -5.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "C2",
+   "name": "C2",
+   "x": 50.0,
+   "y": -15.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}

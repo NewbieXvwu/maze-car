@@ -1,0 +1,52 @@
+{
+ "outline": [
+  -30.0,
+  -20.0,
+  30.0,
+  -20.0,
+  30.0,
+  20.0,
+  -30.0,
+  20.0,
+  -30.0,
+  -20.0
+ ],
+ "pins": [
+  {
+   "number": "IN+",
+   "name": "IN+",
+   "x": -50.0,
+   "y": 5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IN-",
+   "name": "IN-",
+   "x": -50.0,
+   "y": -5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "OUT+",
+   "name": "OUT+",
+   "x": 50.0,
+   "y": 5.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "OUT-",
+   "name": "OUT-",
+   "x": 50.0,
+   "y": -5.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+  "outline": [-35, -20, 35, -20, 35, 20, -35, 20, -35, -20],
+  "pins": [
+    {"number": "VCC", "name": "VCC", "x": -55, "y": 5, "rotation": 0, "length": 20, "pinType": "Power"},
+    {"number": "GND", "name": "GND", "x": -55, "y": -5, "rotation": 0, "length": 20, "pinType": "Power"},
+    {"number": "SCL", "name": "SCL", "x": 55, "y": 5, "rotation": 180, "length": 20, "pinType": "Input"},
+    {"number": "SDA", "name": "SDA", "x": 55, "y": -5, "rotation": 180, "length": 20, "pinType": "Bidirectional"}
+  ]
+}

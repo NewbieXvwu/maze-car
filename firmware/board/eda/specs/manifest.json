@@ -1,0 +1,541 @@
+[
+ {
+  "name": "ESP32_S3_MOD",
+  "designator": "U",
+  "desc": "ESP32-S3 开发板模块 (YD-ESP32-S3)",
+  "height": 130,
+  "pins": [
+   {
+    "pin": "3V3",
+    "net": "3V3"
+   },
+   {
+    "pin": "5Vin",
+    "net": "5V"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "IO42",
+    "net": "SCL"
+   },
+   {
+    "pin": "IO41",
+    "net": "SDA"
+   },
+   {
+    "pin": "IO40",
+    "net": "XSHUT_L"
+   },
+   {
+    "pin": "IO39",
+    "net": "XSHUT_F"
+   },
+   {
+    "pin": "IO38",
+    "net": "XSHUT_R"
+   },
+   {
+    "pin": "IO47",
+    "net": "DIP1"
+   },
+   {
+    "pin": "IO21",
+    "net": "DIP2"
+   },
+   {
+    "pin": "IO2",
+    "net": "BTN"
+   },
+   {
+    "pin": "IO4",
+    "net": "PWMA"
+   },
+   {
+    "pin": "IO5",
+    "net": "AIN2"
+   },
+   {
+    "pin": "IO6",
+    "net": "AIN1"
+   },
+   {
+    "pin": "IO7",
+    "net": "STBY"
+   },
+   {
+    "pin": "IO15",
+    "net": "BIN1"
+   },
+   {
+    "pin": "IO16",
+    "net": "BIN2"
+   },
+   {
+    "pin": "IO17",
+    "net": "PWMB"
+   },
+   {
+    "pin": "IO9",
+    "net": "ENC_L_C2"
+   },
+   {
+    "pin": "IO10",
+    "net": "ENC_L_C1"
+   },
+   {
+    "pin": "IO13",
+    "net": "ENC_R_C2"
+   },
+   {
+    "pin": "IO14",
+    "net": "ENC_R_C1"
+   }
+  ],
+  "left": [
+   "3V3",
+   "5Vin",
+   "GND",
+   "IO42",
+   "IO41",
+   "IO40",
+   "IO39",
+   "IO38",
+   "IO47",
+   "IO21",
+   "IO2"
+  ],
+  "right": [
+   "IO4",
+   "IO5",
+   "IO6",
+   "IO7",
+   "IO15",
+   "IO16",
+   "IO17",
+   "IO9",
+   "IO10",
+   "IO13",
+   "IO14"
+  ]
+ },
+ {
+  "name": "TB6612_MOD",
+  "designator": "U",
+  "desc": "TB6612FNG 双路电机驱动模块",
+  "height": 90,
+  "pins": [
+   {
+    "pin": "VM",
+    "net": "VBAT"
+   },
+   {
+    "pin": "VCC",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "AO1",
+    "net": "AO1"
+   },
+   {
+    "pin": "AO2",
+    "net": "AO2"
+   },
+   {
+    "pin": "BO1",
+    "net": "BO1"
+   },
+   {
+    "pin": "BO2",
+    "net": "BO2"
+   },
+   {
+    "pin": "PWMA",
+    "net": "PWMA"
+   },
+   {
+    "pin": "AIN2",
+    "net": "AIN2"
+   },
+   {
+    "pin": "AIN1",
+    "net": "AIN1"
+   },
+   {
+    "pin": "STBY",
+    "net": "STBY"
+   },
+   {
+    "pin": "BIN1",
+    "net": "BIN1"
+   },
+   {
+    "pin": "BIN2",
+    "net": "BIN2"
+   },
+   {
+    "pin": "PWMB",
+    "net": "PWMB"
+   }
+  ],
+  "left": [
+   "VM",
+   "VCC",
+   "GND",
+   "AO1",
+   "AO2",
+   "BO1",
+   "BO2"
+  ],
+  "right": [
+   "PWMA",
+   "AIN2",
+   "AIN1",
+   "STBY",
+   "BIN1",
+   "BIN2",
+   "PWMB"
+  ]
+ },
+ {
+  "name": "MPU6050_MOD",
+  "designator": "U",
+  "desc": "MPU6050 陀螺仪模块 (GY-521)",
+  "height": 40,
+  "pins": [
+   {
+    "pin": "VCC",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "SCL",
+    "net": "SCL"
+   },
+   {
+    "pin": "SDA",
+    "net": "SDA"
+   }
+  ],
+  "left": [
+   "VCC",
+   "GND"
+  ],
+  "right": [
+   "SCL",
+   "SDA"
+  ]
+ },
+ {
+  "name": "VL53L0X_L_MOD",
+  "designator": "U",
+  "desc": "左测距模块 VL53L0X",
+  "height": 50,
+  "pins": [
+   {
+    "pin": "VIN",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "SCL",
+    "net": "SCL"
+   },
+   {
+    "pin": "SDA",
+    "net": "SDA"
+   },
+   {
+    "pin": "XSHUT",
+    "net": "XSHUT_L"
+   }
+  ],
+  "left": [
+   "VIN",
+   "GND"
+  ],
+  "right": [
+   "SCL",
+   "SDA",
+   "XSHUT"
+  ]
+ },
+ {
+  "name": "VL53L0X_F_MOD",
+  "designator": "U",
+  "desc": "前测距模块 VL53L0X",
+  "height": 50,
+  "pins": [
+   {
+    "pin": "VIN",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "SCL",
+    "net": "SCL"
+   },
+   {
+    "pin": "SDA",
+    "net": "SDA"
+   },
+   {
+    "pin": "XSHUT",
+    "net": "XSHUT_F"
+   }
+  ],
+  "left": [
+   "VIN",
+   "GND"
+  ],
+  "right": [
+   "SCL",
+   "SDA",
+   "XSHUT"
+  ]
+ },
+ {
+  "name": "VL53L0X_R_MOD",
+  "designator": "U",
+  "desc": "右测距模块 VL53L0X",
+  "height": 50,
+  "pins": [
+   {
+    "pin": "VIN",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "SCL",
+    "net": "SCL"
+   },
+   {
+    "pin": "SDA",
+    "net": "SDA"
+   },
+   {
+    "pin": "XSHUT",
+    "net": "XSHUT_R"
+   }
+  ],
+  "left": [
+   "VIN",
+   "GND"
+  ],
+  "right": [
+   "SCL",
+   "SDA",
+   "XSHUT"
+  ]
+ },
+ {
+  "name": "MOTOR_L_CONN",
+  "designator": "J",
+  "desc": "左电机+编码器接线",
+  "height": 60,
+  "pins": [
+   {
+    "pin": "VCC",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "M1",
+    "net": "AO1"
+   },
+   {
+    "pin": "M2",
+    "net": "AO2"
+   },
+   {
+    "pin": "C1",
+    "net": "ENC_L_C1"
+   },
+   {
+    "pin": "C2",
+    "net": "ENC_L_C2"
+   }
+  ],
+  "left": [
+   "VCC",
+   "GND"
+  ],
+  "right": [
+   "M1",
+   "M2",
+   "C1",
+   "C2"
+  ]
+ },
+ {
+  "name": "MOTOR_R_CONN",
+  "designator": "J",
+  "desc": "右电机+编码器接线",
+  "height": 60,
+  "pins": [
+   {
+    "pin": "VCC",
+    "net": "3V3"
+   },
+   {
+    "pin": "GND",
+    "net": "GND"
+   },
+   {
+    "pin": "M1",
+    "net": "BO1"
+   },
+   {
+    "pin": "M2",
+    "net": "BO2"
+   },
+   {
+    "pin": "C1",
+    "net": "ENC_R_C1"
+   },
+   {
+    "pin": "C2",
+    "net": "ENC_R_C2"
+   }
+  ],
+  "left": [
+   "VCC",
+   "GND"
+  ],
+  "right": [
+   "M1",
+   "M2",
+   "C1",
+   "C2"
+  ]
+ },
+ {
+  "name": "DIP_SW_2",
+  "designator": "SW",
+  "desc": "2 位拨码开关",
+  "height": 40,
+  "pins": [
+   {
+    "pin": "1",
+    "net": "DIP1"
+   },
+   {
+    "pin": "2",
+    "net": "DIP2"
+   },
+   {
+    "pin": "1'",
+    "net": "GND"
+   },
+   {
+    "pin": "2'",
+    "net": "GND"
+   }
+  ],
+  "left": [
+   "1",
+   "2"
+  ],
+  "right": [
+   "1'",
+   "2'"
+  ]
+ },
+ {
+  "name": "START_BTN",
+  "designator": "SW",
+  "desc": "启动按键",
+  "height": 30,
+  "pins": [
+   {
+    "pin": "A",
+    "net": "BTN"
+   },
+   {
+    "pin": "D",
+    "net": "GND"
+   }
+  ],
+  "left": [
+   "A"
+  ],
+  "right": [
+   "D"
+  ]
+ },
+ {
+  "name": "BATTERY",
+  "designator": "BT",
+  "desc": "电池（18650x2 或专用包）",
+  "height": 30,
+  "pins": [
+   {
+    "pin": "+",
+    "net": "VBAT"
+   },
+   {
+    "pin": "-",
+    "net": "GND"
+   }
+  ],
+  "left": [
+   "+"
+  ],
+  "right": [
+   "-"
+  ]
+ },
+ {
+  "name": "BUCK_5V",
+  "designator": "U",
+  "desc": "降压模块 mini560 5V",
+  "height": 40,
+  "pins": [
+   {
+    "pin": "IN+",
+    "net": "VBAT"
+   },
+   {
+    "pin": "IN-",
+    "net": "GND"
+   },
+   {
+    "pin": "OUT+",
+    "net": "5V"
+   },
+   {
+    "pin": "OUT-",
+    "net": "GND"
+   }
+  ],
+  "left": [
+   "IN+",
+   "IN-"
+  ],
+  "right": [
+   "OUT+",
+   "OUT-"
+  ]
+ }
+]

@@ -1,0 +1,31 @@
+{
+ "project": "0b4cef7a743d089a2ec5d694978c583f3a22fec3deba6e8e58ee68d5a5d2789e",
+ "symbols": {
+  "ESP32_S3_MOD": "05516894979bb4c9",
+  "TB6612_MOD": "899f7eaf1ac5f74d",
+  "MPU6050_MOD": "87fa5db5ae6491d0",
+  "VL53L0X_L_MOD": "e294eaa62e6d9d1e",
+  "VL53L0X_F_MOD": "d1899e5e7c57e70f",
+  "VL53L0X_R_MOD": "e040199290194db2",
+  "MOTOR_L_CONN": "bd4d469ffdeddff7",
+  "MOTOR_R_CONN": "99700806e12ff6ff",
+  "DIP_SW_2": "1467f17e3a524a95",
+  "START_BTN": "e000ae9ed786a5cd",
+  "BATTERY": "be40f4afa5420a4e",
+  "BUCK_5V": "c6fe11d3139d41fc"
+ },
+ "devices": {
+  "ESP32_S3_MOD": "8e96b11033a130eb",
+  "TB6612_MOD": "45c12b1c54627118",
+  "MPU6050_MOD": "e211e9358353ccb4",
+  "VL53L0X_L_MOD": "fe4d31c4f08dea09",
+  "VL53L0X_F_MOD": "dbbc3cf728cd50ad",
+  "VL53L0X_R_MOD": "d7a25d7e7f7862ed",
+  "MOTOR_L_CONN": "91a5972c97354724",
+  "MOTOR_R_CONN": "570ce99954b0fed0",
+  "DIP_SW_2": "e36eb64faede5e7e",
+  "START_BTN": "a8c394e402e63d3b",
+  "BATTERY": "ef5e0cdb77a23eee",
+  "BUCK_5V": "ecb0ca50ccacd91e"
+ }
+}

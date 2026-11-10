@@ -1,0 +1,214 @@
+{
+ "outline": [
+  -30.0,
+  -65.0,
+  30.0,
+  -65.0,
+  30.0,
+  65.0,
+  -30.0,
+  65.0,
+  -30.0,
+  -65.0
+ ],
+ "pins": [
+  {
+   "number": "3V3",
+   "name": "3V3",
+   "x": -50.0,
+   "y": 50.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "5Vin",
+   "name": "5Vin",
+   "x": -50.0,
+   "y": 40.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "GND",
+   "name": "GND",
+   "x": -50.0,
+   "y": 30.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO42",
+   "name": "IO42",
+   "x": -50.0,
+   "y": 20.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO41",
+   "name": "IO41",
+   "x": -50.0,
+   "y": 10.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO40",
+   "name": "IO40",
+   "x": -50.0,
+   "y": 0.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO39",
+   "name": "IO39",
+   "x": -50.0,
+   "y": -10.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO38",
+   "name": "IO38",
+   "x": -50.0,
+   "y": -20.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO47",
+   "name": "IO47",
+   "x": -50.0,
+   "y": -30.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO21",
+   "name": "IO21",
+   "x": -50.0,
+   "y": -40.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO2",
+   "name": "IO2",
+   "x": -50.0,
+   "y": -50.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO4",
+   "name": "IO4",
+   "x": 50.0,
+   "y": 50.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO5",
+   "name": "IO5",
+   "x": 50.0,
+   "y": 40.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO6",
+   "name": "IO6",
+   "x": 50.0,
+   "y": 30.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO7",
+   "name": "IO7",
+   "x": 50.0,
+   "y": 20.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO15",
+   "name": "IO15",
+   "x": 50.0,
+   "y": 10.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO16",
+   "name": "IO16",
+   "x": 50.0,
+   "y": 0.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO17",
+   "name": "IO17",
+   "x": 50.0,
+   "y": -10.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO9",
+   "name": "IO9",
+   "x": 50.0,
+   "y": -20.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO10",
+   "name": "IO10",
+   "x": 50.0,
+   "y": -30.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO13",
+   "name": "IO13",
+   "x": 50.0,
+   "y": -40.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "IO14",
+   "name": "IO14",
+   "x": 50.0,
+   "y": -50.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}

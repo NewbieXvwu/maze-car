@@ -1,0 +1,61 @@
+{
+ "outline": [
+  -30.0,
+  -25.0,
+  30.0,
+  -25.0,
+  30.0,
+  25.0,
+  -30.0,
+  25.0,
+  -30.0,
+  -25.0
+ ],
+ "pins": [
+  {
+   "number": "VIN",
+   "name": "VIN",
+   "x": -50.0,
+   "y": 5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "GND",
+   "name": "GND",
+   "x": -50.0,
+   "y": -5.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "SCL",
+   "name": "SCL",
+   "x": 50.0,
+   "y": 10.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "SDA",
+   "name": "SDA",
+   "x": 50.0,
+   "y": 0.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "XSHUT",
+   "name": "XSHUT",
+   "x": 50.0,
+   "y": -10.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}

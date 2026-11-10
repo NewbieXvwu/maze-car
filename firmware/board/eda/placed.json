@@ -1,0 +1,14 @@
+{
+ "BATTERY": "BT1",
+ "BUCK_5V": "U7",
+ "ESP32_S3_MOD": "U1",
+ "TB6612_MOD": "U2",
+ "MOTOR_L_CONN": "J1",
+ "MOTOR_R_CONN": "J2",
+ "MPU6050_MOD": "U3",
+ "VL53L0X_L_MOD": "U4",
+ "VL53L0X_F_MOD": "U5",
+ "VL53L0X_R_MOD": "U6",
+ "DIP_SW_2": "SW1",
+ "START_BTN": "SW2"
+}

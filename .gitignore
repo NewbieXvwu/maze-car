@@ -16,3 +16,6 @@ build/
 
 # PlatformIO
 .pio/
+
+# easyeda-agent daemon 产物（可重生成）
+.easyeda/

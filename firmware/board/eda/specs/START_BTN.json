@@ -1,0 +1,34 @@
+{
+ "outline": [
+  -30.0,
+  -15.0,
+  30.0,
+  -15.0,
+  30.0,
+  15.0,
+  -30.0,
+  15.0,
+  -30.0,
+  -15.0
+ ],
+ "pins": [
+  {
+   "number": "A",
+   "name": "A",
+   "x": -50.0,
+   "y": 0.0,
+   "rotation": 180,
+   "length": 20,
+   "pinType": "Undefined"
+  },
+  {
+   "number": "D",
+   "name": "D",
+   "x": 50.0,
+   "y": 0.0,
+   "rotation": 0,
+   "length": 20,
+   "pinType": "Undefined"
+  }
+ ]
+}
