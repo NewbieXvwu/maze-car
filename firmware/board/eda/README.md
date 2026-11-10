@@ -45,6 +45,7 @@ easyeda sch read --doc P1 --project maze-car   # 逐脚核对
 |---|---|
 | `gen_footprints.py` | 解析 HTML 的 `const D`，按模块物理针脚 1..N 建封装 + 器件（`pcb_plan.json`） |
 | `route_via.py` | **当前方案**：清空 → 每个针脚打一个 via（1.0mm 孔 / 1.66mm 环）→ 按 44 根线走 134 段铜 |
+| `mask_open.py` | 给每个孔在阻焊层（5/6）画实心多边形开窗 —— 不开窗的话孔环被绿油盖住，排针焊不上 |
 | `silk_pcb.py` | 每个模块上方写中文名 + 位号，板边写标题 |
 | `outline_devices.py` | 建 12 个"纯丝印封装"（只有框线、无焊盘）+ 器件 |
 | `place_outline.py` | 把 12 个丝印器件放到模块框位置 |
@@ -57,6 +58,7 @@ easyeda sch read --doc P1 --project maze-car   # 逐脚核对
 python3 gen_footprints.py   # 改过布线图才需要
 easyeda pcb clear --doc PCB1 --project maze-car
 python3 route_via.py        # 112 个孔 + 134 段线
+python3 mask_open.py        # 224 个阻焊开窗（正反各 112）
 python3 silk_pcb.py         # 丝印文字
 python3 outline_devices.py  # 只在工程库还没有丝印器件时跑
 python3 place_outline.py    # 12 个模块框
@@ -75,14 +77,24 @@ easyeda pcb save --doc PCB1 --project maze-car
 - 丝印封装里的线要用 `startX/startY/endX/endY`（不是 `x1/y1`），`layer:3` = 顶层丝印。
 - 2.54mm 栅格下走线宽度：信号 12 mil、电源 20 mil。25 mil 会让线到相邻孔只剩
   4.9 mil 净空（DRC 要求 ≥6 mil）。
+- **过孔默认盖油**。`pcb via` 没有开窗参数；`eda.pcb_PrimitiveVia.modify(...,{solderMaskExpansion:{top,bottom}})`
+  改了能回读，但导出的 GTS/GBS 里依然是 0 个开窗（4.1.97 的生成器不认）。
+  可行的开窗办法：在阻焊层（5=顶层 6=底层）用 `pcb fill create --points` 画实心多边形，
+  它会被当作开窗写进 GTS/GBS（实测 112+112 个）。
+- `pcb export-gerber` 的 `--out` **必须是新文件**（已存在会直接报 `--out must be new`，
+  不覆盖、也不删旧的），重导出要换名再替换。
+- 两个钻孔文件 `Drill_PTH_Through.DRL` 与 `Drill_PTH_Through_Via.DRL` 内容相同（各 112 孔），
+  是 4.1.97 把 via 同时写进两份。上传嘉立创若提示重复钻孔，删掉后者再传即可。
 - 焊盘号不能重复（`Duplicate pad number`），所以 PCB 侧按物理针脚 1..N 编号；
   `lib device create` 允许符号引脚名与焊盘号不一致（会报 `[object Object]` 但建成了）。
 
 ## 当前状态（2026-11-10）
 
-- DRC：clearance / spacing / outline **0 条**；剩 9 条 `No Connection`（本来就没接的针脚，
-  如 ESP 的 RST 与未用 IO）与 1 条 `Netlist Error`（PCB 按针脚号、原理图按信号名，且丝印器件无焊盘）。
+- DRC：clearance / spacing / outline **0 条**；剩 9 条 `No Connection` —— 都是模块的
+  **重复电源脚**（ESP 的第二个 3V3、各模块多出来的 GND），模块内部本来就通，不用走线；
+  另有 1 条 `Netlist Error`（PCB 按针脚号 1..N、原理图按信号名，且 12 个器件是纯丝印无焊盘）。
 - 网表自检：84 个带网络的针脚，全部落在同网络铜皮的端点或线段上（`netverify` 式逐点校验）。
+- 阻焊：112 个孔正反各一个开窗（直径 72 mil），排针可以直接插焊。
 - 钻孔：112 个 1.0mm 孔。EasyEDA 4.1.97 会把 via 同时写进
   `Drill_PTH_Through.DRL` 和 `Drill_PTH_Through_Via.DRL`，两个文件内容相同（各 112 孔）。
 - 导出：`out/gerber/maze-car-gerber.zip`（GTL/GBL/GTO/GBO/GTS/GBS/GKO + 钻孔 + 飞针）。
