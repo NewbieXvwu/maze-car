@@ -1,0 +1,67 @@
+# 原理图对照表
+
+由 `layout.py` 自动生成，和布线图、`car/config.h` 是同一份数据。画原理图（嘉立创EDA）时照着连：
+每个模块放一个符号，同一个网络名的脚连在一起。模块内部本来就通的脚（ESP32 的几个 GND、TB6612 的几个 GND）只画一个也行。
+
+## 按网络
+
+| 网络 | 连接的脚 |
+|---|---|
+| VBAT | 电池 +、降压 IN+、TB6612 VM |
+| 5V | 降压 OUT+、ESP32-S3 5Vin |
+| 3V3 | ESP32-S3 3V3、TB6612 VCC、MPU6050 VCC、左测距 VIN、前测距 VIN、右测距 VIN、左电机线 VCC、右电机线 VCC |
+| GND | ESP32-S3 GND、TB6612 GND、MPU6050 GND、左测距 GND、前测距 GND、右测距 GND、左电机线 GND、右电机线 GND、拨码开关 1'、拨码开关 2'、启动键 D、电池 −、降压 IN−、降压 OUT− |
+| SCL | ESP32-S3 IO42、MPU6050 SCL、左测距 SCL、前测距 SCL、右测距 SCL |
+| SDA | ESP32-S3 IO41、MPU6050 SDA、左测距 SDA、前测距 SDA、右测距 SDA |
+| XSHUT_L | ESP32-S3 IO40、左测距 XSHUT |
+| XSHUT_F | ESP32-S3 IO39、前测距 XSHUT |
+| XSHUT_R | ESP32-S3 IO38、右测距 XSHUT |
+| PWMA | ESP32-S3 IO4、TB6612 PWMA |
+| AIN2 | ESP32-S3 IO5、TB6612 AIN2 |
+| AIN1 | ESP32-S3 IO6、TB6612 AIN1 |
+| STBY | ESP32-S3 IO7、TB6612 STBY |
+| BIN1 | ESP32-S3 IO15、TB6612 BIN1 |
+| BIN2 | ESP32-S3 IO16、TB6612 BIN2 |
+| PWMB | ESP32-S3 IO17、TB6612 PWMB |
+| AO1 | TB6612 AO1、左电机线 M1 |
+| AO2 | TB6612 AO2、左电机线 M2 |
+| BO1 | TB6612 BO1、右电机线 M1 |
+| BO2 | TB6612 BO2、右电机线 M2 |
+| ENC_L_C1 | ESP32-S3 IO10、左电机线 C1 |
+| ENC_L_C2 | ESP32-S3 IO9、左电机线 C2 |
+| ENC_R_C1 | ESP32-S3 IO14、右电机线 C1 |
+| ENC_R_C2 | ESP32-S3 IO13、右电机线 C2 |
+| DIP1 | ESP32-S3 IO47、拨码开关 1 |
+| DIP2 | ESP32-S3 IO21、拨码开关 2 |
+| BTN | ESP32-S3 IO2、启动键 A |
+
+## 按模块
+
+**ESP32-S3**：3V3 → 3V3，IO4 → PWMA，IO5 → AIN2，IO6 → AIN1，IO7 → STBY，IO15 → BIN1，IO16 → BIN2，IO17 → PWMB，IO9 → ENC_L_C2，IO10 → ENC_L_C1，IO13 → ENC_R_C2，IO14 → ENC_R_C1，5Vin → 5V，GND → GND，IO2 → BTN，IO42 → SCL，IO41 → SDA，IO40 → XSHUT_L，IO39 → XSHUT_F，IO38 → XSHUT_R，IO47 → DIP1，IO21 → DIP2
+
+**TB6612**：PWMA → PWMA，AIN2 → AIN2，AIN1 → AIN1，STBY → STBY，BIN1 → BIN1，BIN2 → BIN2，PWMB → PWMB，GND → GND，VM → VBAT，VCC → 3V3，AO1 → AO1，AO2 → AO2，BO2 → BO2，BO1 → BO1
+
+**MPU6050**：VCC → 3V3，GND → GND，SCL → SCL，SDA → SDA
+
+**左测距**：VIN → 3V3，GND → GND，SCL → SCL，SDA → SDA，XSHUT → XSHUT_L
+
+**前测距**：VIN → 3V3，GND → GND，SCL → SCL，SDA → SDA，XSHUT → XSHUT_F
+
+**右测距**：VIN → 3V3，GND → GND，SCL → SCL，SDA → SDA，XSHUT → XSHUT_R
+
+**左电机线**：M2 → AO2，VCC → 3V3，C2 → ENC_L_C2，C1 → ENC_L_C1，GND → GND，M1 → AO1
+
+**右电机线**：M2 → BO2，VCC → 3V3，C2 → ENC_R_C2，C1 → ENC_R_C1，GND → GND，M1 → BO1
+
+**拨码开关**：1 → DIP1，2 → DIP2，1' → GND，2' → GND
+
+**启动键**：A → BTN，D → GND
+
+**电池**：+ → VBAT，− → GND
+
+**降压**：IN+ → VBAT，IN− → GND，OUT+ → 5V，OUT− → GND
+
+## 可选（买的东西里没有，暂时不画也行）
+
+- 电池电压检测：VBAT → 100k → ESP32 IO1 → 33k → GND
+- 5V 滤波：100–470 µF 电解电容跨在 ESP32 5Vin 和 GND 之间

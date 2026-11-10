@@ -1,0 +1,15 @@
+# 仿真器编译出的动态库
+maze-sim/libbrain.*
+__pycache__/
+
+# 遥测原始记录：值得留的复制到 logs/ 再提交
+runs/
+
+# 仿真截图
+*.png
+
+# 本地密码（WiFi 热点）
+firmware/car/secrets.h
+
+.DS_Store
+build/

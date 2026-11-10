@@ -1,0 +1,393 @@
+<title>迷宫小车主板布线</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* 布局：左边是按孔位画的洞洞板（元件面 / 焊接面可切换），右边是按焊接顺序排的待焊清单；窄屏上下叠放 */
+:root {
+  --bg: #edf0ea; --panel: #f9fbf6; --fg: #17201a; --muted: #56635a; --line: #d3dbd1; --accent: #a8561a;
+  --chip: #e4e9e1; --focus: #2f7de1;
+  --fr4: #1f5a3c; --fr4-edge: #133b27; --pad: #aeb7ad; --pad-used: #eef1ea; --hole: #0d2418;
+  --header: #121516; --module-fill: rgba(236, 244, 238, .10); --module-line: #d6e4da; --axis: #56635a;
+  --halo: rgba(6, 18, 12, .65); --halo-gnd: #cfdad1;
+  --w-vbat: #ff4a4a; --w-v5: #ff9d2b; --w-v33: #ff82d2; --w-gnd: #0a0e10; --w-scl: #52b2ff; --w-sda: #3fe2c9;
+  --w-xshut: #b898ff; --w-drv: #ffe066; --w-mot: #e3a46c; --w-enc: #a8ee6c; --w-sw: #ffffff;
+  --sans: "IBM Plex Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, "PingFang SC", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1512; --panel: #161e19; --fg: #e3ebe4; --muted: #94a59a; --line: #28342c; --accent: #e3904a;
+  --chip: #1f2a23; --focus: #6aa8ff; --fr4: #1b5034; --fr4-edge: #0d2a1b; --axis: #94a59a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1512; --panel: #161e19; --fg: #e3ebe4; --muted: #94a59a; --line: #28342c; --accent: #e3904a;
+  --chip: #1f2a23; --focus: #6aa8ff; --fr4: #1b5034; --fr4-edge: #0d2a1b; --axis: #94a59a; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px }
+.wrap { max-width: 1280px; margin: 0 auto; display: grid; gap: 18px }
+header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between }
+h1 { font-size: 1.55rem; font-weight: 600; margin: 0; letter-spacing: .01em; text-wrap: balance }
+.sub { color: var(--muted); font-size: .9rem; margin-top: 2px; font-variant-numeric: tabular-nums }
+.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel) }
+.seg button { font: inherit; font-size: .88rem; border: 0; background: transparent; color: var(--muted); padding: 6px 12px; cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg) }
+button:focus-visible, input:focus-visible, .chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
+.progress { display: flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--muted); font-variant-numeric: tabular-nums }
+.bar { width: 120px; height: 6px; background: var(--chip); border-radius: 3px; overflow: hidden }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s }
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 18px; align-items: start }
+@media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr) } }
+.boardbox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; min-width: 0 }
+.viewnote { font-size: .85rem; color: var(--muted); margin: 0 4px 8px; display: flex; gap: 14px; flex-wrap: wrap }
+.viewnote b { color: var(--fg); font-weight: 600 }
+.scroll { overflow-x: auto }
+svg#board { display: block; width: 100%; min-width: 560px; height: auto; user-select: none }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 10px 4px 2px; font-size: .82rem; color: var(--muted) }
+.legend span { display: inline-flex; align-items: center; gap: 6px }
+.sw { width: 18px; height: 4px; border-radius: 2px; display: inline-block }
+
+aside { display: grid; gap: 12px; min-width: 0 }
+.steps { display: flex; flex-wrap: wrap; gap: 6px }
+.steps button { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  border-radius: 999px; padding: 4px 11px; cursor: pointer; font-variant-numeric: tabular-nums }
+.steps button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600 }
+.steps button .n { color: var(--muted); font-weight: 400; margin-left: 4px }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px }
+.card h2 { font-size: 1.05rem; margin: 0 0 6px; font-weight: 600 }
+.card p { margin: 0 0 8px; color: var(--fg) }
+.test { font-size: .88rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 4px }
+.test b { color: var(--accent); font-weight: 600 }
+ul.wires { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px }
+ul.wires li label { display: grid; grid-template-columns: 20px 10px minmax(0, 1fr); gap: 4px 8px; align-items: start;
+  padding: 6px 8px; border-radius: 8px; cursor: pointer }
+ul.wires li label:hover, ul.wires li.sel label { background: var(--chip) }
+ul.wires input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--accent) }
+.dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset }
+.wt { font-size: .92rem }
+.wc { grid-column: 3; font-family: var(--mono); font-size: .76rem; color: var(--muted); font-variant-numeric: tabular-nums }
+li.done .wt { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line) }
+.grouph { font-size: .78rem; color: var(--muted); letter-spacing: .06em; margin: 10px 8px 2px }
+.nets { display: flex; flex-wrap: wrap; gap: 6px }
+.chip { font: inherit; font-family: var(--mono); font-size: .76rem; border: 1px solid var(--line); background: var(--panel);
+  color: var(--fg); border-radius: 6px; padding: 2px 7px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center }
+.chip[aria-pressed="true"] { border-color: var(--fg); background: var(--chip) }
+.chip .sw { width: 10px; height: 10px; border-radius: 50% }
+.rowbtn { display: flex; justify-content: space-between; align-items: center; gap: 8px }
+.ghost { font: inherit; font-size: .82rem; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 4px 6px; border-radius: 6px }
+.ghost:hover { color: var(--fg) }
+.ghost.warn { color: var(--accent) }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px }
+.notes .card h3 { font-size: .95rem; margin: 0 0 6px; font-weight: 600 }
+.notes ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: .9rem }
+.notes li b { font-weight: 600 }
+.mono { font-family: var(--mono); font-size: .86em }
+
+/* 板子 */
+.hole { fill: var(--pad) } .holein { fill: var(--hole) }
+.axis { fill: var(--axis); font-family: var(--mono); font-size: 5px }
+.mod { fill: var(--module-fill); stroke: var(--module-line); stroke-width: .6 }
+.mod.back { fill: none; stroke-dasharray: 2 1.6; opacity: .7 }
+.mod.area { fill: none; stroke-dasharray: 3 2 }
+.mod.hot { stroke: var(--w-drv); stroke-width: 1.2 }
+.modlbl { fill: #eaf3ec; font-family: var(--sans); font-size: 5.6px; font-weight: 600; paint-order: stroke; stroke: rgba(8, 26, 16, .85); stroke-width: 1.4px }
+.hdr { fill: var(--header) }
+.pin { fill: var(--pad-used); stroke: #6d7a70; stroke-width: .4 }
+.pin.free { fill: var(--pad); stroke: none }
+.pinlbl { fill: #e6efe8; font-family: var(--mono); font-size: 4.2px; paint-order: stroke; stroke: rgba(8, 26, 16, .85); stroke-width: 1.1px }
+.pinlbl.free { opacity: .45 }
+.wire { fill: none; stroke-linecap: round; stroke-width: 2.3; transition: opacity .15s }
+.halo { fill: none; stroke-linecap: round; stroke-width: 3.8; stroke: var(--halo) }
+.halo.gnd { stroke: var(--halo-gnd); stroke-width: 3.6 }
+.wg { cursor: pointer }
+.wg.dim { opacity: .13 }
+.wg.past { opacity: .28 }
+.wg.done .wire { stroke-dasharray: 3.5 2.5 }
+.wg.sel .wire { stroke-width: 3.2 }
+.wg.sel .halo { stroke-width: 5.2 }
+.endring { fill: none; stroke: #ffffff; stroke-width: .9 }
+.antenna { fill: none; stroke: #ffd6a0; stroke-width: .5; stroke-dasharray: 1.5 1.2 }
+.antlbl { fill: #ffd6a0; font-size: 3.6px; font-family: var(--sans) }
+.g-vbat { stroke: var(--w-vbat) } .g-v5 { stroke: var(--w-v5) } .g-v33 { stroke: var(--w-v33) } .g-gnd { stroke: var(--w-gnd) }
+.g-scl { stroke: var(--w-scl) } .g-sda { stroke: var(--w-sda) } .g-xshut { stroke: var(--w-xshut) } .g-drv { stroke: var(--w-drv) }
+.g-mot { stroke: var(--w-mot) } .g-enc { stroke: var(--w-enc) } .g-sw { stroke: var(--w-sw) }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>迷宫小车主板布线</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="看哪一面">
+        <button id="v-top" aria-pressed="true">元件面</button>
+        <button id="v-bottom" aria-pressed="false">焊接面（镜像）</button>
+      </div>
+      <div class="progress"><span id="prog"></span><div class="bar"><i id="bar"></i></div></div>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="boardbox">
+      <div class="viewnote" id="viewnote"></div>
+      <div class="scroll"><svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="洞洞板布线图"></svg></div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <aside>
+      <div class="steps" id="steps" role="group" aria-label="焊接步骤"></div>
+      <div class="card" id="stepcard"></div>
+      <div class="card">
+        <div class="rowbtn"><h2 style="margin:0">待焊的线</h2><button class="ghost" id="reset">清空勾选</button></div>
+        <ul class="wires" id="wlist"></ul>
+      </div>
+      <div class="card">
+        <h2>按网络高亮</h2>
+        <div class="nets" id="nets"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="notes" id="notes"></div>
+</div>
+
+<script>
+const D = /*BOARD_DATA*/null;
+const P = 10;                                   // 一个孔距 = 10 个 SVG 单位
+const GROUPS = { vbat: '电池 VBAT', v5: '5V', v33: '3V3', gnd: '地 GND', scl: 'SCL', sda: 'SDA', xshut: 'XSHUT',
+  drv: '驱动控制', mot: '电机线', enc: '编码器', sw: '拨码 / 按键' };
+const KEY = 'mazecar-board-v1';
+let S = { view: 'top', step: 1, net: null, wire: null, done: new Set() };
+try { const s = JSON.parse(localStorage.getItem(KEY) || '{}');
+  if (s.view) S.view = s.view; if (Number.isInteger(s.step)) S.step = s.step; if (Array.isArray(s.done)) S.done = new Set(s.done); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ view: S.view, step: S.step, done: [...S.done] })) } catch (e) {} };
+
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const css = name => getComputedStyle(document.documentElement).getPropertyValue('--w-' + name).trim();
+const mx = x => S.view === 'bottom' ? (D.cols - 1 - x) : x;       // 焊接面左右镜像
+const hole = (x, y) => `(${x + 1},${y + 1})`;                       // 给人看的坐标从 1 数，始终按元件面
+
+function buildBoard() {
+  const svg = $('board'); svg.innerHTML = '';
+  const W = (D.cols - 1) * P, H = (D.rows - 1) * P;
+  svg.setAttribute('viewBox', `${-18} ${-16} ${W + 30} ${H + 28}`);
+  el('rect', { x: -7, y: -7, width: W + 14, height: H + 14, rx: 4, fill: 'var(--fr4)', stroke: 'var(--fr4-edge)', 'stroke-width': 1.5 }, svg);
+  const holes = el('g', {}, svg);
+  for (let y = 0; y < D.rows; y++) for (let x = 0; x < D.cols; x++) {
+    el('circle', { cx: x * P, cy: y * P, r: 2.5, class: 'hole' }, holes);
+    el('circle', { cx: x * P, cy: y * P, r: 1.0, class: 'holein' }, holes);
+  }
+  for (let x = 0; x < D.cols; x++) if (x === 0 || (x + 1) % 5 === 0)
+    el('text', { x: mx(x) * P, y: -10, 'text-anchor': 'middle', class: 'axis' }, svg, x + 1);
+  for (let y = 0; y < D.rows; y++) if (y === 0 || (y + 1) % 5 === 0)
+    el('text', { x: -11, y: y * P + 1.8, 'text-anchor': 'end', class: 'axis' }, svg, y + 1);
+
+  const mods = el('g', {}, svg), pinsG = el('g', {}, svg), wiresG = el('g', { id: 'wires' }, svg), lbls = el('g', {}, svg);
+  for (const c of D.components) {
+    if (c.box) {
+      let [x0, y0, x1, y1] = c.box;
+      if (S.view === 'bottom') [x0, x1] = [D.cols - 1 - x1, D.cols - 1 - x0];
+      const cls = 'mod' + (c.kind === 'area' ? ' area' : '') + (S.view === 'bottom' && c.kind === 'socket' ? ' back' : '');
+      el('rect', { x: x0 * P, y: y0 * P, width: (x1 - x0) * P, height: (y1 - y0) * P, rx: 1.5, class: cls, 'data-c': c.id }, mods);
+      if (c.kind === 'socket' || c.kind === 'area') {
+        const t = el('text', { x: (x0 + 0.25) * P, y: (y1 - 0.3) * P, class: 'modlbl' }, lbls, c.label);
+        if (c.id === 'ESP') {
+          t.setAttribute('y', (y1 - 1.6) * P);
+          el('line', { x1: x0 * P, y1: 2.7 * P, x2: x1 * P, y2: 2.7 * P, class: 'antenna' }, lbls);
+          el('text', { x: (x0 + x1) / 2 * P, y: 2.0 * P, 'text-anchor': 'middle', class: 'antlbl' }, lbls, '天线区：下面不走线');
+        }
+      } else if (c.kind !== 'pads') {
+        el('text', { x: (x0 + x1) / 2 * P, y: (c.id === 'BTN' ? y0 - 0.15 : y1 + 0.75) * P, 'text-anchor': 'middle', class: 'modlbl' }, lbls, c.label);
+      } else {
+        el('text', { x: (x0 + x1) / 2 * P, y: (c.lbl === 'below' ? y1 + 0.75 : y0 - 0.25) * P, 'text-anchor': 'middle', class: 'modlbl' }, lbls, c.label);
+      }
+    } else if (c.kind === 'pads') {
+      for (const p of c.pins) el('text', { x: mx(p.x) * P, y: (p.y - 0.55) * P, 'text-anchor': 'middle', class: 'pinlbl' }, lbls, c.label + ' ' + p.label);
+    }
+    // 排母、排针的黑色塑料座（只在元件面画）
+    if (S.view === 'top' && (c.kind === 'socket' || c.kind === 'pins') && c.id !== 'BTN' && c.id !== 'DIP') {
+      const cols = {};
+      for (const p of c.pins) (cols[p.x] = cols[p.x] || []).push(p.y);
+      for (const x in cols) {
+        const ys = cols[x], a = Math.min(...ys), b = Math.max(...ys);
+        el('rect', { x: (mx(+x) - 0.46) * P, y: (a - 0.46) * P, width: 0.92 * P, height: (b - a + 0.92) * P, rx: 1, class: 'hdr' }, mods);
+      }
+    }
+    for (const p of c.pins) {
+      const g = el('g', {}, pinsG);
+      el('circle', { cx: mx(p.x) * P, cy: p.y * P, r: p.net ? 3.1 : 2.6, class: 'pin' + (p.net ? '' : ' free'), 'data-ref': p.ref }, g);
+      el('title', {}, g, `${c.label} ${p.label}  ${hole(p.x, p.y)}${p.net ? '  网络 ' + p.net : '  （不接）'}`);
+      if (c.kind === 'pads' && c.box == null) continue;
+      let dir;
+      if (c.side === 'in' && c.box) dir = Math.sign((c.box[0] + c.box[2]) / 2 - p.x) || 1;
+      else dir = c.side === 'l' ? -1 : 1;
+      if (S.view === 'bottom') dir = -dir;
+      el('text', { x: (mx(p.x) + dir * 0.5) * P, y: p.y * P + 1.3, 'text-anchor': dir > 0 ? 'start' : 'end',
+        class: 'pinlbl' + (p.net ? '' : ' free') }, lbls, p.label);
+    }
+  }
+  for (const w of D.wires) {
+    const [ax, ay] = w.pa, [bx, by] = w.pb;
+    let d = `M${mx(ax) * P},${ay * P} `;
+    d += w.ctrl ? `Q${mx(w.ctrl[0]) * P},${w.ctrl[1] * P} ${mx(bx) * P},${by * P}` : `L${mx(bx) * P},${by * P}`;
+    const g = el('g', { class: 'wg', 'data-id': w.id }, wiresG);
+    el('path', { d, class: 'halo' + (w.group === 'gnd' ? ' gnd' : '') }, g);
+    el('path', { d, class: 'wire g-' + w.group }, g);
+    el('circle', { cx: mx(ax) * P, cy: ay * P, r: 4.3, class: 'endring', visibility: 'hidden' }, g);
+    el('circle', { cx: mx(bx) * P, cy: by * P, r: 4.3, class: 'endring', visibility: 'hidden' }, g);
+    el('title', {}, g, `${w.al} → ${w.bl}（${w.net}）`);
+    g.addEventListener('click', () => { S.wire = S.wire === w.id ? null : w.id; S.net = null; apply(true) });
+  }
+  svg.appendChild(lbls);                         // 标签放最上层
+}
+
+function wireVisible(w) {
+  if (S.step === 0) return 'on';
+  if (w.step === S.step) return 'on';
+  if (w.step < S.step) return 'past';
+  return 'off';
+}
+
+function apply(scroll) {
+  // 板上的线
+  for (const g of document.querySelectorAll('.wg')) {
+    const w = D.wires[+g.dataset.id], vis = wireVisible(w);
+    g.style.display = vis === 'off' ? 'none' : '';
+    g.classList.toggle('past', vis === 'past');
+    g.classList.toggle('done', S.done.has(w.id));
+    const focus = S.wire != null ? S.wire === w.id : S.net ? w.net === S.net : true;
+    g.classList.toggle('dim', !focus);
+    g.classList.toggle('sel', S.wire === w.id);
+    for (const r of g.querySelectorAll('.endring')) r.setAttribute('visibility', S.wire === w.id ? 'visible' : 'hidden');
+  }
+  for (const r of document.querySelectorAll('.mod')) r.classList.toggle('hot', S.step === 1 && !r.classList.contains('area'));
+  // 清单
+  for (const li of document.querySelectorAll('#wlist li')) {
+    const id = +li.dataset.id;
+    li.classList.toggle('done', S.done.has(id));
+    li.classList.toggle('sel', S.wire === id);
+    if (scroll && S.wire === id) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  for (const b of document.querySelectorAll('#nets .chip')) b.setAttribute('aria-pressed', String(b.dataset.net === S.net));
+  const n = S.done.size, t = D.wires.length;
+  $('prog').textContent = `已焊 ${n} / ${t}`;
+  $('bar').style.width = (100 * n / t) + '%';
+  save();
+}
+
+function renderView() {
+  $('v-top').setAttribute('aria-pressed', String(S.view === 'top'));
+  $('v-bottom').setAttribute('aria-pressed', String(S.view === 'bottom'));
+  $('viewnote').innerHTML = S.view === 'top'
+    ? '<span><b>元件面</b>：模块插在这一面，车头朝上</span><span>坐标（列,行）从这一面的左上角数</span>'
+    : '<span><b>焊接面</b>：板子翻过来看，左右是反的</span><span>坐标仍按元件面编号，方便对照</span>';
+  buildBoard(); apply();
+}
+
+function renderSteps() {
+  const box = $('steps'); box.innerHTML = '';
+  const mk = (i, txt, count) => {
+    const b = document.createElement('button');
+    b.setAttribute('aria-pressed', String(S.step === i));
+    b.innerHTML = txt + (count != null ? `<span class="n">${count}</span>` : '');
+    b.addEventListener('click', () => { S.step = i; S.wire = null; renderSteps(); renderList(); apply() });
+    box.appendChild(b);
+  };
+  D.steps.forEach((s, i) => mk(i + 1, `${i + 1} ${s.title}`, D.wires.filter(w => w.step === i + 1).length || null));
+  mk(0, '全部');
+  const card = $('stepcard');
+  if (S.step === 0) {
+    card.innerHTML = `<h2>全部 ${D.wires.length} 根线</h2><p>按步骤焊更不容易漏：每焊完一步就用对应的串口命令测一遍，过了再往下。</p>`;
+  } else {
+    const s = D.steps[S.step - 1];
+    card.innerHTML = `<h2>第 ${S.step} 步 · ${s.title}</h2><p>${s.desc}</p><div class="test"><b>焊完测：</b>${s.test}</div>`;
+  }
+}
+
+function renderList() {
+  const ul = $('wlist'); ul.innerHTML = '';
+  const list = S.step === 0 ? D.wires : D.wires.filter(w => w.step === S.step);
+  if (S.step === 1) {
+    ul.innerHTML = D.components.filter(c => c.kind === 'socket' || c.kind === 'pins')
+      .map(c => `<li><label style="grid-template-columns:10px minmax(0,1fr)"><span class="dot" style="background:var(--header)"></span><span class="wt">${c.label}<div class="wc" style="grid-column:auto">${c.note}</div></span></label></li>`).join('');
+    return;
+  }
+  let lastStep = null;
+  for (const w of list) {
+    if (S.step === 0 && w.step !== lastStep) {
+      lastStep = w.step;
+      const h = document.createElement('li'); h.className = 'grouph'; h.textContent = `第 ${w.step} 步 · ${D.steps[w.step - 1].title}`; ul.appendChild(h);
+    }
+    const li = document.createElement('li'); li.dataset.id = w.id;
+    li.innerHTML = `<label><input type="checkbox" id="w-${w.id}" ${S.done.has(w.id) ? 'checked' : ''}>
+      <span class="dot" style="background:${css(w.group)}"></span>
+      <span class="wt">${w.al} → ${w.bl}</span>
+      <span class="wc">${hole(...w.pa)} → ${hole(...w.pb)} · ${w.net}</span></label>`;
+    li.querySelector('input').addEventListener('change', e => {
+      e.target.checked ? S.done.add(w.id) : S.done.delete(w.id); apply();
+    });
+    li.addEventListener('mouseenter', () => { if (S.wire == null) { S.hover = S.net; S.net = null; S.wire = w.id; S.hovering = true; apply() } });
+    li.addEventListener('mouseleave', () => { if (S.hovering) { S.wire = null; S.net = S.hover; S.hovering = false; apply() } });
+    li.addEventListener('click', e => { if (e.target.tagName !== 'INPUT') { S.hovering = false; S.wire = w.id; apply() } });
+    ul.appendChild(li);
+  }
+}
+
+function renderStatic() {
+  const t = D.wires.length;
+  $('sub').textContent = `${D.cols} × ${D.rows} 孔（约 ${(D.cols * 2.54 / 10).toFixed(1)} × ${(D.rows * 2.54 / 10).toFixed(1)} cm）· ${t} 根线 · ${D.steps.length} 步`;
+  $('legend').innerHTML = Object.entries(GROUPS).map(([g, n]) =>
+    `<span><i class="sw" style="background:${css(g)};${g === 'gnd' ? 'box-shadow:0 0 0 1px var(--muted)' : ''}"></i>${n}</span>`).join('')
+    + '<span><i class="sw" style="background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px)"></i>虚线 = 已焊</span>';
+  const nets = $('nets');
+  nets.innerHTML = D.nets.map(n => `<button class="chip" data-net="${n.name}" aria-pressed="false"><i class="sw" style="background:${css(n.group)}"></i>${n.name}</button>`).join('');
+  for (const b of nets.querySelectorAll('.chip')) b.addEventListener('click', () => {
+    S.net = S.net === b.dataset.net ? null : b.dataset.net; S.wire = null; S.step = 0; renderSteps(); renderList(); apply();
+  });
+  const mods = D.components.filter(c => c.kind !== 'area');
+  $('notes').innerHTML = `
+    <div class="card"><h3>插之前对一下方向</h3><ul>${mods.map(c => `<li><b>${c.label}</b>：${c.note}</li>`).join('')}</ul></div>
+    <div class="card"><h3>材料</h3><ul>
+      <li>单排母：一共 68 个位置（22 + 22 + 8 + 8 + 8）。每剪一刀会废一个孔，<b>两条 40P 刚好够</b>。</li>
+      <li>直排针：三段 6 针，接测距的杜邦线。</li>
+      <li>导线：剪下的杜邦线剥皮就能用。同一行、中间没有别的焊点的线（TB6612、陀螺仪那几根），用剪下的排针脚直接拉更快。</li>
+      <li>电池线和 VBAT、GND 那几根电流最大，用整根线，别拼接。</li>
+    </ul></div>
+    <div class="card"><h3>可选，现在可以不焊</h3><ul>
+      <li><b>电池电压检测</b>：电池 + → 100k → <span class="mono">IO1</span> → 33k → GND。买的东西里没有电阻，不焊的话固件会自动跳过检查，每次测试前把电池充满就行。</li>
+      <li><b>5V 旁的电解电容</b>（100–470 µF，跨 5Vin 和 GND）：开 WiFi 时如果车莫名重启再补。</li>
+      <li><b>启动键</b>：ESP32 板上的 BOOT 键也能发车和急停。</li>
+    </ul></div>
+    <div class="card"><h3>板子的两个焊盘别动</h3><ul>
+      <li>ESP32 板正面的 <b>IN-OUT</b>、背面的 <b>USB-OTG</b> 两处焊盘保持断开。断开时 5V 脚和 USB 之间有隔离，接着电池也能插 USB 调试。</li>
+      <li>线插 <b>COM</b> 口（靠 CH343 芯片那个），Arduino IDE 里 USB CDC On Boot 选 Disabled。</li>
+    </ul></div>`;
+}
+
+$('v-top').addEventListener('click', () => { S.view = 'top'; renderView() });
+$('v-bottom').addEventListener('click', () => { S.view = 'bottom'; renderView() });
+let armed = 0;
+$('reset').addEventListener('click', () => {
+  const b = $('reset');
+  if (Date.now() - armed < 3000) { S.done.clear(); armed = 0; b.textContent = '清空勾选'; b.classList.remove('warn'); renderList(); apply(); return }
+  armed = Date.now(); b.textContent = '再点一次清空'; b.classList.add('warn');
+  setTimeout(() => { if (armed && Date.now() - armed >= 3000) { b.textContent = '清空勾选'; b.classList.remove('warn') } }, 3100);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { S.wire = null; S.net = null; apply() } });
+
+renderStatic(); renderSteps(); renderList(); renderView();
+</script>
