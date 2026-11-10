@@ -1,100 +1,92 @@
-# 原理图生成脚本（maze-car）
+# maze-car 原理图 / PCB 生成脚本
 
-原理图不是手工拖出来的，而是按 `firmware/board/netlist.md` 由脚本生成，改网表后重跑即可。
+原理图和 PCB 都不是手拖出来的，全部由脚本按源数据生成，改源数据重跑即可。
 
-## 文件
-
-| 文件 | 作用 |
-|---|---|
-| `gen_symbols.py` | 12 个模块的左/右列引脚与网络定义 → 生成 `specs/<NAME>.json` 与 `specs/manifest.json` |
-| `build_lib.py` | 单模块：在工程库建符号 → 灌几何 → 建设备，结果写回 `lib_built.json` |
-| `rebuild_all.py` | 批量：删旧符号/器件后重建 12 套，输出 `lib_built.json`（name→uuid） |
-| `place.py` | 按 LAYOUT 坐标放 12 个器件并逐脚 `sch connect` 打网络名标签，输出 `placed.json` |
-| `netverify.json` | 期望 vs 实际 的引脚→网络全量对照（核对用） |
-
-## 重跑顺序
-
-```bash
-python3 gen_symbols.py      # 改过 netlist.md 就先跑这个
-python3 rebuild_all.py      # 重建工程库里的符号与器件
-easyeda sch clear --doc P1 --project maze-car
-python3 place.py            # 放置 + 79 根桩线 + 网络标签
-easyeda sch read --doc P1 --project maze-car   # 逐脚核对
-```
-
-## 注意
-
-- 工程库令牌：`lib symbol build` / `lib_Device.create` 要传**工程 UUID**
-  （`0b4cef7a743d089a2ec5d694978c583f3a22fec3deba6e8e58ee68d5a5d2789e`），
-  而 `lib symbol create --scope project` 和各类 `search` 用字符串 `"project"`。
-- `lib device create` 报 `[object Object]` 失败时器件通常已建好，先 `lib_Device.search` 复核，别重试。
-- 12 个模块目前**只有符号、没有封装**，`sch drc` 会对每个器件报一条 `MISSFOOTPRINT`——
-  这是预期的中间态；做 PCB 前要按实测排针顺序建 footprint。
-- 引脚编号用信号名（`IO4`、`1'`、`IN+`），不是 1..N：实物排针顺序未实测时不假装知道位置。
-
----
-
-# PCB 生成脚本
-
-板子同样按 `迷宫小车主板布线.html`（手焊布线图，35×34 格，1 格 = 2.54mm）生成，
-1 格 = 100 mil，板框 3600×3500 mil ≈ 91.4×88.9mm，2 层，R120 圆角。
+- 原理图源数据：`firmware/board/netlist.md`（27 网络 / 79 引脚 / 12 模块）
+- PCB 源数据：仓库根 `迷宫小车主板布线.html` 里的 `const D`（手焊布线图，35×34 格，1 格 = 2.54mm）
 
 ## 文件
 
 | 文件 | 作用 |
 |---|---|
-| `gen_footprints.py` | 解析 HTML 的 `const D`，按模块物理针脚 1..N 建封装 + 器件（`pcb_plan.json`） |
-| `route_via.py` | **当前方案**：清空 → 每个针脚打一个 via（1.0mm 孔 / 1.66mm 环）→ 按 44 根线走 134 段铜 |
-| `mask_open.py` | 给每个孔在阻焊层（5/6）画实心多边形开窗 —— 不开窗的话孔环被绿油盖住，排针焊不上 |
-| `silk_pcb.py` | 每个模块上方写中文名 + 位号，板边写标题 |
-| `outline_devices.py` | 建 12 个"纯丝印封装"（只有框线、无焊盘）+ 器件 |
-| `place_outline.py` | 把 12 个丝印器件放到模块框位置 |
-| `pcb_plan.json` | 每个针脚的全局坐标、网络、所属模块 |
+| `gen_symbols.py` | 12 个模块的左/右列引脚与网络 → `specs/<NAME>.json` + `specs/manifest.json` |
+| `build_lib.py` | 单模块：工程库建符号 → 灌几何 → 建设备 |
+| `rebuild_all.py` | 批量重建 12 套符号+器件，输出 `lib_built.json`（name→uuid） |
+| `place.py` | 按 LAYOUT 放 12 个器件，逐脚 `sch connect` 打网络名标签，输出 `placed.json` |
+| `netverify.json` | 期望 vs 实际 的引脚→网络全量对照 |
+| `gen_footprints.py` | 解析 HTML，按模块物理针脚 1..N 建封装+器件（`pcb_plan.json`） |
+| `route_via.py` | 清空 → 每针脚一个 via（1.0mm 孔 / 1.66mm 环）→ 按 44 根线走 134 段铜 |
+| `bridge_nets.py` | 顶层 A* 补 5 根桥接线，把 GND 的 5 块 / 3V3 的 2 块孤岛连成一整片 |
+| `mask_open.py` | 每孔在阻焊层（5/6）画实心多边形开窗，否则孔环被绿油盖住焊不上 |
+| `silk_pcb.py` | 模块中文名 + 位号 + 板边标题 |
+| `outline_devices.py` / `place_outline.py` | 12 个"纯丝印封装"器件（Gerber 导出要求板上有可读器件） |
+| `verify_board.py` | **出厂自检**：连通性、间距、几何，只看真实铜 |
+| `audit_gerber.py` | **对最终压缩包做独立审计**：不看编辑器，只读 Gerber/钻孔文件 |
+| `verify_gerber_nets.py` | **从 Gerber 重建铜层连通性**核对网表（断路/短路都能抓到，做过反向验证）|
+| `pcb_plan.json` | 每针脚的全局坐标、网络、所属模块 |
 | `outline_devices.json` | 12 个丝印器件的 uuid 与锚点 |
 
 ## 重跑顺序
 
 ```bash
-python3 gen_footprints.py   # 改过布线图才需要
+# 原理图
+python3 gen_symbols.py && python3 rebuild_all.py
+easyeda sch clear --doc P1 --project maze-car
+python3 place.py
+easyeda sch read --doc P1 --project maze-car        # 逐脚核对
+
+# PCB
 easyeda pcb clear --doc PCB1 --project maze-car
-python3 route_via.py        # 112 个孔 + 134 段线
+python3 route_via.py        # 112 孔 + 134 段线
+python3 bridge_nets.py      # 5 根顶层桥接线（先 --dry-run 看路径）
 python3 mask_open.py        # 224 个阻焊开窗（正反各 112）
 python3 silk_pcb.py         # 丝印文字
-python3 outline_devices.py  # 只在工程库还没有丝印器件时跑
 python3 place_outline.py    # 12 个模块框
 easyeda pcb save --doc PCB1 --project maze-car
+
+# 出厂验证
+python3 verify_board.py                                   # 板级连通性/间距
+easyeda pcb drc --doc PCB1 --project maze-car              # 官方 DRC
+easyeda pcb export-gerber --window <id> --project maze-car \
+        --doc fda2ba1555e9ca0d --out <新zip> --unit mm
+python3 audit_gerber.py ../../../out/gerber/<新zip>.zip     # 文件级审计
+python3 verify_gerber_nets.py ../../../out/gerber/<新zip>.zip  # 从制造文件反推网表
 ```
 
 ## 关键坑（都是实测）
 
-- **工程库封装的焊盘写不进钻孔**。`lib footprint build` 的 `pads[].hole` 只接受
-  `null` 或 tuple，试过 `["ROUND",1.0]` / `["CIRCLE",1.0]` / `["SLOT",1,1]` 全部让
-  build 挂死（`connector did not respond`）并回滚；`layer:1` 落成
-  `"layerId":1,"hole":null`，也就是 SMD 焊盘 —— 底层走线永远连不上。
-  所以针脚孔全部用 **via** 打（原生镀通孔，双面铜环 + 钻孔）。
-- **Gerber 导出要求板上有"可读器件"**：`pcb.export.gerber` 在 0 器件时直接
-  `INVALID_STATE: PCB has no readable components`。12 个纯丝印封装就是为此加的。
-- 丝印封装里的线要用 `startX/startY/endX/endY`（不是 `x1/y1`），`layer:3` = 顶层丝印。
-- 2.54mm 栅格下走线宽度：信号 12 mil、电源 20 mil。25 mil 会让线到相邻孔只剩
-  4.9 mil 净空（DRC 要求 ≥6 mil）。
-- **过孔默认盖油**。`pcb via` 没有开窗参数；`eda.pcb_PrimitiveVia.modify(...,{solderMaskExpansion:{top,bottom}})`
-  改了能回读，但导出的 GTS/GBS 里依然是 0 个开窗（4.1.97 的生成器不认）。
-  可行的开窗办法：在阻焊层（5=顶层 6=底层）用 `pcb fill create --points` 画实心多边形，
-  它会被当作开窗写进 GTS/GBS（实测 112+112 个）。
-- `pcb export-gerber` 的 `--out` **必须是新文件**（已存在会直接报 `--out must be new`，
-  不覆盖、也不删旧的），重导出要换名再替换。
-- 两个钻孔文件 `Drill_PTH_Through.DRL` 与 `Drill_PTH_Through_Via.DRL` 内容相同（各 112 孔），
-  是 4.1.97 把 via 同时写进两份。上传嘉立创若提示重复钻孔，删掉后者再传即可。
-- 焊盘号不能重复（`Duplicate pad number`），所以 PCB 侧按物理针脚 1..N 编号；
-  `lib device create` 允许符号引脚名与焊盘号不一致（会报 `[object Object]` 但建成了）。
+- **工程库封装的焊盘写不进钻孔**。`lib footprint build` 的 `pads[].hole` 只接受 `null` 或 tuple，
+  `["ROUND",1.0]`/`["CIRCLE",1.0]`/`["SLOT",1,1]` 全部让 build 挂死（`connector did not respond`）
+  并回滚；`layer:1` 落成 `"layerId":1,"hole":null` = SMD 焊盘，底层走线永远连不上。
+  → 针脚孔全部用 **via** 打（原生镀通孔，双面铜环 + 进钻孔表）。
+- **过孔默认盖油**。`pcb via` 没有开窗参数；`eda.pcb_PrimitiveVia.modify(...,{solderMaskExpansion})`
+  能回读但导出结果不变（4.1.97 的生成器不认）。
+  → 在阻焊层用 `pcb fill create --points` 画实心多边形当开窗，实测写进 GTS/GBS。
+- Gerber 导出要求板上有"可读器件"，0 器件时直接 `INVALID_STATE: PCB has no readable components`；
+  12 个纯丝印封装就是为此加的。丝印封装的线用 `startX/startY/endX/endY`（不是 x1/y1）。
+- `pcb export-gerber --out` **必须是新文件**，已存在直接报 `--out must be new`。
+- 两个钻孔文件 `Drill_PTH_Through.DRL` / `Drill_PTH_Through_Via.DRL` 内容完全相同（4.1.97 把 via 写进两份）；
+  上传若提示重复钻孔，删掉 Via 那份。
+- 焊盘号不能重复（`Duplicate pad number`），所以 PCB 侧按物理针脚 1..N；`lib device create`
+  允许符号引脚名与焊盘号不一致（报 `[object Object]` 但实际建成，用 `lib search` 复核）。
+- **丝印会跑到板外**：字符串的 x/y 是左上角锚点，`silk-add` 不校验边界。跑完必须查一遍，
+  `pcb.silk.set` 挪回来；重复叠印的字符串用 `eda.pcb_PrimitiveString.delete([ids])` 删。
+- `easyeda doc reload` 在本机一直报 `close state identity is unverified`，`pcb save` 之后
+  直接以落盘文件和重新导出的 Gerber 为准（`doc reload` 不是必需步骤）。
+- `pcb check` 的 `floating-track-island` / `single-layer-via` 告警是**结构性预期**：本板没有元件焊盘，
+  所有连接点都是 via，工具按"有没有焊盘锚住"判断，所以每段铜都被报一次。
 
-## 当前状态（2026-11-10）
+## 当前状态（2026-11-10，已交付）
 
-- DRC：clearance / spacing / outline **0 条**；剩 9 条 `No Connection` —— 都是模块的
-  **重复电源脚**（ESP 的第二个 3V3、各模块多出来的 GND），模块内部本来就通，不用走线；
-  另有 1 条 `Netlist Error`（PCB 按针脚号 1..N、原理图按信号名，且 12 个器件是纯丝印无焊盘）。
-- 网表自检：84 个带网络的针脚，全部落在同网络铜皮的端点或线段上（`netverify` 式逐点校验）。
-- 阻焊：112 个孔正反各一个开窗（直径 72 mil），排针可以直接插焊。
-- 钻孔：112 个 1.0mm 孔。EasyEDA 4.1.97 会把 via 同时写进
-  `Drill_PTH_Through.DRL` 和 `Drill_PTH_Through_Via.DRL`，两个文件内容相同（各 112 孔）。
-- 导出：`out/gerber/maze-car-gerber.zip`（GTL/GBL/GTO/GBO/GTS/GBS/GKO + 钻孔 + 飞针）。
+- 板框 3600×3500 mil（91.44×88.90mm），2 层，R120 圆角，铜离板边 ≥167 mil。
+- 116 个孔：112 个 1.0mm（模块排针，100 mil 栅格）+ 4 个 3.2mm M3 安装孔（四角，离边 250 mil）。
+- 150 段铜：底层 130 段、顶层 20 段（原 9 段跨线 + 11 段桥接）；信号 12 mil、电源 20 mil。
+- 阻焊：112 个孔正反各一个开窗（12 边形，半径 36 mil，比 1.66mm 孔环大约 0.05mm）。
+- DRC：**clearance / spacing / outline / No Connection 全部 0**；只剩 1 条 `Netlist Error`
+  （PCB 用裸孔+实铜，原理图按信号名建符号，两套表示必然不等——结构性差异，不影响制板）。
+- 独立验证（三道，互不相信）：
+  1. `verify_board.py`（读编辑器数据）→ 27 个网络各一整片（无孤岛）、0 短路、最紧间距 7.3 mil、0 孔出界。
+  2. `audit_gerber.py`（只读文件）→ GKO 闭合 91.44×88.90、GTL/GBL 各 116 个孔环、GTS/GBS 各 112 个开窗、
+     钻孔 112×1.0008mm + 4×3.2004mm、丝印全部落在板内。
+  3. `verify_gerber_nets.py`（从 Gerber 重建连通图）→ 27 个网络各自一整片、0 短路。
+     反向验证过：人为在某一层断开 2mm，脚本立刻报 `AO1` 被切成两片并给出 FAIL。
