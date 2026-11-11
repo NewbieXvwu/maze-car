@@ -78,8 +78,13 @@ static void start_run() {
   if (!tof_ok(0) || !tof_ok(1) || !tof_ok(2) || !gyro_ok()) {
     out.printf("有模块没初始化成功，不能发车：%s\n", hw_err.c_str()); led(255, 0, 0); return;
   }
+  // 这一版 PCB 没接电池分压，检查关掉时也不报电压（报 0.00 V 会误导）
+  String bat_note;
+#if BAT_CHECK_ENABLED
   float v = battery_v();
   if (v > 1.0f && v < BAT_MIN_V) { out.printf("电池 %.2f V，太低了，充满再跑\n", v); led(255, 0, 0); return; }
+  bat_note = String("，电池 ") + String(v, 2) + " V";
+#endif
   int sw = dip();
   BrainParams p = base;
   if (sw & 1) p.cruise_mm_s = fast_cruise;
@@ -99,8 +104,8 @@ static void start_run() {
   h += (sw & 1) ? "fast" : "safe"; h += (sw & 2) ? ",generic" : ",race";
   for (int i = 0; i < NP; i++) { h += ","; h += PNAMES[i]; h += "="; h += String(((float*)&p)[i], 7); }
   h += "\n"; udp_send(h.c_str(), h.length());
-  out.printf("出发：%s，%s，巡航 %.0f mm/s，电池 %.2f V\n", (sw & 1) ? "快档" : "稳妥档",
-             (sw & 2) ? "通用迷宫模式" : "比赛赛道模式", p.cruise_mm_s, v);
+  out.printf("出发：%s，%s，巡航 %.0f mm/s%s\n", (sw & 1) ? "快档" : "稳妥档",
+             (sw & 2) ? "通用迷宫模式" : "比赛赛道模式", p.cruise_mm_s, bat_note.c_str());
 
   running = true; last_ndec = 0; stall_t = 0; prev_encL = prev_encR = 0;
   gyro_take_angle();

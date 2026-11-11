@@ -43,7 +43,7 @@ pio device monitor          # 串口监视器 115200
 | 右编码器 C1 / C2 | 14 / 13 | 右电机线 |
 | 拨码 1 / 拨码 2 | 47 / 21 | 另一脚接 GND |
 | 启动键（可选） | 2 | 另一脚接 GND；板载 BOOT 键也能用 |
-| 电池电压（可选） | 1 | 电池 + → 100k → IO1 → 33k → GND |
+| 电池电压（可选） | 1 | 电池 + → 100k → IO1 → 33k → GND（本板没焊，`BAT_CHECK_ENABLED=0` 关掉检查） |
 
 电源：电池 → XH 插座 → Mini560 IN+ 和 TB6612 VM；Mini560 OUT+ → ESP32 **5Vin**。传感器、编码器、TB6612 的 VCC 一律接 ESP32 的 **3V3**。
 ESP32 板上的 IN-OUT、USB-OTG 两处焊盘保持断开，接着电池也能插 USB 调试。
