@@ -1,0 +1,104 @@
+{
+  "_readme": "整车建模的唯一尺寸来源。单位 mm，角度 deg。nominal=当前模型用的占位/设计值，measured=实测值（明早填这个，填完跑 cad/check.py 重新核对），source 说明来源：notes=硬件笔记，layout=洞洞板布线，pcb=PCB 工程，calc=推算，guess=按常见件估计。",
+  "coordinate_system": "X 向前（车头），Y 向左，Z 向上；原点在左右轮轴线的地面中心。",
+  "chassis": {
+    "plate_len":        {"nominal": 140.0, "measured": null, "source": "guess", "note": "55×37 洞洞板 139.7，按 140"},
+    "plate_wid":        {"nominal": 82.0,  "measured": null, "source": "guess", "note": "原 94 会压到轮子，裁到 82，轮子全在板外"},
+    "plate_thk":        {"nominal": 3.0,   "measured": null, "source": "guess", "note": "洞洞板 2.5–3"},
+    "ground_clearance": {"nominal": 13.0,  "measured": null, "source": "notes", "note": "底板底面离地"},
+    "standoff_h":       {"nominal": 32.0,  "measured": null, "source": "guess", "note": "底板顶面 16 → 主板底面 48；M3×32 铜柱（或 M3×30 + 2mm 尼龙垫片），给 18650 电池盒让高度"},
+    "standoff_d":       {"nominal": 5.0,   "measured": null, "source": "guess", "note": "M3 六角铜柱对边 5"},
+    "plate_hole_d":     {"nominal": 3.2,   "measured": null, "source": "pcb", "note": "M3 过孔"},
+    "plate_hole_inset": {"nominal": 6.35,  "measured": null, "source": "pcb", "note": "孔心距板边（board_setup.py M3_POS）"},
+    "chamfer_edge":     {"nominal": 1.0,   "measured": null, "source": "design", "note": "四角倒角，去毛刺"}
+  },
+  "axle": {
+    "wheel_d":   {"nominal": 42.0, "measured": null, "source": "notes", "note": "橡胶轮外径"},
+    "wheel_w":   {"nominal": 7.0,  "measured": null, "source": "guess", "note": "胎宽"},
+    "hub_d":     {"nominal": 13.0, "measured": null, "source": "guess", "note": "轮毂直径"},
+    "track":     {"nominal": 90.0, "measured": null, "source": "guess", "note": "左右轮中心面间距 = 2×45；45 来自硬件笔记"},
+    "axle_x":    {"nominal": 0.0,  "measured": null, "source": "notes"},
+    "axle_z":    {"nominal": 21.0, "measured": null, "source": "calc", "note": "= wheel_d/2"}
+  },
+  "motor": {
+    "body_w":       {"nominal": 12.0, "measured": null, "source": "guess", "note": "N20 宽（X 向）"},
+    "body_h":       {"nominal": 10.0, "measured": null, "source": "guess", "note": "N20 高（Z 向）"},
+    "body_len":     {"nominal": 24.0, "measured": null, "source": "guess", "note": "减速箱端面到电机尾（Y 向）"},
+    "encoder_len":  {"nominal": 6.0,  "measured": null, "source": "guess", "note": "尾部编码器板"},
+    "shaft_d":      {"nominal": 3.0,  "measured": null, "source": "guess", "note": "D 型轴"},
+    "shaft_len":    {"nominal": 9.0,  "measured": null, "source": "guess", "note": "轴伸出（含轮毂）"},
+    "boss_d":       {"nominal": 10.0, "measured": null, "source": "guess", "note": "减速箱输出座"},
+    "bracket_l":    {"nominal": 16.0, "measured": null, "source": "guess", "note": "安装法兰 X 向"},
+    "bracket_w":    {"nominal": 2.0,  "measured": null, "source": "guess"},
+    "bracket_h":    {"nominal": 10.0, "measured": null, "source": "guess"}
+  },
+  "caster": {
+    "height":  {"nominal": 13.0, "measured": null, "source": "guess", "note": "地面到安装面，应等于 ground_clearance；圆形/方形两只分别量，用 M3 尼龙垫片垫到同高"},
+    "base_d":  {"nominal": 24.0, "measured": null, "source": "guess", "note": "方底座边长"},
+    "ball_d":  {"nominal": 12.0, "measured": null, "source": "guess"},
+    "x_front": {"nominal": 58.0, "measured": null, "source": "calc", "note": "车头，底座后缘贴底板前缘（58+12=70）"},
+    "x_rear":  {"nominal": -58.0, "measured": null, "source": "calc", "note": "车尾，与车头对称；四轮 = 2 驱动 + 前后各 1 万向轮"},
+    "y":       {"nominal": 0.0, "measured": null, "source": "guess"}
+  },
+  "battery": {
+    "box_len": {"nominal": 77.0, "measured": null, "source": "guess", "note": "2×18650 串联电池盒（采购实物），含开关/出线"},
+    "box_wid": {"nominal": 40.0, "measured": null, "source": "guess"},
+    "box_h":   {"nominal": 20.0, "measured": null, "source": "guess"},
+    "x0":      {"nominal": -38.5, "measured": null, "source": "calc", "note": "居中于车轴：x -38.5..+38.5，电池重心正好压在驱动轮轴上"},
+    "y0":      {"nominal": -20.0, "measured": null, "source": "calc", "note": "居中，y ±20；两侧让开铜柱（y 35.6 内边）"},
+    "z0":      {"nominal": 26.0, "measured": null, "source": "calc", "note": "坐在两个电机顶面（底板顶 16 + 电机高 10），泡棉双面胶 + 两条扎带"},
+    "connector": "XH 2P，出线朝车头，接主板前左角"
+  },
+  "pcb": {
+    "len":       {"nominal": 91.44, "measured": null, "source": "pcb"},
+    "wid":       {"nominal": 88.90, "measured": null, "source": "pcb"},
+    "thk":       {"nominal": 1.6,   "measured": null, "source": "pcb"},
+    "z":         {"nominal": 48.0,  "measured": null, "source": "calc", "note": "板底；电池盒顶 46 + 2mm 间隙。必须高于轮顶 42"},
+    "x":         {"nominal": 0.0,   "measured": null, "source": "guess"},
+    "y":         {"nominal": 0.0,   "measured": null, "source": "guess"},
+    "hole_dx":   {"nominal": 39.37, "measured": null, "source": "pcb", "note": "M3 孔 x=±(91.44/2−6.35)"},
+    "hole_dy":   {"nominal": 38.10, "measured": null, "source": "pcb"},
+    "header_h":  {"nominal": 8.5,   "measured": null, "source": "guess", "note": "2.54 排针＋排母叠高"},
+    "esp_len":   {"nominal": 63.9,  "measured": null, "source": "layout", "note": "ESP32 板长（24 孔×2.54 + 边）"},
+    "esp_wid":   {"nominal": 28.2,  "measured": null, "source": "layout"},
+    "module_h":  {"nominal": 8.0,   "measured": null, "source": "guess", "note": "TB6612/MPU 模块连通针高度"}
+  },
+  "gantry": {
+    "post_x":   {"nominal": 48.0, "measured": null, "source": "design", "note": "测距龙门立柱，主板前缘 45.72 之外"},
+    "post_y":   {"nominal": 40.0, "measured": null, "source": "design", "note": "立柱中心 ±40（底板边 41）"},
+    "post_sq":  {"nominal": 4.0,  "measured": null, "source": "design"},
+    "bar_z":    {"nominal": 67.0, "measured": null, "source": "design", "note": "横梁底；传感器挂在其下"},
+    "top_z":    {"nominal": 69.0, "measured": null, "source": "design", "note": "整车最高点"}
+  },
+  "tof": {
+    "module_l":  {"nominal": 25.0, "measured": null, "source": "guess", "note": "GY-530 长边"},
+    "module_w":  {"nominal": 13.0, "measured": null, "source": "guess"},
+    "module_t":  {"nominal": 4.0,  "measured": null, "source": "guess", "note": "含镜头"},
+    "lens_z":    {"nominal": 60.5, "measured": null, "source": "notes", "note": "镜头中心离地（5–10cm）"},
+    "side_y":    {"nominal": 45.0, "measured": null, "source": "notes", "note": "离车中线 45"},
+    "side_x":    {"nominal": 50.0, "measured": null, "source": "design", "note": "实测偏离规格：原设计在车轴正上方（x=0），主板挡住无法立柱，改挂在前龙门 x≈50"},
+    "front_x":   {"nominal": 56.0, "measured": null, "source": "design", "note": "前测距镜头面，距车轴 56（规格 55）"},
+    "fov_deg":   {"nominal": 25.0, "measured": null, "source": "spec"},
+    "hole_d":    {"nominal": 2.2,  "measured": null, "source": "guess", "note": "M2 孔"},
+    "hole_dx":   {"nominal": 20.0, "measured": null, "source": "guess", "note": "M2 孔距"}
+  },
+  "masses": {
+    "plate":   {"nominal": 110, "note": "洞洞板 140×82×3，按面积估"},
+    "pcb":     {"nominal": 90,  "note": "主板 + 所有模块"},
+    "battery": {"nominal": 105, "note": "2×18650 电池盒 + 两节电池（含盒）"},
+    "motor":   {"nominal": 15,  "note": "N20 + 编码器，每只"},
+    "wheel":   {"nominal": 10,  "note": "每只"},
+    "caster":  {"nominal": 10,  "note": "每只，共 2 只（前 + 后）"},
+    "gantry":  {"nominal": 25,  "note": "两根立柱 + 横梁"},
+    "tof":     {"nominal": 3,   "note": "每颗"}
+  },
+  "decisions": {
+    "base_plate_width": 82,
+    "caster_position": "front+rear（四轮：2 驱动轮 + 前后各 1 万向轮）",
+    "pcb_is_top_deck": true,
+    "sensor_mount": "前龙门：两根 4×4 立柱从底板立到 69，横梁挂三颗测距",
+    "sensor_x_shift_reason": "左右测距原设计在车轴正上方，但主板 91.44×88.9 正好盖住，立柱无处生根；改到前龙门后，侧向读数在直道与车轴位置等价，弯道略提前",
+    "battery_form": "2×18650 电池盒 77×40×20（含电池约 105g），骑在两个电机顶上（z 26），重心压在驱动轮轴上；主板抬到 48 让开 2mm",
+    "pcb_raise_reason": "18650 盒比 LiPo 高，且底板电机前后只剩 38mm 放不下 77mm 的盒；改为压在电机上后，主板必须从 45 抬到 48"
+  }
+}

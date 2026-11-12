@@ -10,7 +10,7 @@ firmware/car/       Arduino 固件。大脑 brain.cpp 也在这里，整个仓�
 firmware/board/     洞洞板布线：layout.py 自检并生成 board.html（浏览器直接打开）；netlist.md 是画原理图用的对照表
 firmware/telemetry.py  电脑端 WiFi 遥测
 maze-sim/           仿真器（直接编译 firmware/car/brain.cpp）和真车数据回放
-docs/               赛情与决策、硬件笔记、物料清单
+docs/               赛情与决策、硬件笔记、采购进度、PCB 下单与装配
 ```
 
 各部分怎么用，见 `firmware/README.md` 和 `maze-sim/README.md`。
@@ -23,6 +23,9 @@ docs/               赛情与决策、硬件笔记、物料清单
 - **改了大脑**（`firmware/car/brain.*`）：先跑一遍比赛赛道，还能完赛再提交：
   `cd maze-sim && python3 sim.py --maze track_2026.txt --race --no-anim`
 - **改了布线**（`firmware/board/layout.py`）：运行一次 `python3 layout.py`，它会自检并重新生成 `board.html`，两个文件一起提交。
+  默认走线锁定在 `firmware/board/route_final.json`（55×37、0 跨线、1.96 m）；只要元件或焊点没变，每次生成结果都一样。
+  挪了元件/改了接线后，旧路线会自动失效并重新随机搜索（打印“与当前网络不匹配，改为重新布线”），此时把新结果另存为 route_final.json 即可。
+  想换一份路线：`ROUTE_JSON=xxx.json python3 layout.py`（只要 id→path 就能用）。
 - **调参数**：先用串口或 WiFi 的 `p 名字 数值` 试，定下来的值写回 `brain.cpp` 的默认参数或 `config.h` 再提交。`save` 存的参数只在那块板子的闪存里，不跟着仓库走，换板子也不会带过去。
 - **遥测记录**：`runs/` 不进仓库。哪一次值得分析，就复制到 `logs/` 再提交，Claude 拉下来就能用 `replay_log.py` 重放。
 - **比赛前**：`config.h` 里 `TELEMETRY` 改成 0，再烧一次。
