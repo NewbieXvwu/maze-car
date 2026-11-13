@@ -96,6 +96,13 @@ li.done .wt { color: var(--muted); text-decoration: line-through; text-decoratio
 .boardtools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 4px 10px;color:var(--muted);font-size:.8rem}
 .boardtools label{display:inline-flex;align-items:center;gap:4px}
 .boardtools select{font:inherit;background:var(--panel);color:var(--fg);border:1px solid var(--line);padding:3px;border-radius:4px}
+.probe{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:6px;padding:3px 9px;font-size:.8rem;font-variant-numeric:tabular-nums}
+.probe b{color:var(--accent);font-weight:600}
+.probe .t{color:var(--muted)}
+.probeplg line{stroke:var(--accent);stroke-width:1.1;opacity:.9}
+.probeplg circle{fill:none;stroke:var(--accent);stroke-width:1.1;stroke-dasharray:3 2}
+.probeplg text{font:600 4.2px var(--sans);fill:var(--accent);paint-order:stroke;stroke:var(--panel);stroke-width:1.3px;stroke-linejoin:round}
+.probebg{fill:var(--panel);stroke:var(--accent);stroke-width:.4;opacity:.96}
 svg#board{min-width:720px;width:calc(100% * var(--zoom,1))}
 .small{font-size:.84rem;color:var(--muted)!important}
 .crossbtn{font:inherit;font-size:.85rem;background:var(--chip);color:var(--fg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;text-align:left;display:block;width:100%;margin:8px 0;cursor:pointer}
@@ -139,6 +146,23 @@ svg#board{min-width:720px;width:calc(100% * var(--zoom,1))}
 .g-mot { stroke: var(--w-mot) } .g-enc { stroke: var(--w-enc) } .g-sw { stroke: var(--w-sw) }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
 </style>
+<style>
+.skipwire{fill:none;stroke:#93a39a;stroke-width:1.6;stroke-dasharray:2.2 2.2;opacity:.6}
+.boardtools label.nobtn{font-weight:600}
+.chip.dead{opacity:.4}
+label.meas-tool{font-weight:600}
+.pairlayer .pl{stroke-dasharray:3 2.4;stroke-width:1.2;opacity:.9}
+.pairlayer .pa{stroke-width:1.5}
+.pairlayer text{font-family:var(--sans);font-size:3.9px;font-weight:700;paint-order:stroke;stroke:#fff;stroke-width:.9;stroke-linejoin:round}
+.mchips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 6px}
+.mchips button{font:inherit;font-size:.78rem;padding:3px 9px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--fg);cursor:pointer}
+.mchips button:hover{border-color:var(--accent);color:var(--accent)}
+.mpair{border-top:1px dashed var(--line);padding:7px 0 3px;font-size:.8rem;line-height:1.45}
+.mpair .pt{color:var(--muted);font-size:.78rem}
+.mpair .lv{font-weight:600}
+.lv.short{color:#1a7a3c}.lv.open{color:#8a5f10}.lv.cap{color:#1c5f9e}.lv.active{color:#7a3f9e}
+</style>
 
 <div class="wrap">
   <header>
@@ -164,7 +188,7 @@ svg#board{min-width:720px;width:calc(100% * var(--zoom,1))}
   <div class="main">
     <section class="boardbox">
       <div class="viewnote" id="viewnote"></div>
-      <div class="boardtools"><span>全部线路均在焊接面布设，元件面视图用于定位</span><label><input id="labels-toggle" type="checkbox" checked> 文字标签</label><label>缩放 <select id="zoom"><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label></div>
+      <div class="boardtools"><span>全部线路均在焊接面布设，元件面视图用于定位</span><label class="nobtn"><input id="nobtn" type="checkbox"> 没装启动键</label><label class="meas-tool"><input id="measure" type="checkbox"> 测量模式</label><label><input id="labels-toggle" type="checkbox" checked> 文字标签</label><label>缩放 <select id="zoom"><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label><span id="probe" class="probe">在图上点一下，就能看到这一点的坐标</span></div>
       <div class="scroll"><svg id="board" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="洞洞板布线图"></svg></div>
       <div class="legend" id="legend"></div>
     </section>
@@ -172,6 +196,12 @@ svg#board{min-width:720px;width:calc(100% * var(--zoom,1))}
     <aside>
       <div class="card"><h2 id="crossh">跨线</h2><div id="crosslist"></div><p class="small">编号对应图中圆标。上层导线保持绝缘并局部拱起，交点不焊接。其他线路按图避开，不能拉直抄近路。</p></div>
       <div class="card routecard" id="routecard" aria-live="polite"><h2>查看单根路径</h2><p class="small">点击图中的导线或清单文字，显示全部拐点和焊点。</p></div>
+      <div class="card" id="meascard">
+        <div class="rowbtn"><h2 style="margin:0">量两点，看该是多少</h2><button class="ghost" id="mclear">清空</button></div>
+        <p class="small">勾上 <b>测量模式</b>，在图上点第一下是 A、第二下是 B（自动吸附到最近的孔或走线段）。每成对一次就在图上留一对 A/B 标记，可以连着量好几处。</p>
+        <div class="mchips" id="mchips"></div>
+        <div id="mpairs"></div>
+      </div>
       <div class="steps" id="steps" role="group" aria-label="焊接步骤"></div>
       <div class="card" id="stepcard"></div>
       <div class="card">
@@ -195,10 +225,41 @@ const P = 10;                                   // 一个孔距 = 10 个 SVG 单
 const GROUPS = { vbat: '电池 VBAT', v5: '5V', v33: '3V3', gnd: '地 GND', scl: 'SCL', sda: 'SDA', xshut: 'XSHUT',
   drv: '驱动控制', mot: '电机线', enc: '编码器', sw: '拨码 / 按键' };
 const KEY = 'mazecar-board-routed-v2';
-let S = { view: 'top', step: 0, net: null, wire: null, done: new Set() };
+let S = { view: 'top', step: 0, net: null, wire: null, nobtn: true, done: new Set(), measure: false, pairs: [], pending: null };
 try { const s = JSON.parse(localStorage.getItem(KEY) || '{}');
-  if (s.view) S.view = s.view; if (Number.isInteger(s.step) && s.step >= 0 && s.step <= D.steps.length) S.step = s.step; if (Array.isArray(s.done)) S.done = new Set(s.done.filter(n => Number.isInteger(n) && n >= 0 && n < D.wires.length)); } catch (e) {}
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ view: S.view, step: S.step, done: [...S.done] })) } catch (e) {} };
+  if (s.view) S.view = s.view; if (typeof s.nobtn === 'boolean') S.nobtn = s.nobtn; if (Number.isInteger(s.step) && s.step >= 0 && s.step <= D.steps.length) S.step = s.step; if (Array.isArray(s.done)) S.done = new Set(s.done.filter(n => Number.isInteger(n) && n >= 0 && n < D.wires.length)); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ view: S.view, step: S.step, nobtn: S.nobtn, done: [...S.done] })) } catch (e) {} };
+
+// 没装启动键（BTN）：跳过 BTN 两根线，板上用灰色虚线标出被跳过的那段。
+const ALL_W = D.wires.map(w => ({ path: w.path ? w.path.slice() : null, stops: w.stops.slice(), labels: w.labels.slice(), length: w.length }));
+const segmm = (p, q) => Math.hypot(q[0] - p[0], q[1] - p[1]) * 2.54;
+const plen = path => path.reduce((a, p, i) => i ? a + segmm(path[i - 1], p) : 0, 0);
+const live = () => D.wires.filter(w => !w.off);
+function rebuild() {
+  D.wires.forEach((w, i) => {
+    const o = ALL_W[i];
+    w.path = o.path ? o.path.slice() : o.path;
+    w.stops = o.stops.slice(); w.labels = o.labels.slice(); w.length = o.length;
+    w.off = false; w.skipPath = null;
+    if (!S.nobtn) return;
+    const bt = (D.components.find(c => c.id === 'BTN') || { label: '启动键' }).label;
+    const k = o.labels.findIndex(l => l.indexOf(bt + ' ') === 0);
+    if (k < 0) return;
+    const prev = k > 0 ? o.stops[k - 1] : null;
+    let pi = prev ? o.path.findIndex(p => Math.abs(p[0] - prev[0]) < 1e-6 && Math.abs(p[1] - prev[1]) < 1e-6) : 0;
+    if (pi < 0) pi = 0;
+    const keep = o.path.slice(0, pi + 1);
+    w.skipPath = o.path.slice(pi);
+    w.path = keep;
+    w.stops = o.stops.slice(0, k);
+    w.labels = o.labels.slice(0, k);
+    if (w.stops.length < 2) { w.off = true; w.length = 0; return; }
+    w.pa = w.stops[0];
+    w.pb = w.stops[w.stops.length - 1];
+    w.length = plen(keep);
+  });
+}
+rebuild();
 
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
@@ -213,11 +274,165 @@ const css = name => getComputedStyle(document.documentElement).getPropertyValue(
 const mx = x => S.view === 'bottom' ? (D.cols - 1 - x) : x;       // 焊接面左右镜像
 const hole = (x, y) => `(${x + 1},${y + 1})`;                       // 给人看的坐标从 1 数，始终按元件面
 
+// ---- 测量模式：勾上以后在图上点两点，报"万用表该读到什么" ------------------
+let NETAT = {};                                                     // "x,y" -> { nets:Set, pins:[] }
+const XKEY = p => p[0] + ',' + p[1];
+function buildNetAt() {
+  NETAT = {};
+  const cross = new Set(D.crossings.map(c => XKEY(c.p)));           // 跨线点两种网络绝缘，不算共同网络
+  const add = (x, y, net, pin) => {
+    const key = x + ',' + y; if (cross.has(key)) return;
+    const o = NETAT[key] || (NETAT[key] = { nets: new Set(), pins: [] });
+    if (net) o.nets.add(net);
+    if (pin) o.pins.push(pin);
+  };
+  for (const c of D.components) for (const p of (c.pins || []))
+    add(p.x, p.y, p.net, c.label.replace(/（.*?）/g, '') + ' ' + p.label);
+  for (const w of D.wires) { if (w.off) continue; for (const p of w.path) add(p[0], p[1], w.net); }
+}
+const netOf = pt => new Set((NETAT[pt.x + ',' + pt.y] || { nets: [] }).nets);
+function ptLabel(pt) {
+  const where = `第 ${fcol(pt.x + 1)} 列 · 第 ${fcol(pt.y + 1)} 行`;
+  const pin = PININDEX[pt.x + ',' + pt.y];
+  if (pin) return { where, what: pin };
+  const ns = [...netOf(pt)];
+  return { where, what: ns.length ? '走线中段（' + ns.join(' / ') + '）' : '空孔' };
+}
+function reading(a, b) {
+  const A = netOf(a), B = netOf(b);
+  const both = (x, y) => (A.has(x) && B.has(y)) || (A.has(y) && B.has(x));
+  const shared = [...A].filter(n => B.has(n));
+  if (a.x === b.x && a.y === b.y) return ['open', '同一处', '两个点重合，读数当然是 0，只用来确认表笔真的搭上了。'];
+  if (shared.length) return ['short', '0 Ω · 导通（' + shared.join(' / ') + '）',
+    '同一个网络、同一根铜线，蜂鸣器长响。理想是 0 Ω；如果读到几欧以上，就是这根线虚焊、断了，或者锡没吃上。'];
+  if (!A.size || !B.size) return ['open', '∞ · 不通', '其中一点是空孔（或没接的引脚），那里没有铜，量哪儿都是开路。'];
+  if (both('GND', '3V3') || both('GND', '5V') || both('GND', 'VBAT')) return ['cap', '容性 · 数字会往上爬',
+    '这是电源对地：表笔一碰，读数从小往大爬，几秒后到 kΩ 以上或 OL。判据是"稳定值 &lt; 50 Ω 才算短路"，起步的几十欧是电容在充电，不是坏。模块插得越多，电容越大，爬得越慢。'];
+  if (both('3V3', '5V')) return ['active', '经稳压芯片 · 电阻档没意义',
+    '两者之间是 ESP32 板上的稳压器，不是铜。要查通不通就用二极管档：红笔点 5V、黑笔点 3V3，应显示 0.6–0.9 V；两头都通（≈0 V）才是击穿。'];
+  if (both('VBAT', '5V')) return ['active', '经 Mini560 · 电阻档没意义', '中间是降压模块。要查短路就分开量：VBAT–GND、5V–GND。'];
+  if (both('VBAT', '3V3')) return ['active', '经两级电源 · 电阻档没意义', '中间隔着 Mini560 和稳压器，量不到有用的值。'];
+  if (A.has('SCL') || A.has('SDA') || B.has('SCL') || B.has('SDA')) return ['open', '∞ · 正常（开路）',
+    'SCL/SDA 在板上没焊上拉电阻，只在 ESP 芯片内部有，所以表量到的一直是开路——别拿这里当断线判据。'];
+  return ['open', '∞ · 不通', '这两个网络在板上没有铜连接，蜂鸣器不响是正常的。'];
+}
+const PC = ['#e2611f', '#2f7de1', '#1a7a3c', '#a03a8f', '#a87511', '#0f7e8c'];
+function drawPairs(svg) {
+  const old = svg.querySelector('.pairlayer'); if (old) old.remove();
+  if (!S.pairs.length && !S.pending) return;
+  const g = el('g', { class: 'pairlayer' }, svg);
+  const mark = (pt, color, txt, dashed) => {
+    const x = mx(pt.x) * P, y = pt.y * P;
+    const a = { cx: x, cy: y, r: 4.5, class: 'pa', stroke: color, fill: 'none' };
+    if (dashed) a['stroke-dasharray'] = '2.2 1.8';
+    el('circle', a, g);
+    el('text', { x: x + 5.6, y: y - 4.6, fill: color }, g, txt);
+  };
+  S.pairs.forEach((pr, i) => {
+    const color = PC[i % PC.length];
+    const x1 = mx(pr.a.x) * P, y1 = pr.a.y * P, x2 = mx(pr.b.x) * P, y2 = pr.b.y * P;
+    el('line', { x1, y1, x2, y2, class: 'pl', stroke: color }, g);
+    mark(pr.a, color, 'A' + (i + 1));
+    mark(pr.b, color, 'B' + (i + 1));
+    el('circle', { cx: (x1 + x2) / 2, cy: (y1 + y2) / 2, r: 4.3, fill: color, stroke: '#fff', 'stroke-width': .7 }, g);
+    el('text', { x: (x1 + x2) / 2, y: (y1 + y2) / 2 + 1.4, 'text-anchor': 'middle', fill: '#fff', stroke: 'none' }, g, String(i + 1));
+  });
+  if (S.pending) mark(S.pending, PC[S.pairs.length % PC.length], 'A' + (S.pairs.length + 1) + '？', true);
+}
+function renderMeasure() {
+  const box = $('mpairs'); if (!box) return;
+  if (!S.pairs.length) {
+    box.innerHTML = '<p class="small" style="margin:4px 0 0">还没有成对的点。点上边一个常用检查，或者勾上测量模式在图上点两下。</p>';
+    return;
+  }
+  box.innerHTML = S.pairs.map((pr, i) => {
+    const [lv, t, d] = reading(pr.a, pr.b), A = ptLabel(pr.a), B = ptLabel(pr.b);
+    return `<div class="mpair"><div><b style="color:${PC[i % PC.length]}">${i + 1}.</b> A ${A.where} <span class="pt">${A.what}</span><br>
+      B ${B.where} <span class="pt">${B.what}</span></div>
+      <div><span class="lv ${lv}">${t}</span></div><div class="pt">${d}</div></div>`;
+  }).join('') + (S.pending ? '<p class="small" style="margin:6px 0 0">A 点选好了，再点一下就是 B。</p>' : '');
+}
+function refreshMeasure() { const svg = $('board'); if (svg) drawPairs(svg); renderMeasure(); }
+function measureAt(pt) {
+  if (S.pending && S.pending.x === pt.x && S.pending.y === pt.y) { S.pending = null; return; }
+  if (!S.pending) { S.pending = pt; return; }
+  const a = S.pending, dup = S.pairs.some(q => (q.a.x === a.x && q.a.y === a.y && q.b.x === pt.x && q.b.y === pt.y)
+    || (q.b.x === a.x && q.b.y === a.y && q.a.x === pt.x && q.a.y === pt.y));
+  if (!dup) S.pairs.push({ a, b: pt });
+  S.pending = null;
+}
+const PINREF = {};
+for (const c of D.components) for (const p of (c.pins || [])) PINREF[p.ref] = { x: p.x, y: p.y };
+const PRESETS = [
+  ['电池口 +/−', 'XH.+', 'XH.−'],
+  ['降压输出 5V', 'M5P.OUT+', 'M5P.OUT−'],
+  ['ESP 5Vin / 地', 'ESP.5Vin', 'ESP.GND·L'],
+  ['ESP 3V3 / 地', 'ESP.3V3', 'ESP.GND·L'],
+  ['TB6612 VM / 地', 'TB.VM', 'TB.GND·P'],
+  ['ESP 地 ↔ TB 地', 'ESP.GND·L', 'TB.GND·C'],
+  ['3V3 到 TB', 'ESP.3V3', 'TB.VCC'],
+  ['电机线 M1 ↔ TB AO1', 'ML.M1', 'TB.AO1']
+];
+function renderPresets() {
+  const box = $('mchips'); if (!box) return;
+  box.innerHTML = PRESETS.map((p, i) => `<button data-i="${i}">${p[0]}</button>`).join('');
+  for (const b of box.querySelectorAll('button')) b.addEventListener('click', () => {
+    const A = PINREF[PRESETS[+b.dataset.i][1]], B = PINREF[PRESETS[+b.dataset.i][2]];
+    if (!A || !B) return;
+    S.pairs.push({ a: A, b: B }); S.pending = null; refreshMeasure();
+  });
+}
+
+// ---- 点图看坐标：点哪就报哪一格（孔 / 两孔之间 / 四孔空当），元件面、焊接面都按元件面编号 ----
+const PININDEX = {};
+for (const c of D.components) for (const p of (c.pins || [])) PININDEX[p.x + ',' + p.y] = c.label.replace(/（.*?）/g, '') + ' ' + p.label + (p.net ? '（' + p.net + '）' : '（不接）');
+const fcol = v => Number.isInteger(v) ? String(v) : String(Math.round(v * 10) / 10);
+function probeText(x, y) {
+  const onHole = Number.isInteger(x) && Number.isInteger(y);
+  const pin = onHole ? PININDEX[x + ',' + y] : null;
+  const kind = onHole ? (pin ? '焊点 ' + pin : '空孔')
+    : Number.isInteger(x) ? '竖向两孔之间'
+    : Number.isInteger(y) ? '横向两孔之间' : '四孔中间的空当';
+  return `<b>第 ${fcol(x + 1)} 列 · 第 ${fcol(y + 1)} 行</b><span class="t">${kind} · 距左上第 1 孔 ${(x * 2.54).toFixed(1)} × ${(y * 2.54).toFixed(1)} mm</span>`;
+}
+function drawProbe(svg) {
+  const old = svg.querySelector('.probeplg'); if (old) old.remove();
+  if (!S.probe) return;
+  const x = mx(S.probe.x) * P, y = S.probe.y * P, W = (D.cols - 1) * P;
+  const g = el('g', { class: 'probeplg' }, svg);
+  el('line', { x1: x - 4.6, y1: y, x2: x + 4.6, y2: y }, g);
+  el('line', { x1: x, y1: y - 4.6, x2: x, y2: y + 4.6 }, g);
+  el('circle', { cx: x, cy: y, r: 3.6 }, g);
+  const t = el('text', { x: x + 6, y: y - 5 }, g, `第 ${fcol(S.probe.x + 1)} 列 · 第 ${fcol(S.probe.y + 1)} 行`);
+  const bb = t.getBBox(), pad = 1.6;
+  const flip = bb.x + bb.width + pad > W + 6;
+  if (flip) { t.setAttribute('x', x - 6); t.setAttribute('text-anchor', 'end'); }
+  const bb2 = t.getBBox();
+  const rect = el('rect', { x: bb2.x - pad, y: bb2.y - pad, width: bb2.width + 2 * pad, height: bb2.height + 2 * pad, rx: 1.6, class: 'probebg' }, g);
+  g.insertBefore(rect, t);
+}
+function probeClick(ev) {
+  const svg = $('board'), m = svg.getScreenCTM(); if (!m) return;
+  const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const q = pt.matrixTransform(m.inverse());
+  let bx = q.x / P, by = q.y / P;
+  if (S.view === 'bottom') bx = D.cols - 1 - bx;
+  if (bx < -0.6 || by < -0.6 || bx > D.cols - 0.4 || by > D.rows - 0.4) {
+    S.probe = null; drawProbe(svg);
+    $('probe').innerHTML = '<b>板外</b><span class="t">点在绿色板子里面</span>';
+    return;
+  }
+  S.probe = { x: Math.round(bx * 2) / 2, y: Math.round(by * 2) / 2 };
+  if (S.measure) { measureAt(S.probe); refreshMeasure(); }
+  drawProbe(svg);
+  $('probe').innerHTML = probeText(S.probe.x, S.probe.y);
+}
+
 function routePath(w) {
   return w.path.map((p,i)=>(i?'L':'M')+mx(p[0])*P+','+p[1]*P).join(' ');
 }
 function focusWire(id) {
-  S.wire=id; S.net=null; S.step=0; renderSteps(); renderList(); apply(false);
+  S.wire=id; S.net=null; S.step=0; renderSteps(); renderList(); apply();
 }
 function renderRoute() {
   const w=D.wires[S.wire];
@@ -285,6 +500,12 @@ function buildBoard() {
     }
   }
   for (const w of D.wires) {
+    if (w.skipPath && w.skipPath.length > 1) {
+      el('path', { d: w.skipPath.map((p, i) => (i ? 'L' : 'M') + mx(p[0]) * P + ',' + p[1] * P).join(' '), class: 'skipwire' }, wiresG);
+    }
+  }
+  for (const w of D.wires) {
+    if (w.off) continue;
     const [ax, ay] = w.pa, [bx, by] = w.pb;
     const d = routePath(w);
     const g = el('g', { class: 'wg', 'data-id': w.id }, wiresG);
@@ -296,7 +517,7 @@ function buildBoard() {
       el('circle',{cx:mx(p[0])*P,cy:p[1]*P,r:2.7,fill:css(w.group),stroke:'#fff','stroke-width':.7},g);
     }
     el('title', {}, g, `${w.labels.join(' → ')}（${w.net}）`);
-    g.addEventListener('click', () => { S.wire = S.wire === w.id ? null : w.id; S.net = null; apply(true) });
+    g.addEventListener('click', () => { if (S.measure) return; S.wire = S.wire === w.id ? null : w.id; S.net = null; apply() });
   }
   // 跨点处先绘制底线，再覆盖上层绝缘线的小拱桥。
   for (const c of D.crossings) {
@@ -311,9 +532,11 @@ function buildBoard() {
     el('circle',{cx:x+10,cy:y-9,r:3.2,fill:'#ffe5a9',stroke:'#233c2c','stroke-width':.5},g);
     el('text',{x:x+10,y:y-7.5,'text-anchor':'middle',class:'crossbadge'},g,c.id);
     el('title',{},g,`跨线 ${c.id}：${w.net} 从 ${D.wires[c.under].net} 上方越过，不焊接`);
-    g.addEventListener('click',()=>focusWire(c.over));
+    g.addEventListener('click',()=>{ if (S.measure) return; focusWire(c.over) });
   }
   svg.appendChild(lbls);                         // 标签放最上层
+  drawPairs(svg);                                // 测量标记：A/B 对
+  drawProbe(svg);
 }
 
 function wireVisible(w) {
@@ -323,7 +546,7 @@ function wireVisible(w) {
   return 'off';
 }
 
-function apply(scroll) {
+function apply() {
   // 板上的线
   for (const g of document.querySelectorAll('.wg')) {
     const w = D.wires[+g.dataset.id], vis = wireVisible(w);
@@ -341,10 +564,9 @@ function apply(scroll) {
     const id = +li.dataset.id;
     li.classList.toggle('done', S.done.has(id));
     li.classList.toggle('sel', S.wire === id);
-    if (scroll && S.wire === id) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   for (const b of document.querySelectorAll('#nets .chip')) b.setAttribute('aria-pressed', String(b.dataset.net === S.net));
-  const n = S.done.size, t = D.wires.length;
+  const n = [...S.done].filter(id => D.wires[id] && !D.wires[id].off).length, t = live().length;
   $('prog').textContent = `已焊 ${n} / ${t}`;
   $('bar').style.width = (100 * n / t) + '%';
   renderRoute();
@@ -357,7 +579,9 @@ function renderView() {
   $('viewnote').innerHTML = S.view === 'top'
     ? '<span><b>元件面</b>：模块插在这一面，车头朝上</span><span>坐标（列,行）从这一面的左上角数</span>'
     : '<span><b>焊接面</b>：板子翻过来看，左右是反的</span><span>坐标仍按元件面编号，方便对照</span>';
+  buildNetAt();
   buildBoard(); apply();
+  renderPresets(); refreshMeasure();
 }
 
 function renderSteps() {
@@ -369,11 +593,11 @@ function renderSteps() {
     b.addEventListener('click', () => { S.step = i; S.wire = null; renderSteps(); renderList(); apply() });
     box.appendChild(b);
   };
-  D.steps.forEach((s, i) => mk(i + 1, `${i + 1} ${s.title}`, D.wires.filter(w => w.step === i + 1).length || null));
+  D.steps.forEach((s, i) => mk(i + 1, `${i + 1} ${s.title}`, D.wires.filter(w => !w.off && w.step === i + 1).length || null));
   mk(0, '全部');
   const card = $('stepcard');
   if (S.step === 0) {
-    card.innerHTML = `<h2>全部 ${D.wires.length} 根线</h2><p>按步骤焊更不容易漏：每焊完一步按原方案的串口命令检查。连续总线的所有中间焊点完成后，再勾选整根导线。</p>`;
+    card.innerHTML = `<h2>全部 ${live().length} 根线</h2><p>按步骤焊更不容易漏：每焊完一步按原方案的串口命令检查。连续总线的所有中间焊点完成后，再勾选整根导线。</p>`;
   } else {
     const s = D.steps[S.step - 1];
     card.innerHTML = `<h2>第 ${S.step} 步 · ${s.title}</h2><p>${s.desc}</p><div class="test"><b>焊完测：</b>${s.test}</div>`;
@@ -382,7 +606,7 @@ function renderSteps() {
 
 function renderList() {
   const ul = $('wlist'); ul.innerHTML = '';
-  const list = S.step === 0 ? D.wires : D.wires.filter(w => w.step === S.step);
+  const all = live(); const list = S.step === 0 ? all : all.filter(w => w.step === S.step);
   if (S.step === 1) {
     ul.innerHTML = D.components.filter(c => c.kind === 'socket' || c.kind === 'pins')
       .map(c => `<li><label style="grid-template-columns:10px minmax(0,1fr)"><span class="dot" style="background:var(--header)"></span><span class="wt">${c.label}<div class="wc" style="grid-column:auto">${c.note}</div></span></label></li>`).join('');
@@ -408,14 +632,17 @@ function renderList() {
 }
 
 function renderStatic() {
-  const t = D.wires.length;
-  $('totlen').textContent = `${(D.stats.total / 1000).toFixed(2)} 米`;
-  $('sumcross').textContent = `${D.crossings.length} 处`;
-  $('crosshint').textContent = D.crossings.length ? '每处套一小段热缩管，交点不焊' : '全板没有一处交叉，不用套热缩管';
-  $('sumwires').textContent = `${D.wires.length} 根`;
+  const lw = live(), t = lw.length;
+  const total = lw.reduce((a, w) => a + w.length, 0);
+  const segs = lw.reduce((a, w) => a + Math.max(0, w.stops.length - 1), 0);
+  const crossings = D.crossings.filter(c => !D.wires[c.over].off && !D.wires[c.under].off);
+  $('totlen').textContent = `${(total / 1000).toFixed(2)} 米`;
+  $('sumcross').textContent = `${crossings.length} 处`;
+  $('crosshint').textContent = crossings.length ? '每处套一小段热缩管，交点不焊' : '全板没有一处交叉，不用套热缩管';
+  $('sumwires').textContent = `${t} 根`;
   $('sumbd').textContent = `${D.cols} × ${D.rows} 孔`;
-  $('crossh').textContent = D.crossings.length ? `${D.crossings.length} 处跨线` : '本级没有跨线';
-  $('sub').textContent = `${D.cols} × ${D.rows} 孔（约 ${(D.cols * 2.54 / 10).toFixed(1)} × ${(D.rows * 2.54 / 10).toFixed(1)} cm）· ${t} 根导线 · 保留 52 段连接 · ${D.steps.length} 步`;
+  $('crossh').textContent = crossings.length ? `${crossings.length} 处跨线` : '本级没有跨线';
+  $('sub').textContent = `${D.cols} × ${D.rows} 孔（约 ${(D.cols * 2.54 / 10).toFixed(1)} × ${(D.rows * 2.54 / 10).toFixed(1)} cm）· ${t} 根导线 · 保留 ${segs} 段连接 · ${D.steps.length} 步` + (S.nobtn ? ' · 未装启动键' : '');
   $('legend').innerHTML = Object.entries(GROUPS).map(([g, n]) =>
     `<span><i class="sw" style="background:${css(g)};${g === 'gnd' ? 'box-shadow:0 0 0 1px var(--muted)' : ''}"></i>${n}</span>`).join('')
     + '<span>白边实点 = 总线中间焊点 · 编号小拱桥 = 绝缘跨线</span>';
@@ -424,7 +651,7 @@ function renderStatic() {
   for (const b of nets.querySelectorAll('.chip')) b.addEventListener('click', () => {
     S.net = S.net === b.dataset.net ? null : b.dataset.net; S.wire = null; S.step = 0; renderSteps(); renderList(); apply();
   });
-  $('crosslist').innerHTML = D.crossings.map(c=>`<button class="crossbtn" data-wire="${c.over}"><b>跨线 ${c.id}</b> · ${hole(...c.p)}<br>${D.wires[c.over].net} 在上，${D.wires[c.under].net} 在下</button>`).join('');
+  $('crosslist').innerHTML = crossings.map(c=>`<button class="crossbtn" data-wire="${c.over}"><b>跨线 ${c.id}</b> · ${hole(...c.p)}<br>${D.wires[c.over].net} 在上，${D.wires[c.under].net} 在下</button>`).join('');
   for(const b of $('crosslist').querySelectorAll('button')) b.addEventListener('click',()=>focusWire(+b.dataset.wire));
   const mods = D.components.filter(c => c.kind !== 'area');
   $('notes').innerHTML = `
@@ -440,7 +667,7 @@ function renderStatic() {
     <div class="card"><h3>可选，现在可以不焊</h3><ul>
       <li><b>电池电压检测</b>：电池 + → 100k → <span class="mono">IO1</span> → 33k → GND。买的东西里没有电阻，不焊的话固件会自动跳过检查，每次测试前把电池充满就行。</li>
       <li><b>5V 旁的电解电容</b>（100–470 µF，跨 5Vin 和 GND）：开 WiFi 时如果车莫名重启再补。</li>
-      <li><b>启动键</b>：ESP32 板上的 BOOT 键也能发车和急停。</li>
+      <li><b>启动键</b>：可以不装——不装时发车和急停用 ESP32 板上的 BOOT 键；工具栏勾选「没装启动键」后，那两根在图上变成灰虚线、不计入根数和总长。</li>
     </ul></div>
     <div class="card"><h3>板子的两个焊盘别动</h3><ul>
       <li>ESP32 板正面的 <b>IN-OUT</b>、背面的 <b>USB-OTG</b> 两处焊盘保持断开。断开时 5V 脚和 USB 之间有隔离，接着电池也能插 USB 调试。</li>
@@ -457,10 +684,26 @@ $('reset').addEventListener('click', () => {
   armed = Date.now(); b.textContent = '再点一次清空'; b.classList.add('warn');
   setTimeout(() => { if (armed && Date.now() - armed >= 3000) { b.textContent = '清空勾选'; b.classList.remove('warn') } }, 3100);
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { S.wire = null; S.net = null; apply() } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const had = S.probe || S.pending; S.wire = null; S.net = null; S.probe = null; S.pending = null; if (had) { drawProbe($('board')); refreshMeasure() } apply() } });
 
+$('nobtn').checked = S.nobtn;
+$('nobtn').addEventListener('change', () => {
+  S.nobtn = $('nobtn').checked;
+  S.done = new Set([...S.done].filter(id => D.wires[id] && !D.wires[id].off));
+  rebuild(); save();
+  renderSteps(); renderList(); renderStatic(); renderView();
+});
 $('labels-toggle').addEventListener('change',()=>document.querySelector('.pinlabels').classList.toggle('off',!$('labels-toggle').checked));
 $('zoom').addEventListener('change',e=>$('board').style.setProperty('--zoom',e.target.value));
+$('measure').addEventListener('change', () => {
+  S.measure = $('measure').checked;
+  if (!S.measure) S.pending = null;
+  refreshMeasure();
+  $('probe').innerHTML = S.measure ? '<b>测量模式</b><span class="t">第一下是 A，第二下是 B</span>'
+    : '在图上点一下，就能看到这一点的坐标';
+});
+$('mclear').addEventListener('click', () => { S.pairs = []; S.pending = null; refreshMeasure(); });
+$('board').addEventListener('click', probeClick);
 renderStatic(); renderSteps(); renderList(); renderView();
 </script>
 
@@ -480,3 +723,22 @@ Status: implemented
 -->
 
 </body></html>
+
+# Agent Note: 测量模式（点两点，报万用表读数）
+
+Status: implemented
+## Problem
+板子焊完要逐点验证，但"这两点之间理想应该读数多少"要靠人脑记网络表：同网该响、跨电源该是容性、
+跨稳压器不能量电阻。调试时最容易把容性爬升误判成短路。
+## Decision
+在工具栏加「测量模式」：点两下成一对 A/B，就地算读数。网络归属由 `buildNetAt()` 从元件引脚网络
+和每根线的路径点重建（跨线点跳过，两种网络在那里是绝缘的）。判读分四档：同网 0 Ω、电源对地容性、
+经电源器件（Mini560 / 稳压器）电阻档无意义、其余开路；SCL/SDA 单独说明"板上没有上拉电阻，开路是正常的"。
+标记画在 SVG 最上层（`drawPairs`），每对一种颜色，支持多对并排比对。
+## Consequences
+只在页面里算，不改走线和网表。读数判据是理想情况：没算表笔线阻和焊锡电阻，模块插拔只影响容性大小。
+## Verification
+用 node 抽出 `buildNetAt/reading` 对真实 D 数据跑过：电池±、降压输出、5V 同网、3V3 到 TB、电机 M1 到 AO1、
+SCL 到 SDA、3V3 到 5V、VBAT 到 5V、地到地远端、空孔、走线中段，结论与手算网络表一致；
+headless Chrome 里模拟点击两次能正确生成 A/B 对并刷新面板。
+
