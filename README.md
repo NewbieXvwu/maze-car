@@ -1,19 +1,49 @@
 # 迷宫小车
 
-An ESP32-S3 wall-following car for a campus maze race: firmware, a 2D simulator that runs the same control code, and a perfboard wiring generator.
+An ESP32-S3 wall-following car for a campus maze race: firmware, a 2D simulator that runs the same control code, a custom 55×37 mm carrier PCB, and the mechanical CAD.
 
-第九届长安大学迷宫智能小车大赛（迷宫组）参赛车：ESP32-S3（YD 板）+ TB6612 + N20 编码器电机 + 3 × VL53L0X + MPU6050。
+第九届长安大学迷宫智能小车大赛（迷宫组）参赛车：ESP32-S3（YD 板）+ TB6612 + N20 编码器电机 + VL53L0X 激光测距 + MPU6050 兼容陀螺仪（实装芯片是 MPU6500），自制 55×37 mm 转接主板。
 
 ```
-platformio.ini      PlatformIO 构建配置：pio run -e car 编译、-t upload 烧录（详见 firmware/README.md）
-firmware/car/       Arduino 固件。大脑 brain.cpp 也在这里，整个仓库只有这一份
-firmware/board/     洞洞板布线：layout.py 自检并生成 board.html（浏览器直接打开）；netlist.md 是画原理图用的对照表
+platformio.ini         PlatformIO 构建配置：pio run -e car 编译、-t upload 烧录（详见 firmware/README.md）
+firmware/car/          Arduino 固件。大脑 brain.cpp 也在这里，整个仓库只有这一份
+firmware/board/        主板布线：layout.py 自检并生成 board.html；netlist.md 是网络表；eda/ 是生成 EDA 工程的脚本
 firmware/telemetry.py  电脑端 WiFi 遥测
-maze-sim/           仿真器（直接编译 firmware/car/brain.cpp）和真车数据回放
-docs/               赛情与决策、硬件笔记、采购进度、PCB 下单与装配
+maze-sim/              仿真器（直接编译 firmware/car/brain.cpp）和真车数据回放
+eda/                   主板的嘉立创 EDA 专业版工程：原理图、PCB、拼板（打开 maze-car.eprj3）
+out/gerber/            主板的 Gerber 下单包（就是送去打样的那一份）
+cad/、out/*.step/.stl  整车结构：参数、尺寸链自检、装配说明；整车 STEP/STL 和各零件 STL
+迷宫小车主板布线.html   交互式布线图（浏览器直接打开）：逐根焊线、万用表测量模式
+docs/                  赛情与决策、硬件笔记（含装车调试记录）、采购进度、PCB 下单与装配
+examples/              最小示例（PSRAM 手动初始化）
 ```
 
 各部分怎么用，见 `firmware/README.md` 和 `maze-sim/README.md`。
+
+## 比赛版本说明
+
+比赛用的是装车调试阶段（2026-11-15）定下的配置，比赛赛道模式（拨码 2 OFF）的逻辑之后没有再改过：
+
+- **左测距停用**（`config.h`：`LEFT_TOF_ENABLED 0`）。左侧 VL53L0X 换过模块、重焊过，始终时通时断，最终决定不用。
+  比赛赛道只有一条路，到前墙时"右边通就右转，否则左转"，用右测距推出左侧；仿真里比赛赛道 20/20 完赛。
+  通用迷宫模式（拨码 2 ON）：比赛时这一版会拒绝发车；**赛后**补上了缺左测距时的退路——改用右手法则贴右墙走，
+  左边一律当"可能通"去试，仍然用"三面空旷 1 秒"判断出了迷宫（仿真：6×6 随机迷宫无环路 40/40，有环路 38/40，失败的都是超时停车）。
+- **陀螺仪**：实装芯片是 MPU6500（WHO_AM_I = 0x70），寄存器用法与 MPU6050 相同，固件两种都认。
+  插座接触不良会让它中途掉线，所以固件会持续检查；一旦掉线，自动改用左右编码器的里程差推算航向，车不会因此打转。
+- **离开迷宫停车**：比赛赛道共 14 个弯，转完第 14 个弯再走 350 mm 停车（`brain.cpp` 里的 `stop_turns` / `exit_run_mm`）。
+- 装车时遇到的硬件问题、诊断过程和结论，记录在 `docs/硬件笔记.md` 的"装车调试记录"一节。
+
+复现检查（不需要硬件）：
+
+```bash
+# 都在仓库根目录运行
+pio run -e car                                                                         # 固件编译
+(cd maze-sim && python3 sim.py --maze track_2026.txt --race --no-anim --png race.png)  # 比赛赛道仿真，应打印"完赛"
+(cd firmware/board && python3 layout.py)                                               # 布线自检，异网交叉应为 0
+python3 cad/check.py                                                                   # 整车尺寸链自检，应全部 PASS
+```
+
+仿真器需要 `numpy` 和 `matplotlib`；不加 `--png` 会弹出动画窗口。
 
 ## 协作约定
 
