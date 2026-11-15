@@ -18,6 +18,8 @@ void  gyro_sample();                   // 尽量常调用：读一次角速度�
 float gyro_take_angle();               // 取出上次以来累加的角度（度，逆时针为正）并清零
 float gyro_rate();                     // 最近一次的角速度（度/秒）
 bool  gyro_ok();
+bool  gyro_dropped();                  // 刚才是不是中途掉线了（取一次就清掉）
+bool  gyro_retry();                    // 没在用时再试着初始化一次；成功返回 true
 
 float battery_v();                     // 没接分压电阻时返回接近 0
 int   dip();                           // bit0 = 拨码 1，bit1 = 拨码 2（ON = 1）

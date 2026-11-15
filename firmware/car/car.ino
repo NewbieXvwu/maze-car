@@ -1,6 +1,6 @@
 // car.ino —— 迷宫小车主程序
 //
-// 开机后：蓝灯 = 就绪，红灯 = 有模块没初始化成功（串口里会说是哪个）。
+// 开机后：蓝灯 = 能发车，红灯 = 缺了发车必需的模块（串口里会说是哪个；左测距/陀螺仪缺件时的处理见 config.h）。
 // 按启动键（或板载 BOOT 键）→ 黄灯：手拿开，校准陀螺仪约 1 秒 → 绿灯：出发。跑的时候再按一下 = 急停。
 // 拨码 1：OFF 稳妥档 / ON 快档。拨码 2：OFF 比赛赛道模式 / ON 通用迷宫模式。
 // 串口（115200）或 WiFi 发 ? 看全部命令；装车时先用 i d g e m 逐个模块体检。
@@ -23,6 +23,8 @@ static_assert(sizeof(BrainParams) == NP * sizeof(float), "BrainParams 加了字�
 
 static BrainParams base;                 // 基础参数：开机从闪存读，没存过就用 brain 的默认值
 static float fast_cruise = FAST_CRUISE;
+static float track_mm = TRACK_MM;        // 等效轮距：陀螺仪不在时用编码器算航向（命令 t 标定）
+static BrainParams run_p;                // 这一趟实际用的参数
 static Preferences prefs;
 static String hw_err;
 
@@ -57,6 +59,39 @@ static void udp_send(const char* s, int len) {
 #endif
 }
 
+// ---------------------------------------------------------------- 缺件运行
+// 发车必需的：前、右测距；左测距只在 LEFT_TOF_ENABLED 时必需。陀螺仪不在就用编码器代替（见 config.h）。
+static bool required_ok() { return tof_ok(1) && tof_ok(2) && (tof_ok(0) || !LEFT_TOF_ENABLED); }
+
+static String degraded_note() {
+  String n;
+  if (!LEFT_TOF_ENABLED) n += "左测距已停用（通用迷宫模式改用右手法则）。";
+  if (!gyro_ok()) { n += "陀螺仪不在，用编码器算航向（等效轮距 "; n += String(track_mm, 1); n += " mm）。"; }
+  return n;
+}
+
+// 没有左测距时，给大脑补一个左侧"读数"。补出来的数都避开 WALL_OK 以下：
+// 这个数是编的，不能拿来居中、也不能拿来校正航向（会把真实的航向误差抹掉）。
+//
+// 比赛赛道模式（只有一条路）：用右测距推出左边。
+//   右边通 → 左边一定是墙；右边是墙 → 左边一定通（前墙处只有一个出口）。
+//   "墙"取在 WALL_OK 和 DEC_TH 之间：大脑把它算作墙（不会往左转）。
+// 通用迷宫模式：左边看不见，就改用右手法则（start_run 里换成 MODE_RIGHT），左边一律报"可能通"：
+//   取在 DEC_TH 和 open_th 之间——决策时算"通"（右、前都不通时才会去试左边；左边其实是墙的话，
+//   转过去正对着墙会再左转一次，等于掉头），但巡航时不算"看见开口"，不会凭空安排路口。
+//   前方和右侧都超过 1.5 m 时报"很远"，让大脑原有的"三面空旷 1 秒 = 出了迷宫"照常停车。
+//   仿真（6×6 随机迷宫各 40 个）：无环路 40/40；10%、25% 环路各 38/40，失败的都是绕圈到 2 分钟超时停车，没有撞墙。
+static float fake_left(float dR, float dF, const BrainParams& p, bool generic) {
+  float side_tgt = p.cell_mm / 2 - p.wall_half_mm - p.side_y_mm;
+  float wall_ok = 1.5f * side_tgt, dec_th = 0.55f * p.cell_mm;
+  if (generic) {
+    bool far_r = dR < 0 || dR > 1500, far_f = dF < 0 || dF > 1500;   // 无效读数 = 超量程 = 很远（同大脑）
+    return (far_r && far_f) ? -1 : (dec_th + p.open_th_mm) / 2;
+  }
+  bool right_open = dR < 0 || dR > dec_th;   // 和大脑一样：无效读数当作很远
+  return right_open ? (wall_ok + dec_th) / 2 : -1;
+}
+
 // ---------------------------------------------------------------- 一次跑车
 static bool running = false;
 static uint32_t t0_us, last_tick_us, done_ms = 0;
@@ -75,7 +110,7 @@ static void stop_run(const char* why, const Act* a) {
 
 static void start_run() {
   if (running) return;
-  if (!tof_ok(0) || !tof_ok(1) || !tof_ok(2) || !gyro_ok()) {
+  if (!required_ok()) {
     out.printf("有模块没初始化成功，不能发车：%s\n", hw_err.c_str()); led(255, 0, 0); return;
   }
   // 这一版 PCB 没接电池分压，检查关掉时也不报电压（报 0.00 V 会误导）
@@ -85,6 +120,7 @@ static void start_run() {
   if (v > 1.0f && v < BAT_MIN_V) { out.printf("电池 %.2f V，太低了，充满再跑\n", v); led(255, 0, 0); return; }
   bat_note = String("，电池 ") + String(v, 2) + " V";
 #endif
+  if (!gyro_ok() && gyro_retry()) out.println("陀螺仪重新连上了");
   int sw = dip();
   BrainParams p = base;
   if (sw & 1) p.cruise_mm_s = fast_cruise;
@@ -97,7 +133,8 @@ static void start_run() {
   gyro_calibrate(800);
   enc_reset();
   dist[0] = dist[1] = dist[2] = -1;
-  brain_init(&p, MODE_LEFT);
+  brain_init(&p, (!LEFT_TOF_ENABLED && (sw & 2)) ? MODE_RIGHT : MODE_LEFT);   // 通用模式缺左测距：只能贴右墙走
+  run_p = p;
 
   // 遥测头：把这次用的全部参数发出去，回放时要用
   String h = "H,";
@@ -106,6 +143,8 @@ static void start_run() {
   h += "\n"; udp_send(h.c_str(), h.length());
   out.printf("出发：%s，%s，巡航 %.0f mm/s%s\n", (sw & 1) ? "快档" : "稳妥档",
              (sw & 2) ? "通用迷宫模式" : "比赛赛道模式", p.cruise_mm_s, bat_note.c_str());
+  String dn = degraded_note();
+  if (dn.length()) out.printf("注意：%s\n", dn.c_str());
 
   running = true; last_ndec = 0; stall_t = 0; prev_encL = prev_encR = 0;
   gyro_take_angle();
@@ -124,6 +163,12 @@ static void run_tick() {
   s.dL = dist[0]; s.dF = dist[1]; s.dR = dist[2];
   s.gyro_z = dt > 0 ? gyro_take_angle() / dt : 0;   // 这 10 ms 里的平均角速度：大脑积出来的角度和 1 kHz 采样的一样准
   enc_read_mm(&s.encL, &s.encR);
+  if (!gyro_ok())                                    // 没陀螺仪：右轮比左轮多走 = 逆时针转（正）
+    s.gyro_z = dt > 0 ? ((s.encR - prev_encR) - (s.encL - prev_encL)) / track_mm * 57.29578f / dt : 0;
+  if (!LEFT_TOF_ENABLED) {                           // 每来一个右测距新数据，就补一个左侧"读数"
+    if (s.fresh & 4) { s.dL = fake_left(s.dR, s.dF, run_p, run_p.single_path < 0.5f); s.fresh |= 1; }
+    else s.fresh &= ~1;
+  }
 
   Act a;
   brain_step(&s, &a);
@@ -161,7 +206,8 @@ static void test_tof() {
     if (millis() - tp >= 200) {
       tp = millis();
       out.printf("左 %5.0f   前 %5.0f   右 %5.0f%s\n", d[0], d[1], d[2],
-                 (!tof_ok(0) || !tof_ok(1) || !tof_ok(2)) ? "   （有一颗没初始化，读数恒为 -1）" : "");
+                 ((LEFT_TOF_ENABLED && !tof_ok(0)) || !tof_ok(1) || !tof_ok(2)) ? "   （有一颗没初始化，读数恒为 -1）"
+                 : !LEFT_TOF_ENABLED ? "   （左测距已停用）" : "");
     }
     delay(5);
   }
@@ -176,18 +222,18 @@ static void test_gyro() {
     gyro_sample(); ang += gyro_take_angle();
     if (millis() - tp >= 300) { tp = millis(); out.printf("航向 %+7.1f°\n", ang); }
   }
-  out.println("读数是负的 → GYRO_SIGN 改成 -1。车静止时读数还在慢慢漂 → 重新校准时别碰车。");
+  out.println("如果读数是负的 → GYRO_SIGN 改成 -1。车静止时读数也在匀速变化 → 校准时被碰了，或陀螺仪掉线（看有没有掉线提示）。");
 }
 
 static void test_enc() {
-  out.println("编码器 10 秒：用手把两个轮子往前滚一圈（约 132 mm），两个读数都应约 +132");
+  out.println("编码器 10 秒：用手把两个轮子往前滚一圈（约 135 mm），两个读数都应约 +135");
   enc_reset();
   uint32_t t0 = millis(), tp = 0;
   while (millis() - t0 < 10000 && !abort_requested()) {
     if (millis() - tp >= 300) { tp = millis(); float l, r; enc_read_mm(&l, &r); out.printf("左 %+8.1f mm   右 %+8.1f mm\n", l, r); }
     delay(5);
   }
-  out.println("往前滚却是负数 → 对应的 ENC_SIGN 改成 -1。");
+  out.println("如果往前滚却是负数 → 对应的 ENC_SIGN 改成 -1。");
 }
 
 static void test_motors() {
@@ -216,9 +262,32 @@ static void test_motors() {
              vL, vR, (vL + vR) / 2 / ((0.6f - db) / (1 - db)));
 }
 
+// 标定等效轮距：车放地上，按编码器原地左转"一整圈"，看实际转了多少度。
+static void test_track() {
+  out.printf("原地左转一圈（按编码器算，等效轮距 %.1f mm）。车放在地上、周围留空，3 秒后开始；按键或串口任意输入可中止\n", track_mm);
+  delay(3000);
+  enc_reset();
+  float ang = 0; uint32_t t0 = millis();
+  while (ang < 360 && millis() - t0 < 8000 && !abort_requested()) {
+    float l, r; enc_read_mm(&l, &r);
+    ang = (r - l) / track_mm * 57.29578f;
+    float w = base.turn_pwm * (360 - ang) / 90;     // 最后 90° 慢下来，别靠惯性冲过头
+    if (w > base.turn_pwm) w = base.turn_pwm;
+    if (w < base.turn_min_pwm) w = base.turn_min_pwm;
+    motors(-w, w);
+    delay(5);
+  }
+  motors(0, 0); delay(300);
+  float l, r; enc_read_mm(&l, &r);
+  ang = (r - l) / track_mm * 57.29578f;
+  out.printf("编码器认为转了 %.0f°。看车实际转了多少度（A），然后：p track_mm %.1f×360/A，再 save\n", ang, track_mm * ang / 360);
+  out.println("例：实际只转了 300° → 等效轮距要加大，乘 360/300。反复做到实际约等于 360° 为止。");
+}
+
 static void list_params() {
   for (int i = 0; i < NP; i++) out.printf("  %-14s %g\n", PNAMES[i], ((float*)&base)[i]);
   out.printf("  %-14s %g   （快档巡航速度）\n", "fast_cruise", fast_cruise);
+  out.printf("  %-14s %g   （等效轮距，陀螺仪不在时用；命令 t 标定）\n", "track_mm", track_mm);
   out.println("（single_path / stop_turns 由拨码 2 在发车时决定，这里的值不起作用）");
 }
 
@@ -229,17 +298,19 @@ static void param_cmd(String rest) {
   String name = rest.substring(0, sp), val = rest.substring(sp + 1);
   float v = val.toFloat();
   if (name == "fast_cruise") { fast_cruise = v; out.printf("fast_cruise = %g\n", v); return; }
+  if (name == "track_mm") { if (v > 30) { track_mm = v; out.printf("track_mm = %g（save 才会存进闪存）\n", v); } else out.println("track_mm 太小了"); return; }
   for (int i = 0; i < NP; i++) if (name == PNAMES[i]) { ((float*)&base)[i] = v; out.printf("%s = %g（save 才会存进闪存）\n", PNAMES[i], v); return; }
   out.println("没有这个参数，输入 p 看列表");
 }
 
 static void help() {
   out.println("命令：");
-  out.println("  i          扫描 I2C（应看到 0x30 0x31 0x32 0x68）");
+  out.println("  i          扫描 I2C（应看到 0x31 0x32 0x68；左测距启用时还有 0x30）");
   out.println("  d          测距读数 5 秒");
   out.println("  g          陀螺仪：手动转车看角度");
   out.println("  e          编码器：手动滚轮子看里程");
   out.println("  m          电机方向和编码器方向（要先把车架空）");
+  out.println("  t          标定等效轮距：车放地上原地转一圈（陀螺仪不在时用）");
   out.println("  b          电池电压      s  拨码和按键状态");
   out.println("  go         发车（同按键）  x  急停");
   out.println("  p          列出参数      p 名字 数值  在线改参数");
@@ -259,14 +330,15 @@ static void command(String line) {
   else if (cmd == "g") test_gyro();
   else if (cmd == "e") test_enc();
   else if (cmd == "m") test_motors();
+  else if (cmd == "t") test_track();
   else if (cmd == "b") out.printf("电池 %.2f V\n", battery_v());
   else if (cmd == "s") { int d = dip(); out.printf("拨码 1 %s（%s），拨码 2 %s（%s），按键 %s\n", d & 1 ? "ON" : "OFF", d & 1 ? "快档" : "稳妥档",
                                                  d & 2 ? "ON" : "OFF", d & 2 ? "通用迷宫" : "比赛赛道", button() ? "按下" : "松开"); }
   else if (cmd == "go") start_run();
   else if (cmd == "x") out.println("没在跑");
   else if (cmd == "p") param_cmd(rest);
-  else if (cmd == "save") { prefs.putBytes("bp", &base, sizeof(base)); prefs.putFloat("fast", fast_cruise); out.println("已存进闪存"); }
-  else if (cmd == "defaults") { brain_default_params(&base); fast_cruise = FAST_CRUISE; prefs.clear(); out.println("已恢复默认参数"); }
+  else if (cmd == "save") { prefs.putBytes("bp", &base, sizeof(base)); prefs.putFloat("fast", fast_cruise); prefs.putFloat("track", track_mm); out.println("已存进闪存"); }
+  else if (cmd == "defaults") { brain_default_params(&base); fast_cruise = FAST_CRUISE; track_mm = TRACK_MM; prefs.clear(); out.println("已恢复默认参数"); }
   else out.println("不认识的命令，输入 ? 看列表");
 }
 
@@ -280,6 +352,7 @@ void setup() {
   brain_default_params(&base);
   if (prefs.getBytesLength("bp") == sizeof(base)) prefs.getBytes("bp", &base, sizeof(base));
   fast_cruise = prefs.getFloat("fast", FAST_CRUISE);
+  track_mm = prefs.getFloat("track", TRACK_MM);
 #if TELEMETRY
   WiFi.softAP(AP_SSID, AP_PASS);
   bcast = WiFi.softAPBroadcastIP();
@@ -287,17 +360,20 @@ void setup() {
 #endif                                   // TELEMETRY 为 0 时根本不碰 WiFi，射频默认就是关的
   String status = "全部模块正常。";
   if (hw_err.length()) { status = "初始化失败："; status += hw_err; status += "。"; }
+  status += degraded_note();
+  if (!required_ok()) status += "不能发车。";
   out.printf("\n迷宫小车就绪。%s电池 %.2f V。输入 ? 看命令。\n", status.c_str(), battery_v());
-  led(hw_err.length() ? 255 : 0, 0, hw_err.length() ? 0 : 60);
+  led(required_ok() ? 0 : 255, 0, required_ok() ? 60 : 0);
 }
 
 void loop() {
   gyro_sample();                         // 每圈都采：1 kHz 积分陀螺仪
+  if (gyro_dropped()) out.println(running ? "陀螺仪中途掉线，这一趟改用编码器算航向" : "陀螺仪掉线了，下次发车会再试着连");
 
   if (running) {
     if (micros() - last_tick_us >= 10000) run_tick();
   } else if (done_ms && millis() - done_ms > 3000) {
-    done_ms = 0; led(hw_err.length() ? 255 : 0, 0, hw_err.length() ? 0 : 60);
+    done_ms = 0; led(required_ok() ? 0 : 255, 0, required_ok() ? 60 : 0);
   }
 
   // 按键：没在跑 = 发车，在跑 = 急停；按住不放只算一次

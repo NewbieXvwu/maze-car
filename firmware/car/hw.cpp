@@ -96,23 +96,29 @@ static bool tof_good[3];
 static const uint8_t XSHUT[3] = {PIN_XSHUT_L, PIN_XSHUT_F, PIN_XSHUT_R};
 static const char* TOF_NAME[3] = {"左测距", "前测距", "右测距"};
 
+static bool i2c_ping(uint8_t a) { Wire.beginTransmission(a); return Wire.endTransmission() == 0; }
+
 static void tof_begin(String& err) {
   // 三颗默认地址都是 0x29：先全部复位，再逐个唤醒、逐个改地址
   for (int i = 0; i < 3; i++) { pinMode(XSHUT[i], OUTPUT); digitalWrite(XSHUT[i], LOW); }
-  delay(20);
+  delay(50);
   for (int i = 0; i < 3; i++) {
-    digitalWrite(XSHUT[i], HIGH);
-    delay(20);
-    tof[i].setBus(&Wire);
-    tof[i].setTimeout(60);
-    tof_good[i] = tof[i].init();
-    if (tof_good[i]) {
-      tof[i].setAddress(0x30 + i);
-      tof[i].startContinuous(0);                  // 连续测量，默认约 33 ms 一次
-    } else {
-      digitalWrite(XSHUT[i], LOW);                // 坏的那颗留在复位状态，别占着 0x29 干扰下一颗
-      err += TOF_NAME[i]; err += " ";
+    tof_good[i] = false;
+    if (i == 0 && !LEFT_TOF_ENABLED) continue;       // 左测距停用：XSHUT 保持拉低，不占总线，也不算失败
+    for (int t = 0; t < I2C_TRIES && !tof_good[i]; t++) {   // 偶发 NACK 时多试两次，别让一颗接触不良拖住整台车
+      // 兜底：万一 XSHUT 那根线没接通，模块会一直醒着停在 0x29。这时不用再拉高，直接按住它改址。
+      if (!i2c_ping(0x29)) { digitalWrite(XSHUT[i], HIGH); delay(30); }
+      tof[i].setBus(&Wire);
+      tof[i].setTimeout(60);
+      tof_good[i] = tof[i].init();
+      if (tof_good[i]) {
+        tof[i].setAddress(0x30 + i);
+        if (!i2c_ping(0x30 + i)) tof_good[i] = false;       // 改址没生效就不算好
+      }
+      if (!tof_good[i]) { digitalWrite(XSHUT[i], LOW); delay(30); }   // 坏的那颗留在复位状态
     }
+    if (tof_good[i]) tof[i].startContinuous(0);      // 连续测量，默认约 33 ms 一次
+    else { err += TOF_NAME[i]; err += " "; }
   }
 }
 
@@ -130,7 +136,7 @@ int tof_poll(float d[3]) {
   return fresh;
 }
 
-// ---------------------------------------------------------------- 陀螺仪（MPU6050，只用 Z 轴）
+// ---------------------------------------------------------------- 陀螺仪（MPU6050 / MPU6500，只用 Z 轴）
 static const uint8_t MPU = 0x68;
 static const float GYRO_LSB = 32.8f;              // ±1000 °/s 量程
 static bool  mpu_good = false;
@@ -150,16 +156,42 @@ static bool mpu_read_gz(int16_t* v) {
   return true;
 }
 static bool mpu_begin() {
-  if (!mpu_write(0x6B, 0x01)) return false;       // 唤醒，时钟用 X 轴陀螺仪的 PLL
-  delay(50);
-  mpu_write(0x1A, 0x03);                          // 数字低通约 44 Hz
-  mpu_write(0x1B, 0x10);                          // ±1000 °/s（原地转弯约 400 °/s，留够余量）
-  mpu_write(0x19, 0x00);                          // 1 kHz 采样
-  int16_t v;
-  return mpu_read_gz(&v);
+  for (int t = 0; t < I2C_TRIES; t++) {           // 上电瞬间偶发 NACK 时重试，别因为一次失败就整场没有陀螺仪
+    Wire.beginTransmission(MPU); Wire.write(0x75);            // WHO_AM_I：MPU6050 是 0x68，MPU6500 是 0x70
+    if (Wire.endTransmission(false) == 0 && Wire.requestFrom(MPU, (size_t)1) == 1) {
+      uint8_t who = Wire.read();
+      // 本车 GY-521 上实测是 MPU6500（0x70）；下面用到的寄存器两颗芯片一样。线松了时会回 0xFF 之类的假数据，这里挡掉
+      if (who != 0x68 && who != 0x70) { delay(30); continue; }
+    } else { delay(30); continue; }
+    if (mpu_write(0x6B, 0x01)) {                  // 唤醒，时钟用 X 轴陀螺仪的 PLL
+      delay(50);
+      mpu_write(0x1A, 0x03);                      // 数字低通约 44 Hz（MPU6500 上约 41 Hz）
+      mpu_write(0x1B, 0x10);                      // ±1000 °/s（原地转弯约 400 °/s，留够余量）
+      mpu_write(0x19, 0x00);                      // 1 kHz 采样
+      int16_t v;
+      if (mpu_read_gz(&v)) return true;
+    }
+    delay(30);
+  }
+  return false;
 }
 
 bool gyro_ok() { return mpu_good; }
+
+// 本车陀螺仪插座接触不良：车一晃就可能掉线，或者掉电复位后回到睡眠（0x6B 变回 0x40），
+// 这时数据寄存器不再更新，拿旧值积分会让车以为自己一直在转。发现了就整趟停用陀螺仪，
+// car.ino 看到 gyro_ok() 变成 false 会改用编码器算航向。
+static int  mpu_fails = 0;
+static uint32_t mpu_chk_ms = 0;
+static bool mpu_dropped = false;
+static void mpu_drop() { mpu_good = false; mpu_dropped = true; g_rate = 0; }
+bool gyro_dropped() { bool d = mpu_dropped; mpu_dropped = false; return d; }
+bool gyro_retry() { if (!mpu_good) { mpu_good = mpu_begin(); mpu_fails = 0; } return mpu_good; }
+static int mpu_read_reg(uint8_t reg) {
+  Wire.beginTransmission(MPU); Wire.write(reg);
+  if (Wire.endTransmission(false) != 0 || Wire.requestFrom(MPU, (size_t)1) != 1) return -1;
+  return Wire.read();
+}
 
 void gyro_calibrate(int ms) {
   if (!mpu_good) return;
@@ -170,7 +202,8 @@ void gyro_calibrate(int ms) {
     if (mpu_read_gz(&v)) { sum += v; n++; }
     delayMicroseconds(1000);
   }
-  if (n) g_bias = sum / n;
+  if (n < ms / 4) { mpu_drop(); return; }          // 校准期间大半读不到：这颗陀螺仪现在靠不住
+  g_bias = sum / n;
   g_angle = 0; g_last_us = micros();
 }
 
@@ -179,7 +212,13 @@ void gyro_sample() {
   uint32_t now = micros();
   if (now - g_last_us < 1000) return;             // 最多 1 kHz，别把 I2C 总线占满
   int16_t v;
-  if (!mpu_read_gz(&v)) return;
+  if (!mpu_read_gz(&v)) { if (++mpu_fails >= 5) mpu_drop(); return; }
+  mpu_fails = 0;
+  if (millis() - mpu_chk_ms >= 50) {               // 每 50 ms 看一眼芯片是不是被复位进了睡眠
+    mpu_chk_ms = millis();
+    int r = mpu_read_reg(0x6B);
+    if (r >= 0 && r != 0x01) { mpu_drop(); return; }
+  }
   float dt = (now - g_last_us) * 1e-6f;
   g_last_us = now;
   g_rate = (v - g_bias) / GYRO_LSB * GYRO_SIGN;
@@ -211,7 +250,28 @@ void i2c_scan(Print& out) {
     Wire.beginTransmission(a);
     if (Wire.endTransmission() == 0) { out.print(" 0x"); out.print(a, HEX); }
   }
+#if LEFT_TOF_ENABLED
   out.println("   （应有 0x30 0x31 0x32 三颗测距 + 0x68 陀螺仪）");
+#else
+  out.println("   （应有 0x31 0x32 两颗测距 + 0x68 陀螺仪；左测距已停用）");
+#endif
+}
+
+// 某个从器件把 SDA 拉住不放（时钟拉伸卡死）时，总线会一直报 ESP_ERR_INVALID_STATE。
+// 打 9 个时钟脉冲让它把数据吐完，再补一个 STOP，总线就活了。
+static void i2c_bus_recover() {
+  pinMode(PIN_SDA, INPUT_PULLUP);
+  pinMode(PIN_SCL, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_SCL, HIGH);
+  delayMicroseconds(10);
+  for (int i = 0; i < 9; i++) {
+    digitalWrite(PIN_SCL, LOW);  delayMicroseconds(10);
+    digitalWrite(PIN_SCL, HIGH); delayMicroseconds(10);
+  }
+  pinMode(PIN_SDA, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_SDA, LOW);   delayMicroseconds(10);
+  pinMode(PIN_SDA, INPUT_PULLUP); delayMicroseconds(10);
+  digitalWrite(PIN_SCL, HIGH);  delayMicroseconds(10);
 }
 
 bool hw_begin(String& err) {
@@ -220,8 +280,10 @@ bool hw_begin(String& err) {
   if (!motors_begin()) err += "电机PWM ";
   if (!enc_one(0, PIN_ENC_LA, PIN_ENC_LB)) err += "左编码器 ";
   if (!enc_one(1, PIN_ENC_RA, PIN_ENC_RB)) err += "右编码器 ";
-  Wire.begin(PIN_SDA, PIN_SCL, 400000);
-  Wire.setTimeOut(10);
+  i2c_bus_recover();                               // 上一轮如果被从器件拉住总线，先把总线捅开再初始化
+  Wire.begin(PIN_SDA, PIN_SCL, I2C_HZ);
+  Wire.setTimeOut(20);
+  delay(200);                                      // 等传感器和 3.3V 轨彻底稳住再开口说话
   mpu_good = mpu_begin();
   if (!mpu_good) err += "陀螺仪 ";
   tof_begin(err);

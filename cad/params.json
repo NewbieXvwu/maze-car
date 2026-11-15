@@ -16,7 +16,7 @@
     "wheel_d":   {"nominal": 42.0, "measured": null, "source": "notes", "note": "橡胶轮外径"},
     "wheel_w":   {"nominal": 7.0,  "measured": null, "source": "guess", "note": "胎宽"},
     "hub_d":     {"nominal": 13.0, "measured": null, "source": "guess", "note": "轮毂直径"},
-    "track":     {"nominal": 90.0, "measured": null, "source": "guess", "note": "左右轮中心面间距 = 2×45；45 来自硬件笔记"},
+    "track":     {"nominal": 90.0, "measured": 120.0, "source": "measured 2026-11-15", "note": "左右轮中心面间距 = 2×45；45 来自硬件笔记"},
     "axle_x":    {"nominal": 0.0,  "measured": null, "source": "notes"},
     "axle_z":    {"nominal": 21.0, "measured": null, "source": "calc", "note": "= wheel_d/2"}
   },
