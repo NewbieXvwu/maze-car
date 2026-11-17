@@ -19,3 +19,6 @@ build/
 
 # easyeda-agent daemon 产物（可重生成）
 .easyeda/
+
+# 三维模型导出产物（GLB 49MB / OBJ 129MB，用 tools/export_model.py 重新生成）
+out/model/

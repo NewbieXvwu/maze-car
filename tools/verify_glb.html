@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>GLB check</title>
+<style>html,body{margin:0;height:100%;background:#12171a;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"../vendor/three/three.module.js","three/addons/":"../vendor/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x141a1d);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(32, innerWidth / innerHeight, 0.005, 20);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+scene.add(new THREE.HemisphereLight(0xdfeaff, 0x22262a, 1.6));
+const key = new THREE.DirectionalLight(0xffffff, 3.2); key.position.set(0.35, 0.75, 0.4);
+key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -0.25, right: 0.25, top: 0.25, bottom: -0.25, near: 0.05, far: 3 });
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xcfe4ff, 1.1); fill.position.set(-0.5, 0.3, -0.3); scene.add(fill);
+
+// ground
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshStandardMaterial({ color: 0x1c2327, roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = -0.0004; ground.receiveShadow = true; scene.add(ground);
+
+new GLTFLoader().load('../out/model/maze-car.glb', (gltf) => {
+  const root = gltf.scene;
+  scene.add(root);
+  const box = new THREE.Box3().setFromObject(root);
+  const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  window.__info = {
+    size: size.toArray().map(v => +(v * 1000).toFixed(1)),
+    min: box.min.toArray().map(v => +(v * 1000).toFixed(1)),
+    max: box.max.toArray().map(v => +(v * 1000).toFixed(1)),
+    meshes: (() => { let n = 0; root.traverse(o => { if (o.isMesh) n++; }); return n; })(),
+    triangles: (() => { let n = 0; root.traverse(o => { if (o.isMesh && o.geometry.index) n += o.geometry.index.count / 3; }); return n; })(),
+  };
+  window.__center = c.clone();
+  window.__setCam = (az, el, dist, target) => {
+    const t = target || c;
+    const a = az * Math.PI / 180, e = el * Math.PI / 180;
+    camera.position.set(t.x + dist * Math.cos(e) * Math.cos(a), t.y + dist * Math.sin(e), t.z + dist * Math.cos(e) * Math.sin(a));
+    controls.target.copy(t); controls.update(); renderer.render(scene, camera);
+  };
+  window.__setCam(35, 22, 0.42);
+  window.__READY = true;
+}, undefined, (e) => { window.__ERROR = String(e && e.message || e); window.__READY = true; });
+
+(function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+</script></body></html>
