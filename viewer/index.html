@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>迷宫小车 · 实机建模 1:1</title>
+<style>
+  :root {
+    --bg0: #0b0f0d;
+    --bg1: #131a16;
+    --ink: #eef5f0;
+    --dim: #93a89b;
+    --acc: #5ee6a8;
+    --acc2: #8ad7ff;
+    --line: rgba(255, 255, 255, 0.10);
+    --glass: rgba(14, 20, 17, 0.62);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 800px at 62% 38%, #24322a 0%, #151d18 42%, #0a0e0c 100%);
+    overflow: hidden;
+  }
+  #app { position: fixed; inset: 0; }
+  canvas { display: block; outline: none; }
+
+  .panel {
+    position: absolute;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  /* ---- title ---- */
+  #title { left: 22px; top: 20px; padding: 16px 20px 14px; width: 330px; }
+  #title .kicker {
+    font-size: 10.5px; letter-spacing: 0.22em; color: var(--acc);
+    text-transform: uppercase; font-weight: 600; opacity: 0.9;
+  }
+  #title h1 { margin: 7px 0 2px; font-size: 21px; letter-spacing: 0.01em; font-weight: 650; }
+  #title .sub { font-size: 11.5px; color: var(--dim); line-height: 1.6; }
+  #title .meta {
+    margin-top: 11px; padding-top: 10px; border-top: 1px solid var(--line);
+    display: flex; gap: 14px; font-size: 10.5px; color: var(--dim);
+  }
+  #title .meta b { display: block; color: var(--ink); font-size: 12.5px; font-weight: 600; margin-top: 2px; }
+
+  /* ---- right controls ---- */
+  #controls { right: 22px; top: 20px; padding: 10px; display: flex; flex-direction: column; gap: 8px; width: 118px; }
+  .grp { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .btn {
+    appearance: none; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.035);
+    color: var(--ink); font: inherit; font-size: 11px; border-radius: 9px; padding: 8px 6px;
+    cursor: pointer; transition: all .16s ease; white-space: nowrap; text-align: center;
+  }
+  .btn:hover { background: rgba(94, 230, 168, 0.14); border-color: rgba(94, 230, 168, 0.45); }
+  .btn.on { background: rgba(94, 230, 168, 0.22); border-color: var(--acc); color: #e9fff4; }
+  .sep { height: 1px; background: var(--line); margin: 2px 2px; }
+  .lbl { font-size: 9.5px; letter-spacing: .16em; color: var(--dim); text-transform: uppercase; padding: 2px 3px 0; }
+
+  /* ---- parts rail ---- */
+  #parts {
+    right: 22px; top: 236px; width: 190px; padding: 12px 12px 10px;
+    max-height: calc(100vh - 380px); overflow: auto; scrollbar-width: thin;
+  }
+  #parts h3 { margin: 0 0 8px; font-size: 10.5px; letter-spacing: .16em; color: var(--dim); font-weight: 600; text-transform: uppercase; }
+  .part {
+    display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 9px;
+    cursor: pointer; transition: background .15s; font-size: 11.5px; color: #d9e6dd;
+  }
+  .part:hover { background: rgba(94, 230, 168, 0.10); }
+  .part .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 8px rgba(94,230,168,.7); flex: none; }
+  .part small { color: var(--dim); font-size: 9.5px; margin-left: auto; }
+
+  /* ---- footer ---- */
+  #hint {
+    left: 22px; bottom: 20px; padding: 9px 13px; font-size: 10.5px; color: var(--dim);
+    display: flex; gap: 14px;
+  }
+  #hint span { color: #cfeee0; }
+
+  #export { right: 22px; bottom: 20px; padding: 10px; display: flex; flex-direction: column; gap: 8px; width: 190px; }
+  #export .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  #export .wide { grid-column: span 3; }
+  .btn.primary {
+    background: linear-gradient(180deg, rgba(94,230,168,.30), rgba(94,230,168,.16));
+    border-color: rgba(94,230,168,.6); color: #eafff5; font-weight: 600;
+  }
+  .btn.primary:hover { background: rgba(94,230,168,.34); }
+  #stats { position: absolute; left: 22px; bottom: 66px; font-size: 9.5px; color: rgba(180,200,188,.5); letter-spacing: .05em; }
+
+  /* ---- modal ---- */
+  #modal {
+    position: fixed; inset: 0; background: rgba(4,7,6,.86); backdrop-filter: blur(10px);
+    display: none; align-items: center; justify-content: center; z-index: 50; padding: 30px;
+  }
+  #modal.on { display: flex; }
+  #modal .box { max-width: 1180px; width: 100%; max-height: 90vh; overflow: auto; }
+  #modal h2 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
+  #modal p { font-size: 11px; color: var(--dim); margin: 0 0 14px; }
+  .shots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .shots figure { margin: 0; border-radius: 10px; overflow: hidden; background: #0c110e; border: 1px solid var(--line); }
+  .shots img { width: 100%; display: block; }
+  .shots figcaption { font-size: 10px; color: var(--dim); padding: 6px 8px; }
+  #modal .close { float: right; }
+
+  /* ---- loading / errors ---- */
+  #loader {
+    position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px;
+    align-items: center; justify-content: center; background: #0a0e0c; z-index: 100;
+    transition: opacity .5s ease; font-size: 12px; color: var(--dim); letter-spacing: .1em;
+  }
+  #loader.off { opacity: 0; pointer-events: none; }
+  .ring { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(94,230,168,.18); border-top-color: var(--acc); animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #err { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 120; background: #0a0e0c; padding: 40px; }
+  #err.on { display: flex; }
+  #err .box { max-width: 560px; font-size: 13px; line-height: 1.8; color: #d8e6dd; }
+  code { background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 5px; font-size: 12px; }
+
+  @media (max-width: 880px) {
+    #title { width: calc(100vw - 44px); }
+    #parts, #controls { display: none; }
+    #export { width: 210px; }
+    #hint { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<div id="title" class="panel">
+  <div class="kicker">Maze Car · Digital Twin</div>
+  <h1>迷宫小车 · 1:1 实机建模</h1>
+  <div class="sub">ESP32-S3 · 三路 VL53L0X · TB6612 · N20 编码器<br/>洞洞板底盘 + 定制 2 层主控 PCB</div>
+  <div class="meta">
+    <div>长 / 宽<b>150 × 138 mm</b></div>
+    <div>高<b>90 mm · 排线 140</b></div>
+    <div>轴距<b>2 × 42 mm</b></div>
+  </div>
+</div>
+
+<div id="controls" class="panel">
+  <div class="lbl">视角</div>
+  <div class="grp">
+    <button class="btn on" data-view="hero">等轴</button>
+    <button class="btn" data-view="front">车头</button>
+    <button class="btn" data-view="left">左侧</button>
+    <button class="btn" data-view="right">右侧</button>
+    <button class="btn" data-view="top">俯视</button>
+    <button class="btn" data-view="rear">车尾</button>
+    <button class="btn" data-view="bottom">底板</button>
+    <button class="btn" data-view="detail">细节</button>
+  </div>
+  <div class="sep"></div>
+  <div class="lbl">显示</div>
+  <div class="grp">
+    <button class="btn on" id="btnRotate">环绕</button>
+    <button class="btn" id="btnWire">线框</button>
+    <button class="btn" id="btnGrid">网格</button>
+    <button class="btn" id="btnShadow">投影</button>
+  </div>
+</div>
+
+<div id="parts" class="panel">
+  <h3>部件 · 点击聚焦</h3>
+  <div class="part" data-part="pcb"><span class="dot"></span>主控 PCB<small>91.4×88.9</small></div>
+  <div class="part" data-part="esp32"><span class="dot"></span>ESP32-S3<small>DevKitC</small></div>
+  <div class="part" data-part="tb6612"><span class="dot"></span>TB6612<small>电机驱动</small></div>
+  <div class="part" data-part="mpu"><span class="dot"></span>MPU6050<small>陀螺仪</small></div>
+  <div class="part" data-part="tof"><span class="dot"></span>VL53L0X ×3<small>激光测距</small></div>
+  <div class="part" data-part="oled"><span class="dot"></span>OLED<small>0.96"</small></div>
+  <div class="part" data-part="battery"><span class="dot"></span>18650 电池组<small>7.4V</small></div>
+  <div class="part" data-part="motor"><span class="dot"></span>N20 + 编码器<small>×2</small></div>
+  <div class="part" data-part="wheel"><span class="dot"></span>橡胶轮<small>Ø42</small></div>
+  <div class="part" data-part="caster"><span class="dot"></span>万向球轮<small>×2</small></div>
+  <div class="part" data-part="wall"><span class="dot"></span>前置测距墙<small>洞洞板</small></div>
+</div>
+
+<div id="hint" class="panel"><span>拖动</span>旋转 · <span>滚轮</span>缩放 · <span>右键</span>平移</div>
+<div id="stats"></div>
+
+<div id="export" class="panel">
+  <div class="lbl">导出模型</div>
+  <div class="row">
+    <button class="btn primary wide" id="btnGLB">GLB · 材质贴图</button>
+    <button class="btn" id="btnOBJ">OBJ</button>
+    <button class="btn" id="btnSTL">STL</button>
+    <button class="btn" id="btnPNG">截图</button>
+  </div>
+  <div class="sep"></div>
+  <button class="btn" id="btnRefs">参考照片 · 10 张</button>
+</div>
+
+<div id="modal"><div class="box">
+  <button class="btn close" id="modalClose">关闭</button>
+  <h2>实物参考照片</h2>
+  <p>用于对照建模比例与细节的原始拍摄。</p>
+  <div class="shots" id="shotGrid"></div>
+</div></div>
+
+<div id="loader"><div class="ring"></div><div>正在构建模型…</div></div>
+<div id="err"><div class="box">
+  <h2 style="color:#ff9d9d">页面无法加载</h2>
+  <p>这个页面使用 ES Module，需要通过本地服务器打开，不能直接双击文件。</p>
+  <p>在项目根目录运行：<br/><code>python3 -m http.server 8000</code><br/>然后访问 <code>http://localhost:8000/viewer/</code></p>
+</div></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "../vendor/three/three.module.js",
+    "three/addons/": "../vendor/three/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+  window.addEventListener('error', (e) => {
+    if (String(e.message || '').includes('Failed to fetch') || String(e.message || '').includes('import')) {
+      document.getElementById('err').classList.add('on');
+    }
+  });
+</script>
+<script type="module" src="./viewer.js"></script>
+</body>
+</html>
